@@ -1,6 +1,6 @@
 h2. About
 
-*friendly-git* is a collection of shell scripts for automating basic git flows I find myself typing over and over again.
+*git-friendly* is a collection of shell scripts for automating basic git workflows I find myself typing over and over again.
 
 Frankly I think a lot of these should be git defaults, like rebasing and automatic remote tracking. But I digress...
 
@@ -8,11 +8,11 @@ h2. Install
 
 Checkout this repository somewhere:
 
-  git clone git://github.com/jamiew/git-friendly.git ~/dev/git-friendly
+@git clone git://github.com/jamiew/git-friendly.git ~/dev/git-friendly@
 
 Add the directory to your PATH:
 
-  export PATH=~/dev/git-friendly:$PATH
+@export PATH=~/dev/git-friendly:$PATH@
 
 You'll want to put that somewhere cool like ~/.bash_profile so it's executed each time you launch a terminal.
 
@@ -24,7 +24,7 @@ I literally use them in this order
 
 * *pull* -- stashes any local changes, pulls from remote using rebase, pops your stash, and re-bundles if necessary
 * *branch [newbranch]* -- creates a new branch both locally & remotely, with remote tracking enabled (so you can just type 'git pull' and not 'git pull origin newbranch')
-* _[programming genius goes here... I just use vanilla 'git commit', 'git status', 'git diff']_
+* _programming genius goes here... I just use vanilla 'git commit', 'git status', 'git diff'_
 * *merge* -- merges your amazing new branch back into master using rebase. Always Be Rebasing.
 * *push* -- pushes your mindblowing changes to the remote and copies a sexy URL like "http://github.com/jamiew/myrepo/compare/3f9fea...fv932" to your clipboard that you can easily share with your peers. This only works on Macs, but boy is it sweet.
 
