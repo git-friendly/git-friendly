@@ -2,9 +2,10 @@
 # 
 # merge [branchname]
 #
-# Tries to merge local branch "branchname" into master
+# Tries to merge local branch "branchname" into master,
 # regardless of what branch you are currently in.
 # It will stop you if you are behind & need to pull 1st
+#
 
 branch=$1
 echo branch: $branch
@@ -25,6 +26,9 @@ git merge $branch || exit 1
 
 echo "* Deleting merged local branch"
 git branch -d $branch || exit 1
+
+# Potentailly delete the remote branch too
+# I'm undecided about this one
 
 echo "* Done"
 exit 0

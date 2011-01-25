@@ -2,10 +2,9 @@
 # 
 # Usage: push
 #
-# Send your local branch changes to the remote branch
-# This will be pimped out later... I want to make it copy a handy
-# "check out my commit" diff URL to the clipboard. e.g. =>
-# http://github.com/jamiew/app/compare/OLDREF...NEWREF
+# Send your local branch changes to the remote branch,
+# and copy the relevant GitHub 'compare' URL to your clipboard (!)
+# This is Mac-only for the time being
 # 
 
 remote=origin

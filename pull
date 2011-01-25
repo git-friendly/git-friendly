@@ -2,7 +2,7 @@
 # 
 # Usage: pull
 #
-# Pulls remote changes using rebase & tries to rebundle
+# Pulls remote changes using rebase & tries to rebundle,
 # safely stashing and re-applying your local changes, if any
 # 
 

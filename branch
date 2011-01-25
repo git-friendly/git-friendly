@@ -3,6 +3,8 @@
 # branch [branchname]
 #
 # Create a new local AND remote git branch
+# Setup local branch to use remote tracking
+#
 
 branch=$1
 echo branch: $branch

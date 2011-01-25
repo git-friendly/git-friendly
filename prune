@@ -1,4 +1,12 @@
 #!/bin/sh
-# TODO use all remotes? Or at least "current remote"
-git remote prune origin
+# 
+# prune
+#
+# Do some maintenance on the local repository
+# Delete old branches, garbage collect, call your mom, etc
+#
+
+# TODO do this on all remotes
+remote="origin"
+git remote prune $remote
 git gc --aggressive
