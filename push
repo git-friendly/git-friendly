@@ -11,5 +11,25 @@
 remote=origin
 branch=$(git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
 
-git push $remote $branch
+# Push & save output
+push=$(git push $remote $branch --dry-run 2>&1)
+exit_code=$?
+if [ $exit_code != 0 ]; then
+  echo "Ouch, push failed! code=$exit_code, output=$push"
+  exit $exit_code
+fi
 
+# Cleanly exit if nothing was pushed
+if echo $push | grep "Everything up-to-date" >/dev/null; then
+  echo "git says everything is up-to-date! "
+  exit 0
+fi
+
+# Parse output into sexy GitHub compare URL!
+echo $push
+maybe_url=$(git remote show $remote -n | grep Push | awk '{ print $3 }')
+echo $maybe_url
+refs=$(echo $push | awk '{ print $3}')
+echo $refs
+
+exit 0
