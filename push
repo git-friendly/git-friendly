@@ -1,0 +1,15 @@
+#!/bin/sh
+# 
+# Usage: push
+#
+# Send your local branch changes to the remote branch
+# This will be pimped out later... I want to make it copy a handy
+# "check out my commit" diff URL to the clipboard. e.g. =>
+# http://github.com/jamiew/app/compare/OLDREF...NEWREF
+# 
+
+remote=origin
+branch=$(git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
+
+git push $remote $branch
+
