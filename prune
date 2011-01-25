@@ -1,0 +1,4 @@
+#!/bin/sh
+# TODO use all remotes? Or at least "current remote"
+git remote prune origin
+git gc --aggressive
