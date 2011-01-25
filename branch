@@ -11,11 +11,12 @@ if [ -z $branch ]; then
   exit 1
 fi
 
-# TODO save current branch in case it's not really master...
-# TODO also stash a la pull?
+# You were probably on master, but just in case...
+old_branch=$(git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
+
 git checkout -b $branch
 git push origin $branch
-git checkout master
+git checkout $old_branch
 git branch -D $branch
 git checkout -b $branch --track origin/$branch
 exit 0
