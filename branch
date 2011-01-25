@@ -1,0 +1,21 @@
+#!/bin/sh
+# 
+# branch [branchname]
+#
+# Create a new local AND remote git branch
+
+branch=$1
+echo branch: $branch
+if [ -z $branch ]; then
+  echo "Usage: $0 [branchname]"
+  exit 1
+fi
+
+# TODO save current branch in case it's not really master...
+# TODO also stash a la pull?
+git checkout -b $branch
+git push origin $branch
+git checkout master
+git branch -D $branch
+git checkout -b $branch --track origin/$branch
+exit 0

@@ -1,0 +1,22 @@
+#!/bin/sh
+# 
+# Usage: pull
+#
+# Pulls remote changes using rebase & tries to rebundle
+# safely stashing and re-applying your local changes, if any
+# 
+
+stash=$(git stash)
+
+git fetch --all && git pull --rebase
+
+if [[ "$stash" =~ "No local changes to save" ]]; then
+  echo "* No stashed changes, not popping"
+else
+  echo "* Popping stash..."
+  git stash pop
+fi
+
+bundle check || bundle install
+
+echo "Done"

@@ -1,0 +1,30 @@
+#!/bin/sh
+# 
+# merge [branchname]
+#
+# Tries to merge local branch "branchname" into master
+# regardless of what branch you are currently in.
+# It will stop you if you are behind & need to pull 1st
+
+branch=$1
+echo branch: $branch
+if [ -z $branch ]; then
+  echo "Usage: $0 [branchname]"
+  exit 1
+fi
+
+echo "* Switch to $branch"
+git checkout $branch || exit 1
+
+echo "* Rebasing $branch onto master"
+git rebase --interactive master || exit 1
+
+echo "* Merge $branch into master"
+git checkout master || exit 1
+git merge $branch || exit 1
+
+echo "* Deleting merged local branch"
+git branch -d $branch || exit 1
+
+echo "* Done"
+exit 0
