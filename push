@@ -12,7 +12,7 @@ remote=origin
 branch=$(git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
 
 # Push & save output
-push=$(git push $remote $branch --dry-run 2>&1)
+push=$(git push $remote $branch 2>&1)
 exit_code=$?
 if [ $exit_code != 0 ]; then
   echo "Ouch, push failed! code=$exit_code, output=$push"
@@ -27,9 +27,16 @@ fi
 
 # Parse output into sexy GitHub compare URL!
 echo $push
-maybe_url=$(git remote show $remote -n | grep Push | awk '{ print $3 }')
-echo $maybe_url
-refs=$(echo $push | awk '{ print $3}')
+remote_url=$(git remote show $remote -n | grep Push | awk '{ print $3 }')
+echo $remote_url
+repo_name=$(echo $remote_url | sed 's/.*\:\(.*\)\.git/\1/')
+echo $repo_name
+refs=$(echo $push | awk '{ print $3}' | sed 's/\.\./\.\.\./')
 echo $refs
+
+github_url="https://github.com/$repo_name/compare/$refs"
+echo $github_url
+[ -n $(which pbcopy) ] && echo $github_url | pbcopy || echo "no 'pbcopy' command, skipping clipboard copy"
+[ -n $(which open) ] && open -g $github_url  || echo "no 'open' command, skipping browser open"
 
 exit 0
