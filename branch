@@ -13,10 +13,14 @@ fi
 
 # You were probably on master, but just in case...
 old_branch=$(git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
+remote=origin
 
+# I've run into issues using the "correct" create-remote-from-local-with-tracking flow,
+# so let's just be explicit about it. Create local, push it, delete it, recreate w/ tracking
 git checkout -b $branch
-git push origin $branch
+git push $remote $branch
 git checkout $old_branch
 git branch -D $branch
-git checkout -b $branch --track origin/$branch
+git checkout -b $branch --track $remote/$branch
+
 exit 0
