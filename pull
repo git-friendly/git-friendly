@@ -1,14 +1,18 @@
 #!/bin/sh
-# 
+#
 # Usage: pull
 #
 # Pulls remote changes using rebase & tries to rebundle,
 # safely stashing and re-applying your local changes, if any
-# 
+#
+
+remote="origin"
+branch=$(git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
 
 stash=$(git stash)
 
-git fetch --all && git pull --rebase
+git fetch --all || exit 1
+git pull --rebase $remote $branch || exit 1
 
 if [[ "$stash" =~ "No local changes to save" ]]; then
   echo "* No stashed changes, not popping"
