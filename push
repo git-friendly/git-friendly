@@ -36,6 +36,6 @@ echo $refs
 github_url="https://github.com/$repo_name/compare/$refs"
 echo $github_url
 [ -n $(which pbcopy) ] && echo $github_url | pbcopy || echo "no 'pbcopy' command, skipping clipboard copy"
-[ -n $(which open) ] && open -g $github_url  || echo "no 'open' command, skipping browser open"
+# [ -n $(which open) ] && open -g $github_url  || echo "no 'open' command, skipping browser open"
 
 exit 0
