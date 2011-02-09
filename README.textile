@@ -16,7 +16,11 @@ Add the directory to your PATH:
 
 You'll want to put that somewhere cool like ~/.bash_profile so it's executed each time you launch a terminal.
 
-I'd also recommend making some basic pimpings to your ~/.gitrc to add chill features like ANSI color, command shortcuts, rebase by default & more. My .gitrc is "here":https://gist.github.com/668161
+h2. Pimp Your Configs
+
+I strongly recommend making some basic upgrades to your ~/.gitconfig to add chill features like ANSI color, command shortcuts, rebase-by-default, automatic remote tracking & more. My .gitrc is "here":https://gist.github.com/668161
+
+I also highly recommend adding the current git branch to your Terminal prompt (PS1) or you'll quickly lose your mind -- here is the "pimp_prompt function":https://gist.github.com/790086 which goes in your @~/.bash_profile@ or @~/.bashrc@.
 
 h2. Commands
 
