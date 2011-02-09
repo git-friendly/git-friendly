@@ -7,7 +7,6 @@
 #
 
 branch=$1
-echo branch: $branch
 if [ -z $branch ]; then
   echo "Usage: $0 [branchname]"
   exit 1
@@ -19,10 +18,20 @@ remote=origin
 
 # I've run into issues using the "correct" create-remote-from-local-with-tracking flow,
 # so let's just be explicit about it. Create local, push it, delete it, recreate w/ tracking
-git checkout -b $branch
-git push $remote $branch
-git checkout $old_branch
-git branch -D $branch
-git checkout -b $branch --track $remote/$branch
+
+# TODO we might wanna stash & pop, or at least abort if unstashed local changes
+
+remote_branch_exists=$(git branch -r | egrep "$remote/$branch\$")
+if [ -n $remote_branch_exists ] && [ ! $remote_branch_exists == '' ]; then
+  echo "* Tracking existing remote branch..."
+  git checkout -b $branch --track $remote/$branch
+else
+  echo "* Creating new local + remote branch..."
+  git checkout -b $branch
+  git push $remote $branch
+  git checkout $old_branch
+  git branch -D $branch
+  git checkout -b $branch --track $remote/$branch
+fi
 
 exit 0
