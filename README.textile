@@ -1,44 +1,80 @@
-h2. About
+h2. Intro
 
 *git-friendly* is a collection of shell scripts for automating basic git workflows I find myself typing over and over again.
 
-Frankly I think a lot of these should be git defaults, like rebasing and automatic remote tracking. But I digress...
+The goal is to make pulling, branching & merging fast and painless.
+
+Git is super powerful but often forces you to type 2 or 3 commands just to do these basic tasks. This package adds *pull*, *push*, *branch* and *merge* commands which are just wrappers executing a few git commands & other callbacks
+
+These commands have some bonus niceties like:
+* *push* also copies a GitHub diff URL to your clipboard for easy pasting
+* *pull* will run commands like "bundle install" after finishing
+* *branch* will setup both local & remote branches as needed
+* all commands behave well: always use rebase, stash/pop things as needed, etc.
 
 h2. Install
 
+*Short version*
+
+Run this one-liner, which will checkout the latest code & unpack the scripts into @/usr/local/bin@
+
+pre. $ bash < <( curl https://github.com/jamiew/git-friendly/raw/master/install.sh)
+
+That's it! Jump to "usage":#usage
+
+*Long version*
+
 Checkout this repository somewhere:
 
-@git clone git://github.com/jamiew/git-friendly.git ~/dev/git-friendly@
+pre. git clone git://github.com/jamiew/git-friendly.git ~/dev/git-friendly
 
 Add the directory to your PATH:
 
-@export PATH=~/dev/git-friendly:$PATH@
+pre. export PATH=~/dev/git-friendly:$PATH
 
 You'll want to put that somewhere cool like ~/.bash_profile so it's executed each time you launch a terminal.
 
-h2. Pimp Your Configs
+h2. Usage
 
-I strongly recommend making some basic upgrades to your ~/.gitconfig to add chill features like ANSI color, command shortcuts, rebase-by-default, automatic remote tracking & more. My ~/.gitconfig is "here":https://gist.github.com/668161
+You now have some awesome new commands: *pull*, *push*, *branch*, *merge*
 
-I also highly recommend adding the current git branch to your Terminal prompt (PS1) or you'll quickly lose your mind -- here is the "pimp_prompt function":https://gist.github.com/790086 which goes in your @~/.bash_profile@ or @~/.bashrc@.
+<img src="http://cl.ly/4e09/Screen_shot_2011-02-16_at_11.11.57_AM.png" alt="" title="Rolling in style" style="width: 100%;" />
+
+Approximate workflow:
+
+pre. $ pull
+$ branch awesomeness
+$ echo "BUMP" >> README
+$ git commit -a -m "Righteous bump"
+$ git checkout master
+$ merge awesomeness
+$ push
+
+
 
 h2. Commands
 
-I literally use them in this order
+_Primary_
 
-* *pull* -- stashes any local changes, pulls from remote using rebase, pops your stash, and re-bundles if necessary
-* *branch [newbranch]* -- creates a new branch both locally & remotely, with remote tracking enabled (so you can just type 'git pull' and not 'git pull origin newbranch')
-* _programming genius goes here... I just use vanilla 'git commit', 'git status', 'git diff'_
-* *merge* -- merges your amazing new branch back into master using rebase. Always Be Rebasing.
-* *push* -- pushes your mindblowing changes to the remote and copies a sexy URL like "http://github.com/jamiew/myrepo/compare/3f9fea...fv932" to your clipboard that you can easily share with your peers. This only works on Macs, but boy is it sweet.
+| *pull* | stashes any local changes, pulls from remote using rebase, pops your stash, and re-bundles if necessary |
+| *push* | pushes your changes to the remote and copies a sexy URL like "http://github.com/jamiew/myrepo/compare/3f9fea...fv932" to your clipboard. This only works on Macs, but boy is it sweet. |
+| *branch [name]* | creates a new branch both locally & remotely, with remote tracking enabled (so you can just type 'git pull' and not 'git pull origin newbranch') |
+| *merge* | merges your amazing new branch back into master using rebase. Remember: Always Be Rebasing. |
 
-Misc commands:
+_Misc_
 
-* *prune* -- cleans up old remote branches & runs garbage collection
+| *prune* | cleans up old remote branches & runs garbage collection |
+
+h2. Bonus: Pimp Your Configs
+
+I strongly recommend making some basic upgrades to your ~/.gitconfig to add chill features like ANSI color, command shortcuts, rebase-by-default, automatic remote tracking & more. My ~/.gitconfig is "here":https://gist.github.com/668161
+
+I also highly recommend adding the current git branch to your Terminal prompt (PS1) or you'll quickly lose your mind -- here is "pimp_prompt() for bash":https://gist.github.com/790086 which goes in your @~/.bash_profile@ or @~/.bashrc@. Then type @source ~/.bashrc@ to reload.
+
 
 h2. Lastly
 
 Itches initially scratched by "Jamie Wilkinson":http://jamiedubs.com ("@jamiew":http://github.com/jamiew)
 
-Code released under an MIT license... do whatever, patches welcome!
+Code released under an MIT license... fork away, do whatever, patches welcome!
 
