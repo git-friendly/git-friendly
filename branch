@@ -8,12 +8,18 @@
 
 branch=$1
 if [ -z $branch ]; then
-  echo "Usage: $0 [branchname]"
-  exit 1
+  echo "\nSwitch to or create a new branch:" 
+  echo " $0 [name]"
+  echo "\nCurrent branches: "
+  branches="git branch -a"
+  $branches
+  echo
+  exit 0
 fi
 
 # You were probably on master, but just in case...
 old_branch=$(git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
+echo old_branch=$old_branch
 remote=origin
 
 # I've run into issues using the "correct" create-remote-from-local-with-tracking flow,
@@ -21,10 +27,19 @@ remote=origin
 
 # TODO we might wanna stash & pop, or at least abort if unstashed local changes
 
+local_branch_exists=$(git branch | egrep "$branch\$")
 remote_branch_exists=$(git branch -r | egrep "$remote/$branch\$")
-if [ -n $remote_branch_exists ] && [ ! $remote_branch_exists == '' ]; then
+
+if [ -n "$local_branch_exists" ] && [ ! "$local_branch_exists" == '' ]; then
+  echo "* Switching to existing local branch..."
+  git checkout $branch
+  # TODO add remote tracking if not setup :)
+  # Maybe create remote branch if needed? Hmm.
+
+elif [ -n "$remote_branch_exists" ] && [ ! "$remote_branch_exists" == '' ]; then
   echo "* Tracking existing remote branch..."
   git checkout -b $branch --track $remote/$branch
+
 else
   echo "* Creating new local + remote branch..."
   git checkout -b $branch
