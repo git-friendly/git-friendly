@@ -18,7 +18,7 @@ h2. Install
 
 Run this one-liner, which will checkout the latest code & unpack the scripts into @/usr/local/bin@
 
-pre. $ bash < <( curl https://github.com/jamiew/git-friendly/raw/master/install.sh)
+pre. bash < <( curl https://github.com/jamiew/git-friendly/raw/master/install.sh)
 
 That's it! Jump to "usage":#usage
 
