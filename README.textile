@@ -38,7 +38,7 @@ h2. Usage
 
 You now have some awesome new commands: *pull*, *push*, *branch*, *merge*
 
-<img src="http://cl.ly/4e09/Screen_shot_2011-02-16_at_11.11.57_AM.png" alt="" title="Rolling in style" style="width: 100%;" />
+<img src="http://cl.ly/4e09/Screen_shot_2011-02-16_at_11.11.57_AM.png" alt="" title="Rolling in style" />
 
 Approximate workflow:
 
@@ -71,10 +71,12 @@ I strongly recommend making some basic upgrades to your ~/.gitconfig to add chil
 
 I also highly recommend adding the current git branch to your Terminal prompt (PS1) or you'll quickly lose your mind -- here is "pimp_prompt() for bash":https://gist.github.com/790086 which goes in your @~/.bash_profile@ or @~/.bashrc@. Then type @source ~/.bashrc@ to reload.
 
+<img src="http://cl.ly/4dwB/Screen_shot_2011-02-16_at_11.55.37_AM.png" alt="" title="You could be this cool" />
+
 
 h2. Lastly
 
 Itches initially scratched by "Jamie Wilkinson":http://jamiedubs.com ("@jamiew":http://github.com/jamiew)
 
-Code released under an MIT license... fork away, do whatever, patches welcome!
+Code released under an MIT license... fork away, do whatever, pull requests welcome!
 
