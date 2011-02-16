@@ -4,27 +4,25 @@ h2. Intro
 
 The goal is to make pulling, branching & merging fast and painless.
 
-Git is super powerful but often forces you to type 2 or 3 commands just to do these basic tasks. This package adds *pull*, *push*, *branch* and *merge* commands which are just wrappers executing a few git commands & other callbacks
+Git is super powerful but forces you to type 2 or 3 commands just to do some super basic tasks. This package adds some new commands: *pull*, *push*, *branch* and *merge* -- which are just wrappers executing a few git commands & other callbacks
 
 These commands have some bonus niceties like:
 * *push* also copies a GitHub diff URL to your clipboard for easy pasting
 * *pull* will run commands like "bundle install" after finishing
 * *branch* will setup both local & remote branches as needed
-* all commands behave well: always use rebase, stash/pop things as needed, etc.
+* everything uses rebase. Always Be Rebasing.
+* relevant commands will stash/pop changes as needed
+* less time fighting git = more time actually doing work
 
 h2. Install
-
-*Short version*
 
 Run this one-liner, which will checkout the latest code & unpack the scripts into @/usr/local/bin@
 
 pre. bash < <( curl https://github.com/jamiew/git-friendly/raw/master/install.sh)
 
-That's it! Skip to _Usage_
+h2. Advanced Install
 
-*Long version*
-
-For keeping these scripts out of @/usr/local/bin@. Checkout this repository somewhere:
+If you want to keep things out of @/usr/local/bin@. Checkout somewhere:
 
 pre. git clone git://github.com/jamiew/git-friendly.git ~/dev/git-friendly
 
@@ -57,10 +55,10 @@ h2. Commands
 
 _Primary_
 
-| *pull* | stashes any local changes, pulls from remote using rebase, pops your stash, and re-bundles if necessary |
-| *push* | pushes your changes to the remote and copies a sexy URL like "http://github.com/jamiew/myrepo/compare/3f9fea...fv932" to your clipboard. This only works on Macs, but boy is it sweet. |
-| *branch&nbsp;[name]* | creates a new branch both locally & remotely, with remote tracking enabled (so you can just type 'git pull' and not 'git pull origin newbranch') |
-| *merge* | merges your amazing new branch back into master using rebase. Remember: Always Be Rebasing. |
+| *pull* | Stash any local changes, pull from remote using rebase, pops your stash, and re-bundles if necessary |
+| *push* | Push your changes to the remote + copy a sexy diff URL like "http://github.com/jamiew/myrepo/compare/3f9fea...fv932" to your clipboard. This only works on Macs, but boy is it sweet. |
+| *branch&nbsp;[name]* | Switch branches or create new local and/or remote branches as needed. Intelligently sets up remote tracking, so you can just type 'git pull' and not always 'git pull origin newbranch'. If no argument specified will list all local & remote branches.  |
+| *merge* | Merge your amazing new branch back into master using rebase. REMEMBER: Always Be Rebasing. |
 
 _Misc_
 
