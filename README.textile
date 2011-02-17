@@ -4,10 +4,10 @@ h2. Intro
 
 The goal is to make pulling, branching & merging fast and painless.
 
-Git is super powerful but forces you to type 2 or 3 commands just to do some super basic tasks. This package adds some new commands: *pull*, *push*, *branch* and *merge* -- which are just wrappers executing a few git commands & other callbacks
+Git is super powerful but forces you to type 2 or 3 commands just to do some super basic tasks. This package adds some new commands: *pull*, *push*, *branch* and *merge* -- which are just wrappers around a few git commands & other callbacks
 
 These commands have some bonus niceties like:
-* *push* also copies a GitHub diff URL to your clipboard for easy pasting
+* *push* also copies a GitHub compare URL to your clipboard for easy pasting (!)
 * *pull* will run commands like "bundle install" after finishing
 * *branch* will setup both local & remote branches as needed
 * everything uses rebase. Always Be Rebasing.
@@ -22,16 +22,18 @@ pre. bash < <( curl https://github.com/jamiew/git-friendly/raw/master/install.sh
 
 h2. Advanced Install
 
-If you want to keep things out of @/usr/local/bin@. Checkout somewhere:
+In case you want to keep things out of @/usr/local/bin@. Checkout the code:
 
 pre. git clone git://github.com/jamiew/git-friendly.git ~/dev/git-friendly
 
-Add this new directory to your PATH -- put this in your ~/.bash_profile so :
+Then add this directory to your PATH:
+
+pre. export PATH=~/dev/git-friendly:$PATH
+
+Add this to your @~/.bash_profile@ so that it runs each time you launch a new shell: 
 
 pre. echo "export PATH=~/dev/git-friendly:$PATH" >> ~/.bash_profile
 source ~/.bash_profile
-
-You'll want to put that somewhere cool like ~/.bash_profile so it's executed each time you launch a terminal.
 
 h2. Usage
 
@@ -56,17 +58,17 @@ h2. Commands
 _Primary_
 
 | *pull* | Stash any local changes, pull from remote using rebase, pops your stash, and re-bundles if necessary |
-| *push* | Push your changes to the remote + copy a sexy diff URL like "http://github.com/jamiew/myrepo/compare/3f9fea...fv932" to your clipboard. This only works on Macs, but boy is it sweet. |
+| *push* | Push your changes to the remote + copy a sexy diff URL like "http://github.com/jamiew/git-friendly/compare/e96033...5daed4" to your clipboard. This only works on Macs, but boy is it sweet. |
 | *branch&nbsp;[name]* | Switch branches or create new local and/or remote branches as needed. Intelligently sets up remote tracking, so you can just type 'git pull' and not always 'git pull origin newbranch'. If no argument specified will list all local & remote branches.  |
-| *merge* | Merge your amazing new branch back into master using rebase. REMEMBER: Always Be Rebasing. |
+| *merge&nbsp;[name]* | Merge the specified branch back into master using rebase. Always Be Rebasing. |
 
 _Misc_
 
-| *prune* | cleans up old remote branches & runs garbage collection |
+| *prune* | Cleans up old remote branches & runs garbage collection |
 
 h2. Bonus: Pimp Your Configs
 
-I strongly recommend making some basic upgrades to your ~/.gitconfig to add chill features like ANSI color, command shortcuts, rebase-by-default, automatic remote tracking & more. My ~/.gitconfig is "here":https://gist.github.com/668161
+I strongly recommend making some basic upgrades to your ~/.gitconfig to add chill features like ANSI color, command shortcuts, rebase-by-default, automatic remote tracking & more. Example: "my ~/.gitconfig":https://gist.github.com/668161
 
 I also highly recommend adding the current git branch to your Terminal prompt (PS1) or you'll quickly lose your mind -- here is "pimp_prompt() for bash":https://gist.github.com/790086 which goes in your @~/.bash_profile@ or @~/.bashrc@. Then type @source ~/.bashrc@ to reload.
 
