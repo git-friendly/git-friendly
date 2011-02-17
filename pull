@@ -21,6 +21,8 @@ else
   git stash pop
 fi
 
-bundle check || bundle install
+if which -s bundle; then
+  bundle check || bundle install
+fi
 
 echo "Done"
