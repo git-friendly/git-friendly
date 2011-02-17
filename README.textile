@@ -62,10 +62,6 @@ _Primary_
 | *branch&nbsp;[name]* | Switch branches or create new local and/or remote branches as needed. Intelligently sets up remote tracking, so you can just type 'git pull' and not always 'git pull origin newbranch'. If no argument specified will list all local & remote branches.  |
 | *merge&nbsp;[name]* | Merge the specified branch back into master using rebase. Always Be Rebasing. |
 
-_Misc_
-
-| *prune* | Cleans up old remote branches & runs garbage collection |
-
 h2. Bonus: Pimp Your Configs
 
 I strongly recommend making some basic upgrades to your ~/.gitconfig to add chill features like ANSI color, command shortcuts, rebase-by-default, automatic remote tracking & more. Example: "my ~/.gitconfig":https://gist.github.com/668161
