@@ -58,7 +58,7 @@ h2. Commands
 _Primary_
 
 | *pull* | Stash any local changes, pull from remote using rebase, pops your stash, and re-bundles if necessary |
-| *push* | Push your changes to the remote + copy a sexy diff URL like "http://github.com/jamiew/git-friendly/compare/e96033...5daed4" to your clipboard. This only works on Macs, but boy is it sweet. |
+| *push* | Push your changes to the remote + copy a sexy diff URL like "http://github.com/jamiew/git-friendly/compare/e96033...5daed4":http://github.com/jamiew/git-friendly/compare/e96033...5daed4 to your clipboard. This only works on Macs, but boy is it sweet. |
 | *branch&nbsp;[name]* | Switch branches or create new local and/or remote branches as needed. Intelligently sets up remote tracking, so you can just type 'git pull' and not always 'git pull origin newbranch'. If no argument specified will list all local & remote branches.  |
 | *merge&nbsp;[name]* | Merge the specified branch back into master using rebase. Always Be Rebasing. |
 
