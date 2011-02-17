@@ -8,27 +8,30 @@
 #
 
 branch=$1
-echo branch: $branch
 if [ -z $branch ]; then
   echo "Usage: $0 [branchname]"
   exit 1
 fi
 
-echo "* Switch to $branch"
-git checkout $branch || exit 1
-
-echo "* Rebasing $branch onto master"
-git rebase master || exit 1
+# If there is a remote version of this branch, rebase onto master first
+# If there's a remote (public) branch, we do not want to be rewriting histories
+tracking=$(git branch -vv | egrep "^\*" | awk '{ print $4 '})
+echo "tracking=$tracking"
+if [[ ! "$tracking" =~ "$remote" ]]; then
+  echo "* Local-only branch, rebasing $branch onto master first..."
+  git checkout $branch
+  git rebase master || exit 1
+else
+  echo "* This branch exists remotely, not rebasing"
+fi
 
 echo "* Merge $branch into master"
-git checkout master || exit 1
+git checkout master
 git merge $branch || exit 1
 
-echo "* Deleting merged local branch"
-git branch -d $branch || exit 1
-
-# Potentailly delete the remote branch too
-# I'm undecided about this one
+# Idea: delete local and/or remote branch (?)
+# echo "* Deleting merged local branch..."
+# git branch -d $branch || exit 1
 
 echo "* Done"
 exit 0
