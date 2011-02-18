@@ -31,7 +31,7 @@ git remote prune $remote
 
 # Bundle em if you got em!
 if which -s bundle; then
-  bundle check 2>&1 || bundle install
+  bundle check >/dev/null 2>&1 || bundle install
 fi
 
 echo "Done"
