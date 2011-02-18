@@ -70,9 +70,10 @@ I also highly recommend adding the current git branch to your Terminal prompt (P
 <img src="http://jamiedubs.com/fuckflickr/data/git-friendly/pimped-prompt.jpg" alt="" title="You could be this cool" />
 
 
-h2. Lastly
+h2. Contributors
 
-Itches initially scratched by "Jamie Wilkinson":http://jamiedubs.com ("@jamiew":http://github.com/jamiew)
+* "Jamie Wilkinson":http://jamiedubs.com ("jamiew":http://github.com/jamiew)
+* Ethan Bruning ("ebruning":https://github.com/ebruning)
 
 Code released under an MIT license... fork away, do whatever, pull requests welcome!
 
