@@ -10,7 +10,6 @@ These commands have some bonus niceties like:
 * *push* also copies a GitHub compare URL to your clipboard for easy pasting (!)
 * *pull* will run commands like "bundle install" after finishing
 * *branch* will setup both local & remote branches as needed
-* everything uses rebase. Always Be Rebasing.
 * relevant commands will stash/pop changes as needed
 * less time fighting git = more time actually doing work
 
