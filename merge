@@ -7,6 +7,7 @@
 # It will stop you if you are behind & need to pull 1st
 #
 
+remote="origin"
 branch=$1
 if [ -z $branch ]; then
   echo "Usage: $0 [branchname]"
