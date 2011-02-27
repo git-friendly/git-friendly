@@ -32,7 +32,7 @@ echo $push
 
 # Parse output into sexy GitHub compare URL!
 remote_url=$(git remote show $remote -n | grep Push | awk '{ print $3 }')
-if [[ ! "$remote_url" =~ "github.com" ]]; then
+if [[ "$remote_url" =~ "github.com" ]]; then
   repo_name=$(echo $remote_url | sed 's/.*\:\(.*\)\.git/\1/')
   refs=$(echo $push | awk '{ print $3}' | sed 's/\.\./\.\.\./')
 
