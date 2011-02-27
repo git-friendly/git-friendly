@@ -37,9 +37,9 @@ repo_name=$(echo $remote_url | sed 's/.*\:\(.*\)\.git/\1/')
 refs=$(echo $push | awk '{ print $3}' | sed 's/\.\./\.\.\./')
 
 github_url="https://github.com/$repo_name/compare/$refs"
-echo "=> $github_url"
 which -s pbcopy && echo $github_url | pbcopy && echo "Compare URL copied to clipboard!"
 # which -s open && open -g $github_url
+echo $github_url
 
 echo
 exit 0
