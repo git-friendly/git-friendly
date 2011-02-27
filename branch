@@ -34,11 +34,11 @@ if [ -n "$local_branch_exists" ] && [ ! "$local_branch_exists" == '' ]; then
     tracking=$(git branch -vv | grep "*" | awk '{ print $4 '})
     # echo "Remote branch exists. Local branch is tracking: $tracking"
     if [[ ! "$tracking" =~ "$remote" ]]; then
-      echo "Whoa, your local branch is not tracking the corresponding remote branch! Adding..."
+      echo "Whoa, your local branch is not tracking a corresponding remote branch! Adding..."
       git branch --set-upstream $branch $remote/$branch
     fi
-  else
-    echo "Remote branch does not exist, not doing anything"
+  # else
+  #   echo "Remote branch does not exist, not doing anything"
   fi
 
 # If remote exists, create local branch that tracks the remote
@@ -46,16 +46,11 @@ elif [ -n "$remote_branch_exists" ] && [ ! "$remote_branch_exists" == '' ]; then
   echo "* Tracking existing remote branch..."
   git checkout -b $branch --track $remote/$branch
 
-# Otherwise create both local & remote branches
-# I've run into issues using the "correct" create-remote-from-local-with-tracking flow,
-# so let's just be explicit about it: create local, push it, delete it, recreate w/ tracking
+# Otherwise create a new local branch
+# We used to create a remote branche too, but you can just do that by using `push`
 else
-  echo "* Creating new local + remote branch..."
+  echo "* Creating new local branch..."
   git checkout -b $branch
-  git push $remote $branch
-  git checkout $old_branch
-  git branch -D $branch
-  git checkout -b $branch --track $remote/$branch
 fi
 
 exit 0
