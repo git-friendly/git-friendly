@@ -16,6 +16,7 @@ These commands have some bonus niceties like:
 h2. Install
 
 Run this one-liner, which will checkout the latest code & unpack the scripts into @/usr/local/bin@
+If you don't have write access to @/usr/local/bin@ you'll need to run it as a user who does, eg. root.
 
 pre. bash < <( curl https://github.com/jamiew/git-friendly/raw/master/install.sh)
 
