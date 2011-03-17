@@ -75,6 +75,7 @@ h2. Contributors
 
 * "Jamie Wilkinson":http://jamiedubs.com ("jamiew":http://github.com/jamiew)
 * Ethan Bruning ("ebruning":https://github.com/ebruning)
+* "John Manoogian III":http://jm3.net ("jm3":http://github.com/jm3)
 
 Code released under an MIT license... fork away, do whatever, pull requests welcome!
 
