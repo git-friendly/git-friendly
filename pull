@@ -31,7 +31,10 @@ git remote prune $remote
 
 # Bundle em if you got em!
 if which -s bundle; then
-  bundle check >/dev/null 2>&1 || bundle install
+  if [ -f Gemfile ]; then
+    bundle check >/dev/null 2>&1 || bundle install
+  fi
 fi
 
 echo "Done"
+exit 0
