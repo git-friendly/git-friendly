@@ -1,5 +1,5 @@
 #!/bin/sh
-# 
+#
 # Usage: push
 #
 # Send your local branch changes to the remote branch,
@@ -8,13 +8,13 @@
 #
 # Any extra args to this command will be passed through to 'git push',
 # e.g. for doing "push -f"
-# 
+#
 
 remote=origin
 branch=$(git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
 
 # Push & save output
-push=$(git push $* $remote $branch 2>&1)
+push=$(git push --set-upstream $* $remote $branch 2>&1)
 exit_code=$?
 if [ $exit_code != 0 ]; then
   echo "Ouch, push failed! code=$exit_code, output=$push"
