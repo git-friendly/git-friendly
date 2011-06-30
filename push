@@ -19,23 +19,26 @@ exit_code=$?
 if [ $exit_code != 0 ]; then
   echo "Ouch, push failed! code=$exit_code, output=$push"
   exit $exit_code
-fi
-
-# Cleanly exit if nothing was pushed
-if echo $push | grep "Everything up-to-date" >/dev/null; then
-  echo "git says everything is up-to-date! "
+elif echo $push | grep "Everything up-to-date" >/dev/null; then
+  echo "git says everything is up-to-date!"
   exit 0
 fi
 
-# Show git's output
-echo $push
+# Parse relevant commit refs and let user know what we did
+# 1st-time push to new branch gets special treatment
+if echo $push | grep "[new branch]" >/dev/null; then
+  refs="master...$branch"
+  echo "Pushed new branch '$branch' remotely"
+else
+  refs=$(echo $push | awk '{ print $3}' | sed 's/\.\./\.\.\./')
+  echo $push
+fi
 
-# Parse output into sexy GitHub compare URL!
+# Parse output into a sexy GitHub compare URL!
 remote_url=$(git remote show $remote -n | grep Push | awk '{ print $3 }')
 if [[ "$remote_url" =~ "github.com" ]]; then
-  repo_name=$(echo $remote_url | sed 's/.*\:\(.*\)\.git/\1/')
-  refs=$(echo $push | awk '{ print $3}' | sed 's/\.\./\.\.\./')
 
+  repo_name=$(echo $remote_url | sed 's/.*\:\(.*\)\.git/\1/')
   github_url="https://github.com/$repo_name/compare/$refs"
   which -s pbcopy && echo $github_url | pbcopy && echo "Compare URL copied to clipboard!"
   # which -s open && open -g $github_url
