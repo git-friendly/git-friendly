@@ -30,7 +30,7 @@ Then add this directory to your PATH:
 
 pre. export PATH=~/dev/git-friendly:$PATH
 
-Add this to your @~/.bash_profile@ so that it runs each time you launch a new shell: 
+Add this to your @~/.bash_profile@ so that it runs each time you launch a new shell:
 
 pre. echo "export PATH=~/dev/git-friendly:$PATH" >> ~/.bash_profile
 source ~/.bash_profile
@@ -76,6 +76,7 @@ h2. Contributors
 * "Jamie Wilkinson":http://jamiedubs.com ("jamiew":http://github.com/jamiew)
 * Ethan Bruning ("ebruning":https://github.com/ebruning)
 * "John Manoogian III":http://jm3.net ("jm3":http://github.com/jm3)
+* "cj":http://github.com/cj
 
 Code released under an MIT license... fork away, do whatever, pull requests welcome!
 
