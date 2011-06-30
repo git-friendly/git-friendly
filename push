@@ -26,7 +26,7 @@ fi
 
 # Parse relevant commit refs and let user know what we did
 # 1st-time push to new branch gets special treatment
-if echo $push | grep "[new branch]" >/dev/null; then
+if echo $push | grep "\[new branch\]" >/dev/null; then
   refs="master...$branch"
   echo "Pushed new branch '$branch' remotely"
 else
