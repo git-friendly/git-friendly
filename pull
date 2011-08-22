@@ -31,11 +31,13 @@ git remote prune $remote
 
 # Bundle em if you got em!
 if which -s bundle && [ -f Gemfile ]; then
+  echo "* Bundling gems..."
   bundle check >/dev/null 2>&1 || bundle install
 fi
 
 # Install node.js/npm packages
 if which -s npm && [ -f package.json ]; then
+  echo "* Installing npm packages..."
   npm install
 fi
 

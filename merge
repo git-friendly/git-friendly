@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# merge [branchname]
+# Usage: merge [branchname]
 #
 # Tries to merge local branch "branchname" into the current branch
 # It will stop you if you are behind & need to pull 1st
@@ -9,6 +9,7 @@
 remote="origin"
 branch=$1
 current_branch=$(git branch 2>/dev/null|grep -e ^* | tr -d \*//)
+
 if [ -z $branch ]; then
   echo "Usage: $0 [branchname]"
   exit 1
@@ -29,10 +30,6 @@ fi
 echo "* Merge $branch into $current_branch"
 git checkout $current_branch
 git merge $branch || exit 1
-
-# Idea: delete local and/or remote branch (?)
-# echo "* Deleting merged local branch..."
-# git branch -d $branch || exit 1
 
 echo "* Done"
 exit 0

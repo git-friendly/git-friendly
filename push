@@ -10,12 +10,13 @@
 # e.g. for doing "push -f"
 #
 
-remote=origin
+remote="origin"
 branch=$(git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
 
 # Push & save output
 push=$(git push --set-upstream $* $remote $branch 2>&1)
 exit_code=$?
+
 if [ $exit_code != 0 ]; then
   echo "Ouch, push failed! code=$exit_code, output=$push"
   exit $exit_code
@@ -42,8 +43,9 @@ if [[ "$remote_url" =~ "github.com" ]]; then
   github_url="https://github.com/$repo_name/compare/$refs"
   which -s pbcopy && echo $github_url | pbcopy && echo "Compare URL copied to clipboard!"
   # which -s open && open -g $github_url
-  echo $github_url
 
+  echo $github_url
   echo
 fi
+
 exit 0
