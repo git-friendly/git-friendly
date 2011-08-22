@@ -50,7 +50,7 @@ elif [ -n "$remote_branch_exists" ] && [ ! "$remote_branch_exists" == '' ]; then
 # Otherwise create a new local branch
 else
   echo "* Creating new local branch..."
-  git checkout -b $branch
+  git checkout -b $branch --no-track
 fi
 
 exit 0
