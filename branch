@@ -13,7 +13,7 @@ branch=$1
 
 if [ -z $branch ]; then
   echo "\nSwitch to or create a new branch:"
-  echo " $0 [name]"
+  echo " $(basename $0) [name]"
   echo "\nCurrent branches: "
   branches="git branch -a -vv"
   $branches
