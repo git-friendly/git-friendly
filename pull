@@ -30,10 +30,13 @@ fi
 git remote prune $remote
 
 # Bundle em if you got em!
-if which -s bundle; then
-  if [ -f Gemfile ]; then
-    bundle check >/dev/null 2>&1 || bundle install
-  fi
+if which -s bundle && [ -f Gemfile ]; then
+  bundle check >/dev/null 2>&1 || bundle install
+fi
+
+# Install node.js/npm packages
+if which -s npm && [ -f package.json ]; then
+  npm install
 fi
 
 echo "Done"
