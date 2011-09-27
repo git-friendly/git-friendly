@@ -18,6 +18,9 @@ git fetch --all || exit 1
 # Pull using rebase!
 git pull --rebase $remote $branch || exit 1
 
+# Update submodules
+git submodule update
+
 # Pop any stashed changes
 if [[ "$stash" =~ "No local changes to save" ]]; then
   echo "* No stashed changes, not popping"
