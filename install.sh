@@ -8,6 +8,7 @@ git clone git://github.com/jamiew/git-friendly.git $tmp >/dev/null 2>&1
 rm -rf $tmp/.git
 rm -f $tmp/README* $tmp/install.sh
 installed_scripts=`ls -1 ${tmp}`
+mkdir -p ${dest}
 cp $tmp/* ${dest}/ &> /dev/null
 rm -rf $tmp
 for s in ${installed_scripts}; do
