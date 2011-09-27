@@ -2,7 +2,7 @@
 
 here=$(pwd -P)
 tmp="/tmp/git-friendly"
-dest="/usr/local/bin"
+[ $1 ] && dest=$1 || dest="/usr/local/bin"
 
 git clone git://github.com/jamiew/git-friendly.git $tmp >/dev/null 2>&1
 rm -rf $tmp/.git
