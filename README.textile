@@ -58,7 +58,7 @@ h2. Commands
 _Primary_
 
 | *pull* | Stash any local changes, pull from remote using rebase, pops your stash, and re-bundles if necessary |
-| *push* | Push your changes to the remote + copy a sexy diff URL like "http://github.com/jamiew/git-friendly/compare/e96033...5daed4":http://github.com/jamiew/git-friendly/compare/e96033...5daed4 to your clipboard. This only works on Macs, but boy is it sweet. |
+| *push* | Push your changes to the remote + copy a sexy diff URL like "http://github.com/jamiew/git-friendly/compare/e96033...5daed4":http://github.com/jamiew/git-friendly/compare/e96033...5daed4 to your clipboard (works on Mac and Linux)  |
 | *branch&nbsp;[name]* | Switch branches or create new local and/or remote branches as needed. Intelligently sets up remote tracking, so you can just type 'git pull' and not always 'git pull origin newbranch'. If no argument specified will list all local & remote branches.  |
 | *merge&nbsp;[name]* | Merge the specified branch back into master. Rebases first if the branch is local-only |
 
@@ -77,6 +77,12 @@ h2. Contributors
 * Ethan Bruning ("ebruning":https://github.com/ebruning)
 * "John Manoogian III":http://jm3.net ("jm3":http://github.com/jm3)
 * "cj":http://github.com/cj
+* "Maciej Małecki":https://github.com/mmalecki
 
-Code released under an MIT license... fork away, do whatever, pull requests welcome!
+
+h2. License
+
+Code released under an MIT license.
+
+Fork away, do whatever. Pull requests welcome!
 
