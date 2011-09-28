@@ -16,11 +16,11 @@ h2. Install
 Run this one-liner, which will checkout the latest code & unpack the scripts into @/usr/local/bin@
 If you don't have write access to @/usr/local/bin@ you'll need to run this using 'sudo'
 
-pre. bash < <( curl https://github.com/jamiew/git-friendly/raw/master/install.sh)
+pre. bash < <( curl https://raw.github.com/jamiew/git-friendly/master/install.sh)
 
 You can also provide a directory to install as an argument, e.g. @/usr/bin@ instead of @/usr/local/bin@:
 
-pre. bash < <( curl https://github.com/jamiew/git-friendly/raw/master/install.sh /usr/bin)
+pre. bash < <( curl https://raw.github.com/jamiew/git-friendly/master/install.sh /usr/bin)
 
 h2. Advanced Install
 
