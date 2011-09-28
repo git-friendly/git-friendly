@@ -2,11 +2,12 @@ h2. Intro
 
 *git-friendly* is a collection of shell scripts for automating common git workflows. The goal is to make pulling, branching, and merging fast and painless.
 
-Git is super powerful but often requires typing 2 or 3 commands just to do some super basic tasks. This package adds some new commands: *pull*, *push*, *branch* and *merge* -- which are just wrappers around a few underlying git commands + callbacks
+Git is super powerful but often requires typing 2 or 3 commands just to do some super basic tasks. This package adds some new commands:
+`pull, push, branch, merge` -- which are just wrappers around a few underlying git commands and callbacks.
 
-These commands have some bonus niceties like:
+Includes bonus niceties like:
 * *push* also copies a GitHub compare URL to your clipboard for easy pasting (!)
-* *pull* will run commands like "bundle install" after finishing
+* *pull* will run commands like `bundle install` and `npm install` if applicable
 * *branch* will setup both local & remote branches as needed
 * relevant commands will stash/pop changes as needed
 * less time fighting git = more time actually doing work
@@ -24,7 +25,7 @@ pre. bash < <( curl https://raw.github.com/jamiew/git-friendly/master/install.sh
 
 h2. Advanced Install
 
-In case you want to keep things out of @/usr/local/bin@. Checkout the code:
+Checkout the code:
 
 pre. git clone git://github.com/jamiew/git-friendly.git ~/dev/git-friendly
 
@@ -40,7 +41,7 @@ You now have some awesome new commands available: *pull*, *push*, *branch*, *mer
 
 <img src="http://jamiedubs.com/fuckflickr/data/git-friendly/pull.png" alt="" title="Rolling in style" />
 
-Approximate workflow:
+Example session:
 
 pre. $ pull
 $ branch awesomeness
@@ -54,30 +55,18 @@ $ push
 
 h2. Commands
 
-_Primary_
-
-| *pull* | Stash any local changes, pull from remote using rebase, updates submodules, pops your stash, then runs `bundle install` and/or `npm install` if necessary |
+| *pull* | Stash any local changes, pull from remote using rebase, updates submodules, pop your stash, then run `bundle install` and/or `npm install` if necessary |
 | *push* | Push your changes to the remote + copy a sexy diff URL like "http://github.com/jamiew/git-friendly/compare/e96033...5daed4":http://github.com/jamiew/git-friendly/compare/e96033...5daed4 to your clipboard (works on Mac and Linux) |
-| *branch&nbsp;[name]* | Switch branches or create new local and/or remote branches as needed. Intelligently sets up remote tracking so you can just type 'git pull' and not always 'git pull origin newbranch'. If no argument specified will list all local & remote branches.  |
+| *branch&nbsp;[name]* | Switch branches or create new local branch if it doesn't exist. Intelligently sets up remote branch tracking so you can just type 'git pull' and not always 'git pull origin newbranch'. If no argument specified will list all local and remote branches.  |
 | *merge&nbsp;[name]* | Merge the specified branch into the current branch. Rebases first if the branch is local-only |
 
 h2. Bonus: Pimp Your Configs
 
-I strongly recommend making some basic upgrades to your ~/.gitconfig to add chill features like ANSI color, command aliases like "git st" instead of "git status", automatic remote tracking & more. Check out "my ~/.gitconfig":https://gist.github.com/668161
+I strongly recommend editing your global ~/.gitconfig and adding chill features like ANSI color, command aliases (e.g. "git st" instead of "git status"), automatic remote tracking and more. Check out "my ~/.gitconfig":https://gist.github.com/668161 to get started.
 
-I also recommend adding the current git branch to your Terminal prompt (PS1) or you'll quickly lose your mind -- here is my "pimp_prompt() for bash":https://gist.github.com/790086 which goes in your @~/.bash_profile@ or @~/.bashrc@. Then type @source ~/.bashrc@ to reload.
+I also recommend adding the current git branch to your Terminal prompt (PS1) or you'll quickly lose your place -- here is my "pimp_prompt() bash function":https://gist.github.com/790086 which goes in your @~/.bash_profile@ or @~/.bashrc@, then type @source ~/.bashrc@ to reload.
 
 <img src="http://jamiedubs.com/fuckflickr/data/git-friendly/pimped-prompt.jpg" alt="" title="You could be this cool" />
-
-
-h2. Contributors
-
-* "Jamie Wilkinson":http://jamiedubs.com ("jamiew":http://github.com/jamiew)
-* Ethan Bruning ("ebruning":https://github.com/ebruning)
-* "John Manoogian III":http://jm3.net ("jm3":http://github.com/jm3)
-* "cj":http://github.com/cj
-* "Maciej Małecki":https://github.com/mmalecki
-* "Ezekiel Templin":http://blog.ezkl.org/ ("ezkl":https://github.com/ezkl)
 
 
 h2. License
@@ -85,4 +74,14 @@ h2. License
 Code released under an MIT license.
 
 Fork away, do whatever. Pull requests welcome!
+
+
+h2. Contributors
+
+* "Jamie Wilkinson":http://jamiedubs.com ("@jamiew":http://github.com/jamiew)
+* "Ethan Bruning":https://github.com/ebruning ("@ebruning":https://github.com/ebruning)
+* "John Manoogian III":http://jm3.net ("@jm3":http://github.com/jm3)
+* "@cj":http://github.com/cj
+* "Maciej Małecki":http://twitter.com/mmalecki ("@mmalecki":https://github.com/mmalecki)
+* "Ezekiel Templin":http://blog.ezkl.org/ ("@ezkl":https://github.com/ezkl)
 
