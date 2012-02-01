@@ -12,10 +12,10 @@ branch=$(git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\
 # Stash any local changes
 stash=$(git stash)
 
-# Update all remotes
-git fetch --all || exit 1
+# Update our remote
+git fetch $remote || exit 1
 
-# Pull using rebase!
+# Pull, using rebase
 git pull --rebase $remote $branch || exit 1
 
 # Update submodules
@@ -30,7 +30,7 @@ else
 fi
 
 # Remove old, stale branches
-git remote prune $remote
+git remote prune $remote &
 
 # Bundle em if you got em!
 if which -s bundle && [ -f Gemfile ]; then
