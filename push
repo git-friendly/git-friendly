@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Usage: push
 #
@@ -10,11 +10,16 @@
 # e.g. for doing "push -f"
 #
 
-remote="origin"
-branch=$(git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
+# TODO DRY this b/w pull and push
+branch=$(git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/') || exit $?
+default_remote="origin"
+remote=$(git config "branch.${branch}.remote" || echo "$default_remote")
+remote_branch=$( (git config "branch.${branch}.merge" || echo "refs/heads/$branch") | awk -F '/' '{ print $3 }' )
+
+echo "branch=$branch remote=$remote/$remote_branch"
 
 # Push & save output
-push=$(git push --set-upstream $* $remote $branch 2>&1)
+push=$(git push --set-upstream $* $remote $remote_branch 2>&1)
 exit_code=$?
 
 if [ $exit_code != 0 ]; then
@@ -42,9 +47,8 @@ if [[ "$remote_url" =~ "github.com" ]]; then
   repo_name=$(echo $remote_url | sed 's/.*\:\(.*\)\.git/\1/')
   github_url="https://github.com/$repo_name/compare/$refs"
   copied="Compare URL copied to clipboard!"
-  which -s pbcopy >& /dev/null && echo $github_url | pbcopy && echo $copied
+  which pbcopy >& /dev/null && echo $github_url | pbcopy && echo $copied
   which xclip >& /dev/null && echo $github_url | xclip -selection clipboard && echo $copied
-  # which -s open && open -g $github_url
 
   echo $github_url
   echo
