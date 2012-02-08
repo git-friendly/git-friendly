@@ -7,13 +7,17 @@
 #
 
 branch=$(git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/') || exit $?
-remote=$(git config "branch.${branch}.remote") || exit $?
-remote_branch=$(git config "branch.${branch}.merge" | awk -F '/' '{ print $3 }') || exit $?
+default_remote="origin"
+remote=$(git config "branch.${branch}.remote" || echo "$default_remote")
+remote_branch=$( (git config "branch.${branch}.merge" || echo "refs/heads/$branch") | awk -F '/' '{ print $3 }' )
+
+echo "branch=$branch remote=$remote/$remote_branch"
 
 # Stash any local changes
 stash=$(git stash)
 
 # Update our remote
+echo "Fetching from $remote ..."
 git fetch $remote || exit $?
 
 # Pull, using rebase if configured
