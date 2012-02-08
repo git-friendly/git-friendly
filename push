@@ -10,11 +10,12 @@
 # e.g. for doing "push -f"
 #
 
-remote="origin"
-branch=$(git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
+branch=$(git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/') || exit $?
+remote=$(git config "branch.${branch}.remote") || exit $?
+remote_branch=$(git config "branch.${branch}.merge" | awk -F '/' '{ print $3 }') || exit $?
 
 # Push & save output
-push=$(git push --set-upstream $* $remote $branch 2>&1)
+push=$(git push --set-upstream $* $remote $remote_branch 2>&1)
 exit_code=$?
 
 if [ $exit_code != 0 ]; then

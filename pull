@@ -6,20 +6,22 @@
 # safely stashing and re-applying your local changes, if any
 #
 
-remote="origin"
-branch=$(git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
+branch=$(git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/') || exit $?
+remote=$(git config "branch.${branch}.remote") || exit $?
+remote_branch=$(git config "branch.${branch}.merge" | awk -F '/' '{ print $3 }') || exit $?
 
 # Stash any local changes
 stash=$(git stash)
 
 # Update our remote
-git fetch $remote || exit 1
+git fetch $remote || exit $?
 
-# Pull, using rebase
-git pull --rebase $remote $branch || exit 1
+# Pull, using rebase if configured
+rebase="--rebase" # TODO disable if env-var is set
+git pull $rebase $remote $remote_branch || exit $?
 
 # Update submodules
-git submodule update
+git submodule update || exit $?
 
 # Pop any stashed changes
 if [[ "$stash" =~ "No local changes to save" ]]; then
