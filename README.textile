@@ -1,4 +1,4 @@
-<img src="http://jamiedubs.com/screenshots/git-friendly-20120209-145713.jpg" width="100%" />
+<img src="http://jamiedubs.com/fuckflickr/data/gitfriendly2.jpg" width="100%" style="width:100%;" />
 
 h2. Intro
 
