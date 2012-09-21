@@ -6,7 +6,7 @@
 # safely stashing and re-applying your local changes, if any
 #
 
-branch=$(git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/') || exit $?
+branch=$(git branch --no-color 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/') || exit $?
 default_remote="origin"
 remote=$(git config "branch.${branch}.remote" || echo "$default_remote")
 remote_branch=$( (git config "branch.${branch}.merge" || echo "refs/heads/$branch") | awk -F '/' '{ print $3 }' )
@@ -34,7 +34,7 @@ else
 fi
 
 # Remove old, stale branches
-git remote prune $remote &
+git remote prune $remote & >/dev/null 2>&1
 
 # Bundle em if you got em!
 if which bundle >/dev/null && [ -f Gemfile ]; then
