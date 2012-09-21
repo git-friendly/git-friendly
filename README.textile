@@ -1,13 +1,11 @@
 <img src="http://jamiedubs.com/fuckflickr/data/gitfriendly2.jpg" width="100%" style="width:100%;" />
 
-h2. Intro
+A collection of shell scripts for making **pulling**, **branching**, and **merging** with git fast and painless.
 
-*git-friendly* is a collection of shell scripts for making **pulling**, **branching**, and **merging** fast and painless.
+Git sometimes requires typing 2 or 3 commands just to execute something basic like fetching new code. git-friendly adds some new commands --
+pull, push, branch, merge -- which are just simple wrappers around git commands and some post-pull hooks.
 
-Git is great, but often requires typing 2 or 3 commands to execute common tasks. This package adds some new commands:
-**pull, push, branch, merge** -- which are just wrappers around normal git commands and a few handy callbacks.
-
-Bonus niceties include:
+Bonus niceties:
 * *push* also copies a GitHub compare URL to your clipboard for easy pasting
 * *pull* will run commands like `bundle install` and `npm install` if applicable
 * *branch* will track remote branches if available
@@ -16,7 +14,7 @@ Bonus niceties include:
 
 h2. Install
 
-Run this, which will checkout the latest code & unpack the scripts into @/usr/local/bin@
+Run this one-liner, which will checkout the latest code & unpack the scripts into @/usr/local/bin@
 If you don't have write access to @/usr/local/bin@ you'll need to run this using 'sudo'
 
 pre. bash < <( curl https://raw.github.com/jamiew/git-friendly/master/install.sh)
