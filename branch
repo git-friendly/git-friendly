@@ -30,12 +30,12 @@ if [ -n "$local_branch_exists" ] && [ ! "$local_branch_exists" == '' ]; then
   echo "Switching to existing local branch..."
   git checkout $branch
 
-  # Track remote branch if not already, or create remote if needed
+  # Track remote branch if not already
   if [ -n "$remote_branch_exists" ] && [ ! "$remote_branch_exists" == '' ]; then
     tracking=$(git branch -vv | grep "*" | awk '{ print $4 '})
     # echo "Remote branch exists. Local branch is tracking: $tracking"
     if [[ ! "$tracking" =~ "$remote" ]]; then
-      echo "Whoa, your local branch is not tracking a corresponding remote branch! Adding..."
+      echo "Your local branch is not tracking the corresponding remote branch, fixing..."
       git branch --set-upstream $branch $remote/$branch
     fi
   # else
