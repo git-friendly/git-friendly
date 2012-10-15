@@ -12,9 +12,9 @@ remote="origin"
 branch=$1
 
 if [ -z $branch ]; then
-  echo "\nSwitch to or create a new branch:"
-  echo " $(basename $0) [name]"
-  echo "\nCurrent branches: "
+  echo -e "\nSwitch to or create a new branch:"
+  echo -e "  $(basename $0) [name]"
+  echo -e "\nCurrent branches: "
   branches="git branch -a -vv"
   $branches
   echo
