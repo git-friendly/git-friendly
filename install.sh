@@ -23,7 +23,8 @@ done
 
 echo
 echo "Done! Try typing 'pull' in any git repository to get started"
-echo "For more info visit http://github.com/jamiew/git-friendly"
+echo "For more info visit:"
+echo "http://github.com/jamiew/git-friendly"
 echo
 
 exit 0
