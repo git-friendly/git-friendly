@@ -84,4 +84,5 @@ h2. Contributors
 * "@cj":http://github.com/cj
 * "Maciej Małecki":http://twitter.com/mmalecki ("@mmalecki":https://github.com/mmalecki)
 * "Ezekiel Templin":http://blog.ezkl.org/ ("@ezkl":https://github.com/ezkl)
+* "Artem Sapegin":http://sapegin.ru/ ("@sapegin":https://github.com/sapegin)
 
