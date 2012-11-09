@@ -2,8 +2,8 @@
 
 A collection of shell scripts for making **pulling**, **branching**, and **merging** with git fast and painless.
 
-Git sometimes requires typing 2 or 3 commands just to execute something basic like fetching new code. git-friendly adds some new commands --
-pull, push, branch, merge -- which are just simple wrappers around git commands and some post-pull hooks.
+Git sometimes requires typing 2 or 3 commands just to execute something basic like fetching new code. git-friendly adds some new commands
+- pull, push, branch, merge - which are just simple wrappers around git commands and some post-pull hooks.
 
 Bonus niceties:
 * *push* also copies a GitHub compare URL to your clipboard for easy pasting
