@@ -10,6 +10,10 @@
 # e.g. for doing "push -f"
 #
 
+# Colors
+color_error="$(tput sgr 0 1)$(tput setaf 1)"
+color_reset="$(tput sgr0)"
+
 # TODO DRY this b/w pull and push
 branch=$(git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/') || exit $?
 default_remote="origin"
@@ -21,7 +25,7 @@ push=$(git push --set-upstream $* $remote $remote_branch 2>&1)
 exit_code=$?
 
 if [ $exit_code != 0 ]; then
-  echo "Ouch, push failed! code=$exit_code, output=$push"
+  echo -e "${color_error}Ouch, push failed!${color_reset} code=$exit_code, output=$push"
   exit $exit_code
 elif echo $push | grep "Everything up-to-date" >/dev/null; then
   echo "git says everything is up-to-date!"
