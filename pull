@@ -34,7 +34,7 @@ else
 fi
 
 # Remove old, stale branches
-git remote prune $remote & >/dev/null 2>&1
+git remote prune $remote >/dev/null 2>&1 &
 
 # Bundle em if you got em!
 if which bundle >/dev/null && [ -f Gemfile ]; then
