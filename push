@@ -44,10 +44,18 @@ fi
 
 # Parse output into a sexy GitHub compare URL!
 remote_url=$(git remote show $remote -n | grep Push | awk '{ print $3 }')
+
 if [[ "$remote_url" =~ "github.com" ]]; then
 
-  repo_name=$(echo $remote_url | sed 's/.*\:\(.*\)\.git/\1/')
-  github_url="https://github.com/$repo_name/compare/$refs"
+  if [[ ${remote_url:0:4} == "git@" ]]; then
+    regEx='s/.*\:\(.*\)\.git/\1/'
+    url='https://github.com/'
+  else
+    regEx='s/\(.*\)\.git/\1/'
+  fi
+
+  repo_name=$(echo $remote_url | sed $regEx)
+  github_url="$url$repo_name/compare/$refs"
   copied="Compare URL copied to clipboard!"
   which pbcopy >& /dev/null && echo $github_url | pbcopy && echo $copied
   which xclip >& /dev/null && echo $github_url | xclip -selection clipboard && echo $copied
