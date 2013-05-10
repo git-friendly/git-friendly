@@ -22,8 +22,8 @@ if [ -z $branch ]; then
 fi
 
 
-local_branch_exists=$(git branch | egrep "$branch\$")
-remote_branch_exists=$(git branch -r | egrep "$remote/$branch\$")
+local_branch_exists=$(git branch --no-color | egrep "$branch\$")
+remote_branch_exists=$(git branch -r --no-color | egrep "$remote/$branch\$")
 
 # If local exists already, switch to it
 if [ -n "$local_branch_exists" ] && [ ! "$local_branch_exists" == '' ]; then
