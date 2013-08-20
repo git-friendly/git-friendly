@@ -6,7 +6,6 @@
 # Switch to an existing branch or creates a new local-only branch
 # Adds remote tracking if a remote branch with the same name exists
 # Executing without arguments prints all local & remote branches
-#
 
 remote="origin"
 branch=$1
@@ -21,9 +20,16 @@ if [ -z $branch ]; then
   exit 0
 fi
 
-
 local_branch_exists=$(git branch --no-color | egrep "$branch\$")
-remote_branch_exists=$(git branch -r --no-color | egrep "$remote/$branch\$")
+
+remotes=( $(git remote) )
+for remote in "${remotes[@]}";
+do
+  remote_branch_exists=$(git branch -r --no-color | egrep "$remote/$branch\$")
+  if [ "$remote_branch_exists" ] ; then
+    break
+  fi
+done
 
 # If local exists already, switch to it
 if [ -n "$local_branch_exists" ] && [ ! "$local_branch_exists" == '' ]; then
