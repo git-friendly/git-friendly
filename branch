@@ -41,9 +41,10 @@ if [ ${#remotes_with_branch[@]} -gt 0 ]; then
   # if there's an origin remote with the named branch, use it
   if [ "$origin_has_branch" = "1" ] ; then
     remote=origin
-  # else track the first matching branch alphabetically else
+  else # track the first matching branch alphabetically
     remote=${remotes[0]}
-  fi remote_branch_exists="$remote/$branch"
+  fi
+  remote_branch_exists="$remote/$branch"
 fi
 
 # If local exists already, switch to it
