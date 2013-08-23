@@ -3,9 +3,12 @@
 # Usage: branch [branchname]
 #
 #
-# Switch to an existing branch or creates a new local-only branch
-# Adds remote tracking if a remote branch with the same name exists
+# Switch to an existing branch, or create a new local-only branch.
+# Adds remote tracking if a remote branch with the same name exists,
+# in any remote, preferring the "origin" master if there are duplicates.
+#
 # Executing without arguments prints all local & remote branches
+#
 
 remote="origin"
 branch=$1
@@ -21,11 +24,11 @@ if [ -z $branch ]; then
 fi
 
 local_branch_exists=$(git branch --no-color | egrep "$branch\$")
-
 remote_branch_exists=$(git branch -r --no-color | egrep "$remote/$branch\$")
 remotes=( $(git remote) )
 remotes_with_branch=()
 origin_has_branch=
+
 for remote in "${remotes[@]}";
 do
   remote_branch_exists=$(git branch -r --no-color | egrep "$remote/$branch\$")
@@ -66,12 +69,12 @@ if [ -n "$local_branch_exists" ] && [ ! "$local_branch_exists" == '' ]; then
 
 # If remote exists, create a local branch that tracks the remote
 elif [ -n "$remote_branch_exists" ] && [ ! "$remote_branch_exists" == '' ]; then
-  echo "* Tracking existing remote branch..."
+  echo "Tracking existing remote branch '$remote_branch_exists'..."
   git checkout -b $branch --track $remote/$branch
 
 # Otherwise create a new local branch
 else
-  echo "* Creating new local branch..."
+  echo "Creating new local branch..."
   git checkout -b $branch --no-track
 fi
 
