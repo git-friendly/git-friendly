@@ -48,5 +48,11 @@ if which npm >/dev/null 2>&1 && [ -f package.json ]; then
   npm install
 fi
 
+# Install Bower components
+if which npm >/dev/null 2>&1 && [ -f bower.json ]; then
+  echo "* Installing Bower components..."
+  bower install
+fi
+
 echo "Done"
 exit 0
