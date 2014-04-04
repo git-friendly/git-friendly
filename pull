@@ -6,6 +6,28 @@
 # safely stashing and re-applying your local changes, if any
 #
 
+# Colors
+color_error="$(tput sgr 0 1)$(tput setaf 1)"
+color_reset="$(tput sgr0)"
+
+# Pop any stashed changes
+unstash() {
+	if [[ "$stash" =~ "No local changes to save" ]]; then
+	  echo "* No stashed changes, not popping"
+	else
+	  echo "* Popping stash..."
+	  git stash pop
+	fi
+}
+
+# Pop any stashed changes and exit
+rollback() {
+	echo
+	echo "${color_error}Something went wrong, rolling back${color_reset}"
+	unstash
+	exit $1
+}
+
 branch=$(git branch --no-color 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/') || exit $?
 default_remote="origin"
 remote=$(git config "branch.${branch}.remote" || echo "$default_remote")
@@ -15,23 +37,17 @@ remote_branch=$( (git config "branch.${branch}.merge" || echo "refs/heads/$branc
 stash=$(git stash)
 
 # Update our remote
-echo "Fetching from $remote ..."
-git fetch $remote || exit $?
+echo "Fetching from $remote..."
+git fetch $remote || rollback $?
 
 # Pull, using rebase if configured
 rebase="--rebase" # TODO disable if env-var is set
-git pull $rebase $remote $remote_branch || exit $?
+git pull $rebase $remote $remote_branch || rollback $?
 
 # Update submodules
-git submodule update || exit $?
+git submodule update || rollback $?
 
-# Pop any stashed changes
-if [[ "$stash" =~ "No local changes to save" ]]; then
-  echo "* No stashed changes, not popping"
-else
-  echo "* Popping stash..."
-  git stash pop
-fi
+unstash
 
 # Remove old, stale branches
 git remote prune $remote >/dev/null 2>&1 &
