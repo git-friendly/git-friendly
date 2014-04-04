@@ -78,7 +78,7 @@ h2. Contributors
 * "Jamie Wilkinson":http://jamiedubs.com ("@jamiew":http://github.com/jamiew)
 * "Ethan Bruning":https://github.com/ebruning ("@ebruning":https://github.com/ebruning)
 * "John Manoogian III":http://jm3.net ("@jm3":http://github.com/jm3)
-* "@cj":http://github.com/cj
+* "CJ Lazell":http://cj.io/ ("@cj":http://github.com/cj)
 * "Maciej Małecki":http://twitter.com/mmalecki ("@mmalecki":https://github.com/mmalecki)
 * "Ezekiel Templin":http://blog.ezkl.org/ ("@ezkl":https://github.com/ezkl)
 * "Artem Sapegin":http://sapegin.me/ ("@sapegin":https://github.com/sapegin)
