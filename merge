@@ -8,7 +8,7 @@
 
 remote="origin"
 branch=$1
-current_branch=$(git branch 2>/dev/null|grep -e ^* | tr -d \*//)
+current_branch=$(git branch 2>/dev/null|grep -e ^* | tr -d \*)
 
 if [ -z $branch ]; then
   echo "Usage: $0 [branchname]"
