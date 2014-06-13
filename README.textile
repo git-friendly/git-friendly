@@ -70,7 +70,11 @@ h2. License
 
 Code released under an MIT license.
 
-Fork away, do whatever. Pull requests welcome!
+Fork away, do whatever. Pull requests welcome.
+
+Following the practices of "Rubinius":http://www.programblings.com/2008/04/15/rubinius-for-the-layman-part-2-how-rubinius-is-friendly/, anyone who submits an accepted patch is granted a commit bit (write access to the repository).
+
+Following the practices of "FAT Lab":http://fffff.at, anyone who submits an accepted patch is granted credit and attribution bits.
 
 
 h2. Contributors
