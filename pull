@@ -53,21 +53,27 @@ unstash
 git remote prune $remote >/dev/null 2>&1 &
 
 # Bundle em if you got em!
-if which bundle >/dev/null 2>&1 && [ -f Gemfile ]; then
-  echo "* Bundling gems..."
-  bundle check >/dev/null 2>&1 || bundle install
+if [ "$GIT_FRIENDLY_NO_BUNDLE" != "true" ]; then
+  if which bundle >/dev/null 2>&1 && [ -f Gemfile ]; then
+    echo "* Bundling gems..."
+    bundle check >/dev/null 2>&1 || bundle install
+  fi
 fi
 
 # Install node.js/npm packages
-if which npm >/dev/null 2>&1 && [ -f package.json ]; then
-  echo "* Installing npm packages..."
-  npm install
+if [ "$GIT_FRIENDLY_NO_NPM" != "true" ]; then
+  if which npm >/dev/null 2>&1 && [ -f package.json ]; then
+    echo "* Installing npm packages..."
+    npm install
+  fi
 fi
 
 # Install Bower components
-if which npm >/dev/null 2>&1 && [ -f bower.json ]; then
-  echo "* Installing Bower components..."
-  bower install
+if [ "$GIT_FRIENDLY_NO_BOWER" != "true" ]; then
+  if which npm >/dev/null 2>&1 && [ -f bower.json ]; then
+    echo "* Installing Bower components..."
+    bower install
+  fi
 fi
 
 echo "Done"

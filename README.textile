@@ -4,7 +4,7 @@ Git sometimes requires typing 2 or 3 commands just to execute something basic li
 
 Bonus niceties:
 * *push* also copies a GitHub compare URL to your clipboard for easy pasting
-* *pull* will run commands like `bundle install` and `npm install` if applicable
+* *pull* will run commands like `bundle install`, `npm install` and `bower install` if applicable
 * *branch* will track remote branches if available
 * relevant commands stash/pop changes as needed
 * less time fighting git = more time actually doing work
@@ -56,6 +56,20 @@ h2. Commands
 | *push* | Push your changes to the remote + copy a sexy diff URL like "http://github.com/jamiew/git-friendly/compare/e96033...5daed4":http://github.com/jamiew/git-friendly/compare/e96033...5daed4 to your clipboard (works on Mac and Linux) |
 | *branch&nbsp;[name]* | Switch branches or create new local branch if it doesn't exist. Intelligently sets up remote branch tracking so you can just type 'git pull' and not always 'git pull origin newbranch'. If no argument specified will list all local and remote branches.  |
 | *merge&nbsp;[name]* | Merge the specified branch into the current branch. Rebases first if the branch is local-only |
+
+
+h2. Configuration
+
+You can disable `bundle install`, `npm install` and `bower install` for the `pull` command by defining environmental variables:
+
+* `GIT_FRIENDLY_NO_BUNDLE`: disables `bundle install`; 
+* `GIT_FRIENDLY_NO_NPM`: disables `npm install`; 
+* `GIT_FRIENDLY_NO_BOWER`: disables `bower install`;
+
+For example, add this line to your `~/.bash_profile` to disable `bundle install`:
+
+pre. export GIT_FRIENDLY_NO_BUNDLE=true
+
 
 h2. Bonus: Pimp Your Configs
 
