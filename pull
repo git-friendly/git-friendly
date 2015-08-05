@@ -12,20 +12,20 @@ color_reset="$(tput sgr0)"
 
 # Pop any stashed changes
 unstash() {
-	if [[ "$stash" =~ "No local changes to save" ]]; then
-	  echo "* No stashed changes, not popping"
-	else
-	  echo "* Popping stash..."
-	  git stash pop
-	fi
+  if [[ "$stash" =~ "No local changes to save" ]]; then
+    echo "* No stashed changes, not popping"
+  else
+    echo "* Popping stash..."
+    git stash pop
+  fi
 }
 
 # Pop any stashed changes and exit
 rollback() {
-	echo
-	echo "${color_error}Something went wrong, rolling back${color_reset}"
-	unstash
-	exit $1
+  echo
+  echo "${color_error}Something went wrong, rolling back${color_reset}"
+  unstash
+  exit $1
 }
 
 branch=$(git branch --no-color 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/') || exit $?
