@@ -1,3 +1,5 @@
+<img src="http://wow.sapegin.me/image/3G3M423k0y09/git-friendly.jpg" width="100%" style="width:100%" />
+
 A collection of shell scripts for making **pulling**, **branching**, and **merging** with git fast and painless.
 
 Git sometimes requires typing 2 or 3 commands just to execute something basic like fetching new code. git-friendly adds some new commands - pull, push, branch, merge - which are just simple wrappers around git commands and some post-pull hooks.
@@ -36,7 +38,7 @@ h2. Usage
 
 You now have some awesome new commands available: *pull*, *push*, *branch*, *merge*
 
-<img src="http://jamiedubs.com/fuckflickr/data/git-friendly/pull.png" alt="" title="Rolling in style" />
+<img src="http://wow.sapegin.me/image/3R3H171M1741/pull.png" alt="" title="Rolling in style" />
 
 Example session:
 
@@ -77,7 +79,7 @@ I strongly recommend editing your global ~/.gitconfig and adding chill features 
 
 I also recommend adding the current git branch to your Terminal prompt (PS1) or you'll quickly lose your place -- here is my "pimp_prompt() bash function":https://gist.github.com/790086 which goes in your @~/.bash_profile@ or @~/.bashrc@, then type @source ~/.bashrc@ to reload.
 
-<img src="http://jamiedubs.com/fuckflickr/data/git-friendly/pimped-prompt.jpg" alt="" title="You could be this cool" />
+<img src="http://wow.sapegin.me/image/0Z1C1U00281j/pimped-prompt.jpg" alt="" title="You could be this cool" />
 
 
 h2. License
