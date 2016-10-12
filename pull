@@ -60,9 +60,17 @@ if [ "$GIT_FRIENDLY_NO_BUNDLE" != "true" ]; then
   fi
 fi
 
-# Install node.js/npm packages
+# Install Node.js packages with Yarn
+if [ "$GIT_FRIENDLY_NO_YARN" != "true" ]; then
+  if which npm >/dev/null 2>&1 && [ -f yarn.lock ]; then
+    echo "* Installing npm packages..."
+    yarn install
+  fi
+fi
+
+# Install Node.js packages with npm
 if [ "$GIT_FRIENDLY_NO_NPM" != "true" ]; then
-  if which npm >/dev/null 2>&1 && [ -f package.json ]; then
+  if which npm >/dev/null 2>&1 && ( [ ! -f yarn.lock ] || [ "$GIT_FRIENDLY_NO_YARN" == "true" ] ) && [ -f package.json ]; then
     echo "* Installing npm packages..."
     npm install
   fi
