@@ -59,8 +59,8 @@ if [[ "$remote_url" =~ "github.com" ]]; then
   github_url="$url$repo_name/compare/$refs"
 
   copied="\nCompare URL copied to clipboard:"
-  which pbcopy >& /dev/null && echo $github_url | pbcopy && echo "$copied"
-  which xclip >& /dev/null && echo $github_url | xclip -selection clipboard && echo "$copied"
+  which pbcopy >& /dev/null && echo $github_url | pbcopy && echo -e "$copied"
+  which xclip >& /dev/null && echo $github_url | xclip -selection clipboard && echo -e "$copied"
 
   echo $github_url
 fi
