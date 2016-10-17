@@ -39,7 +39,8 @@ if echo $push | grep "\[new branch\]" >/dev/null; then
   echo "🚀  Pushed a new branch '$branch' remotely"
 else
   refs=$(echo $push | awk '{ print $3}' | sed 's/\.\./\.\.\./')
-  echo "🚀  $push"
+  echo "🚀  Pushed:"
+  echo "$push"
 fi
 
 # Parse output into a sexy GitHub compare URL!
@@ -58,8 +59,8 @@ if [[ "$remote_url" =~ "github.com" ]]; then
   github_url="$url$repo_name/compare/$refs"
 
   copied="\nCompare URL copied to clipboard:"
-  which pbcopy >& /dev/null && echo $github_url | pbcopy && echo $copied
-  which xclip >& /dev/null && echo $github_url | xclip -selection clipboard && echo $copied
+  which pbcopy >& /dev/null && echo $github_url | pbcopy && echo "$copied"
+  which xclip >& /dev/null && echo $github_url | xclip -selection clipboard && echo "$copied"
 
   echo $github_url
 fi
