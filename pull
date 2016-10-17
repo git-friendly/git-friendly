@@ -12,9 +12,7 @@ color_reset="$(tput sgr0)"
 
 # Pop any stashed changes
 unstash() {
-  if [[ "$stash" =~ "No local changes to save" ]]; then
-    echo "🕵  No stashed changes, not popping"
-  else
+  if [[ ! "$stash" =~ "No local changes to save" ]]; then
     echo "🕵  Popping stash..."
     git stash pop
   fi
