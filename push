@@ -28,7 +28,7 @@ if [ $exit_code != 0 ]; then
   echo -e "${color_error}Ouch, push failed!${color_reset} code=$exit_code, output=$push"
   exit $exit_code
 elif echo $push | grep "Everything up-to-date" >/dev/null; then
-  echo "git says everything is up-to-date!"
+  echo "✌️  Git says everything is up-to-date!"
   exit 0
 fi
 
@@ -36,10 +36,11 @@ fi
 # 1st-time push to new branch gets special treatment
 if echo $push | grep "\[new branch\]" >/dev/null; then
   refs="master...$branch"
-  echo "Pushed new branch '$branch' remotely"
+  echo "🚀  Pushed a new branch '$branch' remotely"
 else
   refs=$(echo $push | awk '{ print $3}' | sed 's/\.\./\.\.\./')
-  echo $push
+  echo "🚀  Pushed:"
+  echo "$push"
 fi
 
 # Parse output into a sexy GitHub compare URL!
@@ -57,12 +58,11 @@ if [[ "$remote_url" =~ "github.com" ]]; then
   repo_name=$(echo $remote_url | sed $regEx)
   github_url="$url$repo_name/compare/$refs"
 
-  copied="Compare URL copied to clipboard!"
-  which pbcopy >& /dev/null && echo $github_url | pbcopy && echo $copied
-  which xclip >& /dev/null && echo $github_url | xclip -selection clipboard && echo $copied
+  copied="\nCompare URL copied to clipboard:"
+  which pbcopy >& /dev/null && echo $github_url | pbcopy && echo -e "$copied"
+  which xclip >& /dev/null && echo $github_url | xclip -selection clipboard && echo -e "$copied"
 
   echo $github_url
-  echo
 fi
 
 exit 0
