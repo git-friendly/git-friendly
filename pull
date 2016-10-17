@@ -13,6 +13,7 @@ color_reset="$(tput sgr0)"
 # Pop any stashed changes
 unstash() {
   if [[ ! "$stash" =~ "No local changes to save" ]]; then
+    echo
     echo "🕵  Popping stash..."
     git stash pop
   fi
@@ -53,6 +54,7 @@ git remote prune $remote >/dev/null 2>&1 &
 # Bundle em if you got em!
 if [ "$GIT_FRIENDLY_NO_BUNDLE" != "true" ]; then
   if which bundle >/dev/null 2>&1 && [ -f Gemfile ]; then
+    echo
     echo "⚔ Bundling gems..."
     bundle check >/dev/null 2>&1 || bundle install
   fi
@@ -61,6 +63,7 @@ fi
 # Install Node.js packages with Yarn
 if [ "$GIT_FRIENDLY_NO_YARN" != "true" ]; then
   if which npm >/dev/null 2>&1 && [ -f yarn.lock ]; then
+    echo
     echo "⚔  Installing npm packages..."
     yarn install
   fi
@@ -69,6 +72,7 @@ fi
 # Install Node.js packages with npm
 if [ "$GIT_FRIENDLY_NO_NPM" != "true" ]; then
   if which npm >/dev/null 2>&1 && ( [ ! -f yarn.lock ] || [ "$GIT_FRIENDLY_NO_YARN" == "true" ] ) && [ -f package.json ]; then
+    echo
     echo "⚔  Installing npm packages..."
     npm install
   fi
@@ -77,10 +81,12 @@ fi
 # Install Bower components
 if [ "$GIT_FRIENDLY_NO_BOWER" != "true" ]; then
   if which npm >/dev/null 2>&1 && [ -f bower.json ]; then
+    echo
     echo "⚔  Installing Bower components..."
     bower install
   fi
 fi
 
+echo
 echo "🦄  Done"
 exit 0
