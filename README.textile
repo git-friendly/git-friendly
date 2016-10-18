@@ -38,7 +38,7 @@ h2. Usage
 
 You now have some awesome new commands available: *pull*, *push*, *branch*, *merge*
 
-<img src="http://wow.sapegin.me/193a3J1q0i17/pull.png" alt="" title="Rolling in style" />
+<img src="http://wow.sapegin.me/2T0B1e2h0U46/pull.png" alt="" title="Rolling in style" />
 
 Example session:
 
