@@ -55,7 +55,7 @@ git remote prune $remote >/dev/null 2>&1 &
 if [ "$GIT_FRIENDLY_NO_BUNDLE" != "true" ]; then
   if which bundle >/dev/null 2>&1 && [ -f Gemfile ]; then
     echo
-    echo "⚔ Bundling gems..."
+    echo "⚔  Bundling gems..."
     bundle check >/dev/null 2>&1 || bundle install
   fi
 fi
