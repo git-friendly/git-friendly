@@ -14,7 +14,7 @@ color_reset="$(tput sgr0)"
 unstash() {
   if [[ ! "$stash" =~ "No local changes to save" ]]; then
     echo
-    echo "🕵  Popping stash..."
+    echo "🍯  Popping stash..."
     git stash pop
   fi
 }
