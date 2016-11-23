@@ -27,8 +27,17 @@ rollback() {
   exit $1
 }
 
+# get directory of changed file
+get_dir() {
+	base=$(git rev-parse --show-cdup)
+	file=$(git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD | grep "$1")
+	dirname "./$base$file"
+}
 
-
+# only run if specific file changed
+check_run() {
+	echo "$changed_files" | grep --quiet "$1" && cd $(get_dir "$1") && echo && echo "$2" && eval "$3"
+}
 
 branch=$(git branch --no-color 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/') || exit $?
 default_remote="origin"
@@ -57,21 +66,6 @@ unstash
 
 # Remove old, stale branches
 git remote prune $remote >/dev/null 2>&1 &
-
-
-
-# get directory of changed file
-get_dir() {
-	base=$(git rev-parse --show-cdup)
-	file=$(git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD | grep "$1")
-	dirname "./$base$file"
-}
-
-# only run if specific file changed
-check_run() {
-	echo "$changed_files" | grep --quiet "$1" && cd $(get_dir "$1") && echo && echo "$2" && eval "$3"
-}
-
 
 # Bundle em if you got em!
 if [ "$GIT_FRIENDLY_NO_BUNDLE" != "true" ]; then
