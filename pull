@@ -10,6 +10,9 @@
 color_error="$(tput sgr 0 1)$(tput setaf 1)"
 color_reset="$(tput sgr0)"
 
+# Store current working dir for later use
+current_dir="$(pwd)"
+
 # Pop any stashed changes
 unstash() {
   if [[ ! "$stash" =~ "No local changes to save" ]]; then
@@ -25,6 +28,44 @@ rollback() {
   echo "${color_error}Something went wrong, rolling back${color_reset}"
   unstash
   exit $1
+}
+
+# Test whether a command exists
+# $1 - cmd to test
+cmd_exists() {
+  if which $1 >/dev/null 2>&1; then
+    return 0
+  fi
+  return 1
+}
+
+# Go to directory of changed file
+# $1 - filename
+change_dir() {
+	base=$(git rev-parse --show-cdup)
+	file=$(git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD | grep "$1")
+	if [[ -a "./$base$file" ]]; then
+	  cd $(dirname "./$base$file")
+	  return 0
+	fi
+	return 1
+}
+
+# Go back to
+reset_dir() {
+    cd "$current_dir"
+}
+
+# Test wether a file has changed
+# $1 - filename
+has_changed() {
+  # store changed files for install check (
+  # ORIG_HEAD is last value of HEAD before pull
+  changed_files="$(git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD 2>/dev/null)"
+  if $(echo "$changed_files" | grep --quiet "$1"); then
+    return 0
+  fi
+  return 1
 }
 
 branch=$(git branch --no-color 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/') || exit $?
@@ -53,37 +94,65 @@ git remote prune $remote >/dev/null 2>&1 &
 
 # Bundle em if you got em!
 if [ "$GIT_FRIENDLY_NO_BUNDLE" != "true" ]; then
-  if which bundle >/dev/null 2>&1 && [ -f Gemfile ]; then
+  if cmd_exists 'bundle' && has_changed 'Gemfile'; then
     echo
-    echo "⚔  Bundling gems..."
+    echo '⚔  Bundling gems...'
+    change_dir 'Gemfile'
     bundle check >/dev/null 2>&1 || bundle install
+    reset_dir
   fi
 fi
 
 # Install Node.js packages with Yarn
+yarned=0
 if [ "$GIT_FRIENDLY_NO_YARN" != "true" ]; then
-  if which npm >/dev/null 2>&1 && [ -f yarn.lock ]; then
-    echo
-    echo "⚔  Installing npm packages..."
-    yarn install
+  if has_changed 'yarn.lock' || has_changed 'package.json'; then
+    change_dir 'yarn.lock' || change_dir 'package.json'
+    if cmd_exists 'yarn' || [ -x ./node_modules/.bin/yarn ]; then
+      echo
+      echo '⚔  Installing npm packages...'
+      cmd_exists 'yarn' && yarn install || ./node_modules/.bin/yarn install
+      yarned=1
+    fi
+    reset_dir
   fi
 fi
 
 # Install Node.js packages with npm
 if [ "$GIT_FRIENDLY_NO_NPM" != "true" ]; then
-  if which npm >/dev/null 2>&1 && ( [ ! -f yarn.lock ] || [ "$GIT_FRIENDLY_NO_YARN" == "true" ] ) && [ -f package.json ]; then
+  if cmd_exists 'npm' && has_changed 'package.json' && [ $yarned -eq 0 ]; then
     echo
-    echo "⚔  Installing npm packages..."
+    echo '⚔  Installing npm packages...'
+    change_dir 'package.json'
     npm install
+    reset_dir
   fi
 fi
 
 # Install Bower components
 if [ "$GIT_FRIENDLY_NO_BOWER" != "true" ]; then
-  if which npm >/dev/null 2>&1 && [ -f bower.json ]; then
-    echo
-    echo "⚔  Installing Bower components..."
-    bower install
+  if has_changed 'bower.json'; then
+    change_dir 'bower.json'
+    if cmd_exists 'bower' || [ -x ./node_modules/.bin/bower ]; then
+      echo
+      echo '⚔  Installing Bower packages...'
+      cmd_exists 'bower' && bower install || ./node_modules/.bin/bower install
+    fi
+    reset_dir
+  fi
+fi
+
+
+# Install Composer packages
+if [ "$GIT_FRIENDLY_NO_COMPOSER" != "true" ]; then
+  if has_changed 'composer.lock'; then
+    change_dir 'composer.lock'
+    if cmd_exists 'composer' || (cmd_exists 'php' && [ -f ./composer.phar ]); then
+      echo
+      echo '⚔  Installing Composer packages...'
+      [ -f ./composer.phar ] && php composer.phar install || composer install
+    fi
+    reset_dir
   fi
 fi
 

@@ -68,6 +68,7 @@ You can disable @bundle install@, @npm install@, @yarn install@ and @bower insta
 * @GIT_FRIENDLY_NO_NPM@: disables @npm install@; 
 * @GIT_FRIENDLY_NO_YARN@: disables @yarn install@; 
 * @GIT_FRIENDLY_NO_BOWER@: disables @bower install@;
+* @GIT_FRIENDLY_NO_COMPOSER@: disables @composer install@;
 
 For example, add this line to your @~/.bash_profile@ to disable @bundle install@:
 
