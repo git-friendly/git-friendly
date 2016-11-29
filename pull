@@ -10,6 +10,10 @@
 color_error="$(tput sgr 0 1)$(tput setaf 1)"
 color_reset="$(tput sgr0)"
 
+# Store current working dir for later use
+current_dir="$(pwd)"
+echo "$curent_dir"
+
 # Pop any stashed changes
 unstash() {
   if [[ ! "$stash" =~ "No local changes to save" ]]; then
@@ -27,23 +31,48 @@ rollback() {
   exit $1
 }
 
-# get directory of changed file
-get_dir() {
-	base=$(git rev-parse --show-cdup)
-	file=$(git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD | grep "$1")
-	dirname "./$base$file"
+# Test whether a command exists
+# $1 - cmd to test
+cmd_exists() {
+  if which $1 >/dev/null 2>&1; then
+    return 0
+  fi
+  return 1
 }
 
-# only run if specific file changed
-check_run() {
-	echo "$changed_files" | grep --quiet "$1" && cd $(get_dir "$1") && echo && echo "$2" && eval "$3"
+# Go to directory of changed file
+# $1 - filename
+change_dir() {
+	base=$(git rev-parse --show-cdup)
+	file=$(git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD | grep "$1")
+	if [[ -a "./$base$file" ]]; then
+	  cd $(dirname "./$base$file")
+	  return 0
+	fi
+	return 1
+}
+
+# Go back to
+reset_dir() {
+    cd "$current_dir"
+}
+
+# Test wether a file has changed
+# $1 - filename
+has_changed() {
+  # store changed files for install check (
+  # ORIG_HEAD is last value of HEAD before pull
+  changed_files="$(git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD)"
+  if $(echo "$changed_files" | grep --quiet "$1"); then
+    return 0
+  fi
+  return 1
 }
 
 branch=$(git branch --no-color 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/') || exit $?
 default_remote="origin"
 remote=$(git config "branch.${branch}.remote" || echo "$default_remote")
 remote_branch=$( (git config "branch.${branch}.merge" || echo "refs/heads/$branch") | cut -d/ -f3- )
-
 
 # Stash any local changes
 stash=$(git stash)
@@ -56,9 +85,6 @@ git fetch $remote || rollback $?
 rebase="--rebase" # TODO disable if env-var is set
 git pull $rebase $remote $remote_branch || rollback $?
 
-# get changed files for install check
-changed_files="$(git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD)"
-
 # Update submodules
 git submodule update || rollback $?
 
@@ -69,36 +95,65 @@ git remote prune $remote >/dev/null 2>&1 &
 
 # Bundle em if you got em!
 if [ "$GIT_FRIENDLY_NO_BUNDLE" != "true" ]; then
-  if which bundle >/dev/null 2>&1 && [ -f Gemfile ]; then
-    check_run Gemfile "⚔  Bundling gems..." "bundle check >/dev/null 2>&1 || bundle install"
+  if cmd_exists 'bundle' && has_changed 'Gemfile'; then
+    echo
+    echo '⚔  Bundling gems...'
+    change_dir 'Gemfile'
+    bundle check >/dev/null 2>&1 || bundle install
+    reset_dir
   fi
 fi
 
 # Install Node.js packages with Yarn
+yarned=0
 if [ "$GIT_FRIENDLY_NO_YARN" != "true" ]; then
-  if which npm >/dev/null 2>&1 && [ -f yarn.lock ]; then
-    check_run yarn.lock "⚔  Installing npm packages..." "yarn install"
+  if has_changed 'yarn.lock' || has_changed 'package.json'; then
+    change_dir 'yarn.lock' || change_dir 'package.json'
+    if cmd_exists 'yarn' || [ -x ./node_modules/.bin/yarn ]; then
+      echo
+      echo '⚔  Installing npm packages...'
+      cmd_exists 'yarn' && yarn install || ./node_modules/.bin/yarn install
+      yarned=1
+    fi
+    reset_dir
   fi
 fi
 
 # Install Node.js packages with npm
 if [ "$GIT_FRIENDLY_NO_NPM" != "true" ]; then
-  if which npm >/dev/null 2>&1 && ( [ ! -f yarn.lock ] || [ "$GIT_FRIENDLY_NO_YARN" == "true" ] ) && [ -f package.json ]; then
-    check_run package.json "⚔  Installing npm packages..." "npm install"
+  if cmd_exists 'npm' && has_changed 'package.json' && [ $yarned -eq 0 ]; then
+    echo
+    echo '⚔  Installing npm packages...'
+    change_dir 'package.json'
+    npm install
+    reset_dir
   fi
 fi
 
 # Install Bower components
 if [ "$GIT_FRIENDLY_NO_BOWER" != "true" ]; then
-  if which bower >/dev/null 2>&1 && [ -f bower.json ]; then
-    check_run bower.json "⚔  Installing Bower packages..." "bower install"
+  if has_changed 'bower.json'; then
+    change_dir 'bower.json'
+    if cmd_exists 'bower' || [ -x ./node_modules/.bin/bower ]; then
+      echo
+      echo '⚔  Installing Bower packages...'
+      cmd_exists 'bower' && bower install || ./node_modules/.bin/bower install
+    fi
+    reset_dir
   fi
 fi
 
+
 # Install Composer packages
 if [ "$GIT_FRIENDLY_NO_COMPOSER" != "true" ]; then
-  if ( which composer >/dev/null 2>&1 || [ -f ./composer.phar ] ) && which php >/dev/null 2>&1 && [ -f composer.lock ]; then
-    check_run composer.lock "⚔  Installing Composer packages..." "[ -f ./composer.phar ] && php composer.phar install || composer install"
+  if has_changed 'composer.lock'; then
+    change_dir 'composer.lock'
+    if cmd_exists 'composer' || (cmd_exists 'php' && [ -f ./composer.phar ]); then
+      echo
+      echo '⚔  Installing Composer packages...'
+      [ -f ./composer.phar ] && php composer.phar install || composer install
+    fi
+    reset_dir
   fi
 fi
 
