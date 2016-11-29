@@ -61,7 +61,7 @@ reset_dir() {
 has_changed() {
   # store changed files for install check (
   # ORIG_HEAD is last value of HEAD before pull
-  changed_files="$(git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD)"
+  changed_files="$(git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD 2>/dev/null)"
   if $(echo "$changed_files" | grep --quiet "$1"); then
     return 0
   fi
