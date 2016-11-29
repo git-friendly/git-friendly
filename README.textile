@@ -106,4 +106,5 @@ h2. Contributors
 * "Artem Sapegin":http://sapegin.me/ ("@sapegin":https://github.com/sapegin)
 * "Harold Dennison":http://hdennison.com/ ("@hdennison":https://github.com/hdennison)
 * "Andriy Prokopenko":http://andriyprokopenko.com/ ("@sleepyboy":https://github.com/sleepyboy)
+* Ben Zörb ("@bezoerb":https://github.com/bezoerb)
 
