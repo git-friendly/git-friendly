@@ -12,7 +12,6 @@ color_reset="$(tput sgr0)"
 
 # Store current working dir for later use
 current_dir="$(pwd)"
-echo "$curent_dir"
 
 # Pop any stashed changes
 unstash() {
