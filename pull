@@ -10,8 +10,9 @@
 color_error="$(tput sgr 0 1)$(tput setaf 1)"
 color_reset="$(tput sgr0)"
 
-# Store current working dir for later use
+# Current working dir and repo base dir
 current_dir="$(pwd)"
+base_dir=$(git rev-parse --show-cdup)
 
 # Pop any stashed changes
 unstash() {
@@ -39,13 +40,21 @@ cmd_exists() {
   return 1
 }
 
+# Test whether a file exists
+# $1 - file to test
+file_exists() {
+	if [[ -r "./$base_dir$1" ]]; then
+	  return 0
+	fi
+	return 1
+}
+
 # Go to directory of changed file
 # $1 - filename
 change_dir() {
-	base=$(git rev-parse --show-cdup)
 	file=$(git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD | grep "$1")
-	if [[ -a "./$base$file" ]]; then
-	  cd $(dirname "./$base$file")
+	if [[ -a "./$base_dir$file" ]]; then
+	  cd $(dirname "./$base_dir$file")
 	  return 0
 	fi
 	return 1
@@ -106,7 +115,7 @@ fi
 # Install Node.js packages with Yarn
 yarned=0
 if [ "$GIT_FRIENDLY_NO_YARN" != "true" ]; then
-  if has_changed 'yarn.lock' || has_changed 'package.json'; then
+  if file_exists 'yarn.lock' && ( has_changed 'yarn.lock' || has_changed 'package.json' ); then
     change_dir 'yarn.lock' || change_dir 'package.json'
     if cmd_exists 'yarn' || [ -x ./node_modules/.bin/yarn ]; then
       echo
