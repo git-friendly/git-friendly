@@ -6,7 +6,7 @@ tmp="/tmp/git-friendly"
 
 git clone https://github.com/jamiew/git-friendly.git $tmp >/dev/null 2>&1
 rm -rf $tmp/.git
-rm -f $tmp/README* $tmp/install.sh
+rm -f $tmp/README* $tmp/install.sh $tmp/.gitignore
 installed_scripts=`ls -1 ${tmp}`
 mkdir -p ${dest}
 cp $tmp/* ${dest}/ &> /dev/null
