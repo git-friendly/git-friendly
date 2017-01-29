@@ -165,6 +165,15 @@ if [ "$GIT_FRIENDLY_NO_COMPOSER" != "true" ]; then
   fi
 fi
 
+# Install Composer packages
+if [ "$GIT_FRIENDLY_NO_COMPOSER" != "true" ]; then
+  if which composer >/dev/null 2>&1 && [ -f composer.json ]; then
+    echo
+    echo "⚔  Installing Composer packages..."
+    composer install
+  fi
+fi
+
 echo
 echo "🦄  Done"
 exit 0
