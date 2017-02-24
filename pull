@@ -165,6 +165,5 @@ if [ "$GIT_FRIENDLY_NO_COMPOSER" != "true" ]; then
   fi
 fi
 
-echo
 echo "🦄  Done"
 exit 0
