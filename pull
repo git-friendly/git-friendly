@@ -119,7 +119,7 @@ if [ "$GIT_FRIENDLY_NO_YARN" != "true" ]; then
     change_dir 'yarn.lock' || change_dir 'package.json'
     if cmd_exists 'yarn' || [ -x ./node_modules/.bin/yarn ]; then
       echo
-      echo '⚔  Installing npm packages...'
+      echo '⚔  Installing npm packages with yarn...'
       cmd_exists 'yarn' && yarn install || ./node_modules/.bin/yarn install
       yarned=1
     fi
