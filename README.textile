@@ -6,7 +6,7 @@ Git sometimes requires typing 2 or 3 commands just to execute something basic li
 
 Bonus niceties:
 * *push* also copies a GitHub compare URL to your clipboard for easy pasting
-* *pull* will run commands like @bundle install@, @npm install@, @yarn install@ and @bower install@ if applicable
+* *pull* will run commands like @bundle install@, @npm install@, @yarn install@, @bower install@ and @composer install@ if applicable
 * *branch* will track remote branches if available
 * relevant commands stash/pop changes as needed
 * less time fighting git = more time actually doing work
