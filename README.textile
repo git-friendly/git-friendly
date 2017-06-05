@@ -64,11 +64,11 @@ h2. Configuration
 
 You can disable @bundle install@, @npm install@, @yarn install@, @bower install@ and @composer install@ for the @pull@ command by defining environmental variables:
 
-* @GIT_FRIENDLY_NO_BUNDLE@: disables @bundle install@; 
-* @GIT_FRIENDLY_NO_NPM@: disables @npm install@; 
-* @GIT_FRIENDLY_NO_YARN@: disables @yarn install@; 
-* @GIT_FRIENDLY_NO_BOWER@: disables @bower install@;
-* @GIT_FRIENDLY_NO_COMPOSER@: disables @composer install@;
+* @GIT_FRIENDLY_NO_BUNDLE@: disables @bundle install@
+* @GIT_FRIENDLY_NO_NPM@: disables @npm install@
+* @GIT_FRIENDLY_NO_YARN@: disables @yarn install@
+* @GIT_FRIENDLY_NO_BOWER@: disables @bower install@
+* @GIT_FRIENDLY_NO_COMPOSER@: disables @composer install@
 
 For example, add this line to your @~/.bash_profile@ to disable @bundle install@:
 
