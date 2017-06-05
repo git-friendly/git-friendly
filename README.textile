@@ -77,9 +77,9 @@ pre. export GIT_FRIENDLY_NO_BUNDLE=true
 
 h2. Bonus: Pimp Your Configs
 
-I strongly recommend editing your global ~/.gitconfig and adding chill features like ANSI color, command aliases (e.g. "git st" instead of "git status"), automatic remote tracking and more. Check out "my ~/.gitconfig":https://gist.github.com/668161 to get started.
+We strongly recommend editing your global `~/.gitconfig` and adding chill features like ANSI color, command aliases (e.g. "git st" instead of "git status"), automatic remote tracking and more. Check out "this sample ~/.gitconfig":https://gist.github.com/668161 to get started.
 
-I also recommend adding the current git branch to your Terminal prompt (PS1) or you'll quickly lose your place -- here is my "pimp_prompt() bash function":https://gist.github.com/790086 which goes in your @~/.bash_profile@ or @~/.bashrc@, then type @source ~/.bashrc@ to reload.
+We also recommend adding the current git branch to your Terminal prompt (PS1) or you'll quickly lose your place -- here is a "pimp_prompt() bash function":https://gist.github.com/790086 which goes in your @~/.bash_profile@ or @~/.bashrc@, then type @source ~/.bashrc@ to reload.
 
 <img src="http://wow.sapegin.me/image/0Z1C1U00281j/pimped-prompt.jpg" alt="" title="You could be this cool" />
 
