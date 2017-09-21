@@ -10,6 +10,12 @@
 # e.g. for doing "push -f"
 #
 
+# Get parent branch
+# https://stackoverflow.com/a/17843908/1973105
+function get_parent() {
+  git show-branch | grep '*' | grep -v "$(git rev-parse --abbrev-ref HEAD)" | head -n1 | sed 's/.*\[\(.*\)\].*/\1/' | sed 's/[\^~].*//'
+}
+
 # Colors
 color_error="$(tput sgr 0 1)$(tput setaf 1)"
 color_reset="$(tput sgr0)"
@@ -35,7 +41,8 @@ fi
 # Parse relevant commit refs and let user know what we did
 # 1st-time push to new branch gets special treatment
 if echo $push | grep "\[new branch\]" >/dev/null; then
-  refs="master...$branch"
+  parent=$(get_parent)
+  refs="$parent...$branch"
   echo "🚀  Pushed a new branch '$branch' remotely"
 else
   refs=$(echo $push | awk '{ print $3}' | sed 's/\.\./\.\.\./')
@@ -43,7 +50,7 @@ else
   echo "$push"
 fi
 
-# Parse output into a GitHub URL
+# Parse output into a GitHub compare URL
 remote_url=$(git remote show $remote -n | grep Push | awk '{ print $3 }')
 
 if [[ "$remote_url" =~ "github.com" ]]; then
@@ -56,9 +63,9 @@ if [[ "$remote_url" =~ "github.com" ]]; then
   fi
 
   repo_name=$(echo $remote_url | sed $regEx)
-  github_url="$url$repo_name"
+  github_url="$url$repo_name/compare/$refs"
 
-  copied="\nProject URL copied to the clipboard:"
+  copied="\nCompare URL copied to clipboard:"
   which pbcopy >& /dev/null && echo $github_url | pbcopy && echo -e "$copied"
   which xclip >& /dev/null && echo $github_url | xclip -selection clipboard && echo -e "$copied"
 
