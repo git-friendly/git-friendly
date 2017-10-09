@@ -42,6 +42,9 @@ fi
 # 1st-time push to new branch gets special treatment
 if echo $push | grep "\[new branch\]" >/dev/null; then
   parent=$(get_parent)
+  if [ -z "$parent" ]; then
+    parent="master"
+  fi
   refs="$parent...$branch"
   echo "🚀  Pushed a new branch '$branch' remotely"
 else
