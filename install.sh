@@ -1,30 +1,30 @@
 #!/bin/bash
 
-here=$(pwd -P)
-tmp="/tmp/git-friendly"
-[ $1 ] && dest=$1 || dest="/usr/local/bin"
+# Scripts to install
+FILES=(branch merge pull push)
 
-git clone https://github.com/jamiew/git-friendly.git $tmp >/dev/null 2>&1
-rm -rf $tmp/.git
-rm -f $tmp/README* $tmp/install.sh $tmp/.gitignore
-installed_scripts=`ls -1 ${tmp}`
+# Create destination directory
+[ $1 ] && dest=$1 || dest="/usr/local/bin"
 mkdir -p ${dest}
-cp $tmp/* ${dest}/ &> /dev/null
-rm -rf $tmp
-for s in ${installed_scripts}; do
+
+# Download all scripts
+for s in ${FILES}; do
+  curl -sS -o ${dest}/${s} https://raw.githubusercontent.com/jamiew/git-friendly/master/${s}
   if [ ! -f ${dest}/${s} ]; then
     echo
-    echo "Oops! The ${s} command couldn't be installed, installation failed."
-    echo "Please re-run me as someone who can install into ${dest}."
+    echo "Oops! The '${s}' command cannot be copied to ${dest}, installation failed."
+    echo "Try to rerun with sudo or specify a custom directory, see for details:"
+    echo "https://github.com/jamiew/git-friendly#install"
     echo
     exit 1
   fi
 done
 
+# Done!
 echo
-echo "Done! Try typing 'pull' in any git repository to get started"
+echo "🎉  git-friendly has been installed into ${dest}."
+echo "Try typing 'pull' in any Git repository to get started. Run this command again to update."
+echo
 echo "For more info visit:"
-echo "http://github.com/jamiew/git-friendly"
+echo "https://github.com/jamiew/git-friendly"
 echo
-
-exit 0
