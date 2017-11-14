@@ -13,18 +13,18 @@ Git sometimes requires typing two or three commands just to execute something ba
 
 ## Install
 
-Run this one-liner, which will checkout the latest code and unpack the scripts into `/usr/local/bin`.
+Run this one-liner, which will checkout the latest code and unpack the scripts into `/usr/local/bin`:
+
+```bash
+curl -sS https://raw.githubusercontent.com/jamiew/git-friendly/master/install.sh | bash
+```
 
 **Note:** If you don’t have write access to `/usr/local/bin` you'll need to run this using `sudo`.
 
-```bash
-bash < <( curl https://raw.githubusercontent.com/jamiew/git-friendly/master/install.sh)
-```
-
-You can also provide a directory to install as an argument, e.g. `/usr/bin` instead of `/usr/local/bin`:
+You can also specify a directory to install:
 
 ```bash
-bash < <( curl https://raw.githubusercontent.com/jamiew/git-friendly/master/install.sh)
+curl -sS https://raw.githubusercontent.com/jamiew/git-friendly/master/install.sh | bash -s ~/friendly
 ```
 
 ## Manual Install
