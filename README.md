@@ -67,7 +67,7 @@ $ push
 | Command | Description |
 | ------- | ----------- |
 | `pull` | Stash any local changes, pull from remote using rebase, updates submodules, pop your stash, then run `bundle install`, `npm install`, `yarn install`, `bower install` or `composer install` if necessary. |
-| `push` | Push your changes to the remote + copy a diff URL, like [https://github.com/jamiew/git-friendly/compare/e96033...5daed4](https://github.com/jamiew/git-friendly/compare/e96033...5daed4), to your clipboard (works on Mac and Linux). |
+| `push` | Push your changes to the remote + copy a compare URL, like [https://github.com/jamiew/git-friendly/compare/e96033...5daed4](https://github.com/jamiew/git-friendly/compare/e96033...5daed4), to your clipboard (works on Mac and Linux). |
 | `branch [name]` | Switch branches or create new local branch if it doesn’t exist. Intelligently sets up remote branch tracking so you can just type `git pull` and not always `git pull origin newbranch`. If no argument specified, will list all local and remote branches. Supports branch deletion with `-d` or `-D` keys. |
 | `merge [name]` | Merge the specified branch into the current branch. Rebases first if the branch is local-only. |
 
