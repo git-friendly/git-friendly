@@ -2,26 +2,26 @@
 
 A collection of shell scripts for making **pulling**, **branching**, and **merging** with Git fast and painless.
 
-Git sometimes requires typing two or three commands just to execute something basic like fetching new code. git-friendly adds a few new commands — pull, push, branch, merge which:
+Git sometimes requires typing two or three commands just to execute something basic like fetching new code. git-friendly adds a few new commands — `pull`, `push`, `branch` and `merge` which:
 
-* stash/pop changes as needed
-* less time fighting Git = more time actually doing work
-* **push** also copies a GitHub compare URL to your clipboard for easy pasting
-* **pull** will run commands like `bundle install`, `npm install`, `yarn install`, and `composer install` if necessary
-* **branch** will track remote branches if they are available
+* stash and pop changes as needed;
+* **push** also copies a GitHub compare URL to your clipboard;
+* **pull** runs commands like `bundle install`, `npm install`, `yarn install`, and `composer install` if necessary;
+* **branch** tracks remote branches if they are available.
 
+*Less time fighting Git — more time actually doing work.*
 
 ## Install
 
-Run this one-liner, which will checkout the latest code and unpack the scripts into `/usr/local/bin`:
+Run this one-liner, which will download the scripts into `/usr/local/bin`:
 
 ```bash
 curl -sS https://raw.githubusercontent.com/jamiew/git-friendly/master/install.sh | bash
 ```
 
-**Note:** If you don’t have write access to `/usr/local/bin` you'll need to run this using `sudo`.
+**Note:** If you don’t have write access to `/usr/local/bin` you’ll need to run this using `sudo`.
 
-You can also specify a directory to install:
+You can change an installation directory:
 
 ```bash
 curl -sS https://raw.githubusercontent.com/jamiew/git-friendly/master/install.sh | bash -s ~/friendly
@@ -35,13 +35,11 @@ Checkout the code:
 git clone git://github.com/jamiew/git-friendly.git ~/dev/git-friendly
 ```
 
-Then add this directory to your PATH:
+Then update your `~/.bash_profile` or `~/.bashrc` to make git-friendly available each time you launch a new terminal:
 
 ```bash
 export PATH=~/dev/git-friendly:$PATH
 ```
-
-Add the above to your `~/.bash_profile` or `~/.bashrc` so that it runs each time you launch a new terminal.
 
 ## Usage
 
@@ -64,17 +62,54 @@ $ push
 
 ## Commands
 
-| Command | Description |
-| ------- | ----------- |
-| `pull` | Stash any local changes, pull from remote using rebase, updates submodules, pop your stash, then run `bundle install`, `npm install`, `yarn install`, `bower install` or `composer install` if necessary. |
-| `push` | Push your changes to the remote + copy a compare URL, like [https://github.com/jamiew/git-friendly/compare/e96033...5daed4](https://github.com/jamiew/git-friendly/compare/e96033...5daed4), to your clipboard (works on Mac and Linux). |
-| `branch [name]` | Switch branches or create new local branch if it doesn’t exist. Intelligently sets up remote branch tracking so you can just type `git pull` and not always `git pull origin newbranch`. If no argument specified, will list all local and remote branches. Supports branch deletion with `-d` or `-D` keys. |
-| `merge [name]` | Merge the specified branch into the current branch. Rebases first if the branch is local-only. |
+### `pull`
 
+* Stash any local changes;
+* pull from the remote using rebase;
+* update submodules;
+* pop your stash;
+* run `bundle install`, `npm install`, `yarn install`, `bower install` or `composer install` if there are any changes in `Gemfile`, `package.json`, etc.
+
+### `push`
+
+* Push your changes to the remote;
+* copy a compare URL, like [https://github.com/jamiew/git-friendly/compare/e96033...5daed4](https://github.com/jamiew/git-friendly/compare/e96033...5daed4), to your clipboard (works on Mac and Linux).
+
+Any extra arguments will be passed through to `git push`, for example `push -f`.
+
+### `branch`
+
+Switch branches or create new local branch if it doesn’t exist. Intelligently sets up remote branch tracking so you can just type `git pull` and not always `git pull origin newbranch`. If no argument specified, will list all local and remote branches. 
+
+```
+branch [name]
+```
+
+Supports branch deletion with `-d` or `-D` keys:
+
+```
+branch -d [name]
+branch -D [name]
+```
+
+And switching to a previous branch with `-`:
+
+```
+branch -
+```
+
+### `merge`
+
+* Merge the specified branch into the current branch;
+* rebase first if the branch is local-only.
+
+```
+merge [name]
+```
 
 ## Configuration
 
-You can disable `bundle install`, `npm install`, `yarn install`, `bower install` and `composer install` for the `pull` command by defining environmental variables:
+To disable `bundle install`, `npm install`, `yarn install`, `bower install` or `composer install` for the `pull` command use environmental variables:
 
 * `GIT_FRIENDLY_NO_BUNDLE`: disables `bundle install`
 * `GIT_FRIENDLY_NO_NPM`: disables `npm install`
@@ -100,7 +135,7 @@ We also recommend adding the current Git branch to your Terminal prompt (PS1) or
 
 ## License
 
-Code released under an MIT license.
+MIT license.
 
 Fork away, do whatever. Pull requests welcome.
 
