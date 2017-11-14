@@ -1,9 +1,11 @@
 #!/bin/bash
 #
 # Usage: branch [branchname]
+# Usage: branch [-D] [-d] [branchname]
+# Usage: branch -
 #
 #
-# Switch to an existing branch, or create a new local-only branch.
+# Switch to an existing branch, create a new local-only branch or delete a local or remote branch.
 # Adds remote tracking if a remote branch with the same name exists,
 # in any remote, preferring the "origin" master if there are duplicates.
 #
@@ -12,14 +14,30 @@
 
 remote="origin"
 branch=$1
+delete=
+
+if [ "$1" == "-d" ] || [ "$1" == "-D" ]; then
+  delete=$1
+  branch=$2
+fi
 
 if [ -z $branch ]; then
   echo -e "\nSwitch to or create a new branch:"
   echo -e "  $(basename $0) [name]"
+  echo -e "\nSwitch to the previous branch:"
+  echo -e "  $(basename $0) -"
+  echo -e "\nDelete branch:"
+  echo -e "  $(basename $0) [-D] [-d] <name>"
   echo -e "\nCurrent branches: "
   branches="git branch -a -vv"
   $branches
   echo
+  exit 0
+fi
+
+# Switch to the previous branch
+if [ "$branch" == "-" ]; then
+  git checkout -
   exit 0
 fi
 
@@ -28,6 +46,18 @@ remote_branch_exists=$(git branch -r --no-color | egrep " $remote/$branch\$")
 remotes=( $(git remote) )
 remotes_with_branch=()
 origin_has_branch=
+
+# Delete branch
+if [ "$delete" ]; then
+  if [ "$remote_branch_exists" ]; then
+    echo "💀  Removing remote branch..."
+    git push --delete $remote $branch
+  else
+    echo "💀  Removing local branch..."
+  fi
+  git branch $delete $branch
+  exit 0
+fi
 
 for remote in "${remotes[@]}";
 do
