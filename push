@@ -3,8 +3,7 @@
 # Usage: push
 #
 # Send your local branch changes to the remote branch,
-# and copy the relevant GitHub 'compare' URL to your clipboard (!)
-# This is Mac-only for the time being
+# and copy the relevant GitHub 'compare' URL to your clipboard (Mac/Linux only)
 #
 # Any extra args to this command will be passed through to 'git push',
 # e.g. for doing "push -f"
