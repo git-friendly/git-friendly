@@ -8,7 +8,7 @@ FILES=(branch merge pull push)
 mkdir -p ${dest}
 
 # Download all scripts
-for s in ${FILES}; do
+for s in ${FILES[*]}; do
   curl -sS -o ${dest}/${s} https://raw.githubusercontent.com/jamiew/git-friendly/master/${s}
   if [ ! -f ${dest}/${s} ]; then
     echo
