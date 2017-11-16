@@ -18,6 +18,7 @@ for s in ${FILES[*]}; do
     echo
     exit 1
   fi
+  chmod +x ${dest}/${s}
 done
 
 # Done!
