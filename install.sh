@@ -24,7 +24,9 @@ done
 # Done!
 echo
 echo "🎉  git-friendly has been installed into ${dest}."
-echo "Try typing 'pull' in any Git repository to get started. Run this command again to update."
+echo "Try typing 'pull' in any Git repository to get started."
+echo
+echo "To update git-friendly, install it again."
 echo
 echo "For more info visit:"
 echo "https://github.com/jamiew/git-friendly"
