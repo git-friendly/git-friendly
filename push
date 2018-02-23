@@ -30,7 +30,7 @@ push=$(git push --set-upstream $* $remote $remote_branch 2>&1)
 exit_code=$?
 
 if [ $exit_code != 0 ]; then
-  echo -e "${color_error}Ouch, push failed!${color_reset} code=$exit_code, output=$push"
+  echo -e "${color_error}Ouch, push failed!${color_reset}\n\n$push"
   exit $exit_code
 elif echo $push | grep "Everything up-to-date" >/dev/null; then
   echo "✌️  Git says everything is up-to-date!"
