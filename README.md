@@ -133,6 +133,25 @@ We also recommend adding the current Git branch to your Terminal prompt (PS1) or
 ![](http://wow.sapegin.me/image/0Z1C1U00281j/pimped-prompt.jpg)
 
 
+
+## Bonus: Shell Completion
+
+![](https://d3vv6lp55qjaqc.cloudfront.net/items/1p1U1A2s3P1C0t0p0C0B/completion.png)
+
+### Zsh shell completion
+
+Add to your `.zshrc`:
+
+```bash
+fpath=($(brew --prefix)/share/zsh/functions $fpath)
+autoload -Uz _git && _git
+compdef __git_branch_names branch
+```
+
+Now you can type `branch`, press Tab and you’ll see a list of branches in your repo.
+
+**Note:** You’ll need to adjust the path in the first line if you’re not using Homebrew or macOS.
+
 ## License
 
 MIT license.
