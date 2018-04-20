@@ -138,6 +138,30 @@ We also recommend adding the current Git branch to your Terminal prompt (PS1) or
 
 ![](https://d3vv6lp55qjaqc.cloudfront.net/items/1p1U1A2s3P1C0t0p0C0B/completion.png)
 
+### Bash shell completion
+
+Add to your shell config file `.bash_profile`, `.bashrc` or `.profile`:
+
+```bash
+if type __git_complete &> /dev/null; then
+  _branch () {
+    delete="${words[1]}"
+    if [ "$delete" == "-d" ] || [ "$delete" == "-D" ]; then
+      _git_branch
+    else 
+      _git_checkout
+    fi
+  }
+
+  __git_complete branch _branch
+  __git_complete merge _git_merge
+fi;
+```
+
+Now typing `branch <tab>` will suggest or autocomplete branches you can checkout to, `branch -d <tab>` branches you can delete and `merge <tab>` branches you can merge.
+
+**Note:** Your [git-completion](https://github.com/git/git/blob/0b0cc9f86731f894cff8dd25299a9b38c254569e/contrib/completion/git-completion.bash) script has to be called before the snippet.
+
 ### Zsh shell completion
 
 Add to your `.zshrc`:
