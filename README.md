@@ -79,7 +79,7 @@ Any extra arguments will be passed through to `git push`, for example `push -f`.
 
 ### `branch`
 
-Switch branches or create new local branch if it doesn’t exist. Intelligently sets up remote branch tracking so you can just type `git pull` and not always `git pull origin newbranch`. If no argument specified, will list all local and remote branches. 
+Switch branches or create new local branch if it doesn’t exist. Intelligently sets up remote branch tracking so you can just type `git pull` and not always `git pull origin newbranch`. If no argument specified, will list all local and remote branches.
 
 ```
 branch [name]
@@ -148,7 +148,7 @@ if type __git_complete &> /dev/null; then
     delete="${words[1]}"
     if [ "$delete" == "-d" ] || [ "$delete" == "-D" ]; then
       _git_branch
-    else 
+    else
       _git_checkout
     fi
   }
