@@ -195,6 +195,7 @@ Following the practices of [FAT Lab](http://fffff.at), anyone who submits an acc
 * [CJ Lazell](http://cj.io/) ([cj](http://github.com/cj))
 * [Maciej Małecki](http://twitter.com/mmalecki) ([mmalecki](https://github.com/mmalecki))
 * [John Manoogian](II":http://jm3.net) ([jm3](http://github.com/jm3))
+* [Pavel Prichodko](https://github.com/prichodko) ([prichodko](https://github.com/prichodko))
 * [Andriy Prokopenko](http://andriyprokopenko.com/) ([sleepyboy](https://github.com/sleepyboy))
 * [Artem Sapegin](http://sapegin.me/) ([sapegin](https://github.com/sapegin))
 * [Ezekiel Templin](http://blog.ezkl.org/) ([ezkl](https://github.com/ezkl))
