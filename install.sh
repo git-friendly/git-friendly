@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Scripts to install
-FILES=(branch merge pull push)
+FILES=(branch merge pull push stash)
 
 # Create destination directory
 [ $1 ] && dest=$1 || dest="/usr/local/bin"
