@@ -82,8 +82,8 @@ default_remote="origin"
 remote=$(git config "branch.${branch}.remote" || echo "$default_remote")
 remote_branch=$( (git config "branch.${branch}.merge" || echo "refs/heads/$branch") | cut -d/ -f3- )
 
-# Stash any local changes
-stash=$(git stash)
+# Stash any local changes, including untracked files
+stash=$(git stash --include-untracked)
 
 # Update our remote
 echo "🚀  Fetching from $remote..."
