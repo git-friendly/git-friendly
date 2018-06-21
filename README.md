@@ -1,13 +1,14 @@
 <img src="https://d3vv6lp55qjaqc.cloudfront.net/items/0F2U3y3k0z1z0W2y2H0e/git-friendly.jpg" width="100%" style="width:100%" />
 
-A collection of shell scripts for making **pulling**, **branching**, and **merging** with Git fast and painless.
+A collection of shell scripts for making **pulling**, **pushing**, **branching**, **merging**, and **stashing** with Git fast and painless.
 
-Git sometimes requires typing two or three commands just to execute something basic like fetching new code. git-friendly adds a few new commands — `pull`, `push`, `branch` and `merge` which:
+Git sometimes requires typing two or three commands just to execute something basic like fetching new code. git-friendly adds a few new commands — `pull`, `push`, `branch`, `merge` and `stash` which:
 
-* stash and pop changes as needed;
+* do the most useful thing by default;
 * **push** also copies a GitHub compare URL to your clipboard;
 * **pull** runs commands like `bundle install`, `npm install`, `yarn install`, and `composer install` if necessary;
-* **branch** tracks remote branches if they are available.
+* **branch** tracks remote branches if they are available;
+* **stash** stashes untracked files by default.
 
 *Less time fighting Git — more time actually doing work.*
 
@@ -21,7 +22,7 @@ curl -sS https://raw.githubusercontent.com/jamiew/git-friendly/master/install.sh
 
 **Note:** If you don’t have write access to `/usr/local/bin` you’ll need to run this using `sudo`.
 
-You can change an installation directory:
+You can change the installation directory:
 
 ```bash
 curl -sS https://raw.githubusercontent.com/jamiew/git-friendly/master/install.sh | bash -s ~/friendly
@@ -43,20 +44,20 @@ export PATH=~/dev/git-friendly:$PATH
 
 ## Usage
 
-You now have new awesome commands: **pull**, **push**, **branch**, **merge**:
+You now have new awesome commands: **branch**, **merge**, **pull**, **push** and **stash**:
 
 ![](https://d3vv6lp55qjaqc.cloudfront.net/items/3S3H2W1l1F3d1m2x3w1U/pull.png)
 
 Example session:
 
 ```bash
-$ pull
-$ branch awesomeness
-$ echo "BUMP" >> README
-$ git commit -a -m "Righteous bump"
-$ branch master
-$ merge awesomeness
-$ push
+pull
+branch awesomeness # Create a new branch (or switch to existing one)
+echo "BUMP" >> README
+git commit -a -m "Righteous bump"
+branch master      # Switch back to master
+merge awesomeness  # Merge awesomeness branch to master
+push               # Push changes
 ```
 
 
@@ -107,6 +108,17 @@ branch -
 merge [name]
 ```
 
+### `stash`
+
+* Stashes untracked files by default, when run without arguments;
+* behaves like normal `git stash` otherwise.
+
+```
+stash
+stash pop
+```
+
+
 ## Configuration
 
 To disable `bundle install`, `npm install`, `yarn install`, `bower install` or `composer install` for the `pull` command use environmental variables:
@@ -138,7 +150,7 @@ We also recommend adding the current Git branch to your Terminal prompt (PS1) or
 
 ![](https://d3vv6lp55qjaqc.cloudfront.net/items/1p1U1A2s3P1C0t0p0C0B/completion.png)
 
-### Bash shell completion
+### Bash Shell Completion
 
 Add to your shell config file `.bash_profile`, `.bashrc` or `.profile`:
 
@@ -162,7 +174,7 @@ Now typing `branch <tab>` will suggest or autocomplete branches you can checkout
 
 **Note:** Your [git-completion](https://github.com/git/git/blob/0b0cc9f86731f894cff8dd25299a9b38c254569e/contrib/completion/git-completion.bash) script has to be called before the snippet.
 
-### Zsh shell completion
+### Zsh Shell Completion
 
 Add to your `.zshrc`:
 
