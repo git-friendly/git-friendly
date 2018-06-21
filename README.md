@@ -63,21 +63,6 @@ push               # Push changes
 
 ## Commands
 
-### `pull`
-
-* Stash any local changes;
-* pull from the remote using rebase;
-* update submodules;
-* pop your stash;
-* run `bundle install`, `npm install`, `yarn install`, `bower install` or `composer install` if there are any changes in `Gemfile`, `package.json`, etc.
-
-### `push`
-
-* Push your changes to the remote;
-* copy a compare URL, like [https://github.com/jamiew/git-friendly/compare/e96033...5daed4](https://github.com/jamiew/git-friendly/compare/e96033...5daed4), to your clipboard (works on Mac and Linux).
-
-Any extra arguments will be passed through to `git push`, for example `push -f`.
-
 ### `branch`
 
 Switch branches or create new local branch if it doesn’t exist. Intelligently sets up remote branch tracking so you can just type `git pull` and not always `git pull origin newbranch`. If no argument specified, will list all local and remote branches.
@@ -107,6 +92,21 @@ branch -
 ```
 merge [name]
 ```
+
+### `pull`
+
+* Stash any local changes;
+* pull from the remote using rebase;
+* update submodules;
+* pop your stash;
+* run `bundle install`, `npm install`, `yarn install`, `bower install` or `composer install` if there are any changes in `Gemfile`, `package.json`, etc.
+
+### `push`
+
+* Push your changes to the remote;
+* copy a compare URL, like [https://github.com/jamiew/git-friendly/compare/e96033...5daed4](https://github.com/jamiew/git-friendly/compare/e96033...5daed4), to your clipboard (works on Mac and Linux).
+
+Any extra arguments will be passed through to `git push`, for example `push -f`.
 
 ### `stash`
 
@@ -138,7 +138,7 @@ export GIT_FRIENDLY_NO_BUNDLE=true
 
 ## Bonus: Pimp Your Configs
 
-We strongly recommend editing your global `~/.gitconfig` and adding features like ANSI color, command aliases (e.g. `git st` instead of `git status`), automatic remote tracking and more. Check out [this sample ~/.gitconfig](https://gist.github.com/668161) to get started.
+We strongly recommend editing your global `~/.gitconfig` and adding features like ANSI color, command aliases (like `git st` instead of `git status`), automatic remote tracking and more. Check out [this sample ~/.gitconfig](https://gist.github.com/668161) to get started.
 
 We also recommend adding the current Git branch to your Terminal prompt (PS1) or you’ll quickly lose your place — here is a [pimp_prompt() bash function](https://gist.github.com/790086) which goes in your `~/.bash_profile` or `~/.bashrc`, then type `source ~/.bashrc` to reload.
 
@@ -172,7 +172,7 @@ fi;
 
 Now typing `branch <tab>` will suggest or autocomplete branches you can checkout to, `branch -d <tab>` branches you can delete and `merge <tab>` branches you can merge.
 
-**Note:** Your [git-completion](https://github.com/git/git/blob/0b0cc9f86731f894cff8dd25299a9b38c254569e/contrib/completion/git-completion.bash) script has to be called before the snippet.
+**Note:** You need to call your [git-completion](https://github.com/git/git/blob/0b0cc9f86731f894cff8dd25299a9b38c254569e/contrib/completion/git-completion.bash) script before the snippet.
 
 ### Zsh Shell Completion
 
@@ -204,12 +204,12 @@ Following the practices of [FAT Lab](http://fffff.at), anyone who submits an acc
 * [Ethan Bruning](https://github.com/ebruning) ([ebruning](https://github.com/ebruning))
 * [Rafael Corrêa Gomes](https://rafaelstz.github.io/) ([rafaelstz](https://github.com/rafaelstz))
 * [Harold Dennison](http://hdennison.com/) ([hdennison](https://github.com/hdennison))
-* [CJ Lazell](http://cj.io/) ([cj](http://github.com/cj))
-* [Maciej Małecki](http://twitter.com/mmalecki) ([mmalecki](https://github.com/mmalecki))
-* [John Manoogian III](http://www.jm3.net) ([jm3](https://github.com/jm3))
+* [CJ Lazell](http://cj.io/) ([cj](https://github.com/cj))
+* [Maciej Małecki](https://twitter.com/mmalecki) ([mmalecki](https://github.com/mmalecki))
+* [John Manoogian III](https://www.jm3.net) ([jm3](https://github.com/jm3))
 * [Pavel Prichodko](https://github.com/prichodko) ([prichodko](https://github.com/prichodko))
-* [Andriy Prokopenko](http://andriyprokopenko.com/) ([sleepyboy](https://github.com/sleepyboy))
+* [Andriy Prokopenko](https://andriyprokopenko.com/) ([sleepyboy](https://github.com/sleepyboy))
 * [Artem Sapegin](http://sapegin.me/) ([sapegin](https://github.com/sapegin))
 * [Ezekiel Templin](http://blog.ezkl.org/) ([ezkl](https://github.com/ezkl))
-* [Jamie Wilkinson](http://www.jamiedubs.com) ([jamiew](https://github.com/jamiew))
+* [Jamie Wilkinson](https://www.jamiedubs.com) ([jamiew](https://github.com/jamiew))
 * [Ben Zörb](https://github.com/bezoerb) ([bezoerb](https://github.com/bezoerb))
