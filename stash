@@ -1,0 +1,16 @@
+#!/bin/bash
+#
+# Usage: stash [options]
+#
+# Stashes all changes (including untracked), or run git stash will all arguments
+#
+
+# If ran without arguments, stall all files, including untracked
+if [ -z "$1" ]; then
+	echo "🐿️  Stashing changes..."
+	git stash --include-untracked
+	exit 0
+fi
+
+# Otherwise pass all arguments to git stash
+git stash "$@"

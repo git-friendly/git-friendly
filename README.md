@@ -1,13 +1,14 @@
 <img src="https://d3vv6lp55qjaqc.cloudfront.net/items/0F2U3y3k0z1z0W2y2H0e/git-friendly.jpg" width="100%" style="width:100%" />
 
-A collection of shell scripts for making **pulling**, **branching**, and **merging** with Git fast and painless.
+A collection of shell scripts for making **pulling**, **pushing**, **branching**, **merging**, and **stashing** with Git fast and painless.
 
-Git sometimes requires typing two or three commands just to execute something basic like fetching new code. git-friendly adds a few new commands — `pull`, `push`, `branch` and `merge` which:
+Git sometimes requires typing two or three commands just to execute something basic like fetching new code. git-friendly adds a few new commands — `pull`, `push`, `branch`, `merge` and `stash` which:
 
-* stash and pop changes as needed;
+* do the most useful thing by default;
 * **push** also copies a GitHub compare URL to your clipboard;
 * **pull** runs commands like `bundle install`, `npm install`, `yarn install`, and `composer install` if necessary;
-* **branch** tracks remote branches if they are available.
+* **branch** tracks remote branches if they are available;
+* **stash** stashes untracked files by default.
 
 *Less time fighting Git — more time actually doing work.*
 
@@ -21,7 +22,7 @@ curl -sS https://raw.githubusercontent.com/jamiew/git-friendly/master/install.sh
 
 **Note:** If you don’t have write access to `/usr/local/bin` you’ll need to run this using `sudo`.
 
-You can change an installation directory:
+You can change the installation directory:
 
 ```bash
 curl -sS https://raw.githubusercontent.com/jamiew/git-friendly/master/install.sh | bash -s ~/friendly
@@ -43,39 +44,24 @@ export PATH=~/dev/git-friendly:$PATH
 
 ## Usage
 
-You now have new awesome commands: **pull**, **push**, **branch**, **merge**:
+You now have new awesome commands: **branch**, **merge**, **pull**, **push** and **stash**:
 
 ![](https://d3vv6lp55qjaqc.cloudfront.net/items/3S3H2W1l1F3d1m2x3w1U/pull.png)
 
 Example session:
 
 ```bash
-$ pull
-$ branch awesomeness
-$ echo "BUMP" >> README
-$ git commit -a -m "Righteous bump"
-$ branch master
-$ merge awesomeness
-$ push
+pull
+branch awesomeness # Create a new branch (or switch to existing one)
+echo "BUMP" >> README
+git commit -a -m "Righteous bump"
+branch master      # Switch back to master
+merge awesomeness  # Merge awesomeness branch to master
+push               # Push changes
 ```
 
 
 ## Commands
-
-### `pull`
-
-* Stash any local changes;
-* pull from the remote using rebase;
-* update submodules;
-* pop your stash;
-* run `bundle install`, `npm install`, `yarn install`, `bower install` or `composer install` if there are any changes in `Gemfile`, `package.json`, etc.
-
-### `push`
-
-* Push your changes to the remote;
-* copy a compare URL, like [https://github.com/jamiew/git-friendly/compare/e96033...5daed4](https://github.com/jamiew/git-friendly/compare/e96033...5daed4), to your clipboard (works on Mac and Linux).
-
-Any extra arguments will be passed through to `git push`, for example `push -f`.
 
 ### `branch`
 
@@ -107,6 +93,32 @@ branch -
 merge [name]
 ```
 
+### `pull`
+
+* Stash any local changes;
+* pull from the remote using rebase;
+* update submodules;
+* pop your stash;
+* run `bundle install`, `npm install`, `yarn install`, `bower install` or `composer install` if there are any changes in `Gemfile`, `package.json`, etc.
+
+### `push`
+
+* Push your changes to the remote;
+* copy a compare URL, like [https://github.com/jamiew/git-friendly/compare/e96033...5daed4](https://github.com/jamiew/git-friendly/compare/e96033...5daed4), to your clipboard (works on Mac and Linux).
+
+Any extra arguments will be passed through to `git push`, for example `push -f`.
+
+### `stash`
+
+* Stashes untracked files by default, when run without arguments;
+* behaves like normal `git stash` otherwise.
+
+```
+stash
+stash pop
+```
+
+
 ## Configuration
 
 To disable `bundle install`, `npm install`, `yarn install`, `bower install` or `composer install` for the `pull` command use environmental variables:
@@ -126,7 +138,7 @@ export GIT_FRIENDLY_NO_BUNDLE=true
 
 ## Bonus: Pimp Your Configs
 
-We strongly recommend editing your global `~/.gitconfig` and adding features like ANSI color, command aliases (e.g. `git st` instead of `git status`), automatic remote tracking and more. Check out [this sample ~/.gitconfig](https://gist.github.com/668161) to get started.
+We strongly recommend editing your global `~/.gitconfig` and adding features like ANSI color, command aliases (like `git st` instead of `git status`), automatic remote tracking and more. Check out [this sample ~/.gitconfig](https://gist.github.com/668161) to get started.
 
 We also recommend adding the current Git branch to your Terminal prompt (PS1) or you’ll quickly lose your place — here is a [pimp_prompt() bash function](https://gist.github.com/790086) which goes in your `~/.bash_profile` or `~/.bashrc`, then type `source ~/.bashrc` to reload.
 
@@ -138,7 +150,7 @@ We also recommend adding the current Git branch to your Terminal prompt (PS1) or
 
 ![](https://d3vv6lp55qjaqc.cloudfront.net/items/1p1U1A2s3P1C0t0p0C0B/completion.png)
 
-### Bash shell completion
+### Bash Shell Completion
 
 Add to your shell config file `.bash_profile`, `.bashrc` or `.profile`:
 
@@ -160,9 +172,9 @@ fi;
 
 Now typing `branch <tab>` will suggest or autocomplete branches you can checkout to, `branch -d <tab>` branches you can delete and `merge <tab>` branches you can merge.
 
-**Note:** Your [git-completion](https://github.com/git/git/blob/0b0cc9f86731f894cff8dd25299a9b38c254569e/contrib/completion/git-completion.bash) script has to be called before the snippet.
+**Note:** You need to call your [git-completion](https://github.com/git/git/blob/0b0cc9f86731f894cff8dd25299a9b38c254569e/contrib/completion/git-completion.bash) script before the snippet.
 
-### Zsh shell completion
+### Zsh Shell Completion
 
 Add to your `.zshrc`:
 
@@ -192,12 +204,12 @@ Following the practices of [FAT Lab](http://fffff.at), anyone who submits an acc
 * [Ethan Bruning](https://github.com/ebruning) ([ebruning](https://github.com/ebruning))
 * [Rafael Corrêa Gomes](https://rafaelstz.github.io/) ([rafaelstz](https://github.com/rafaelstz))
 * [Harold Dennison](http://hdennison.com/) ([hdennison](https://github.com/hdennison))
-* [CJ Lazell](http://cj.io/) ([cj](http://github.com/cj))
-* [Maciej Małecki](http://twitter.com/mmalecki) ([mmalecki](https://github.com/mmalecki))
-* [John Manoogian III](http://www.jm3.net) ([jm3](https://github.com/jm3))
+* [CJ Lazell](http://cj.io/) ([cj](https://github.com/cj))
+* [Maciej Małecki](https://twitter.com/mmalecki) ([mmalecki](https://github.com/mmalecki))
+* [John Manoogian III](https://www.jm3.net) ([jm3](https://github.com/jm3))
 * [Pavel Prichodko](https://github.com/prichodko) ([prichodko](https://github.com/prichodko))
-* [Andriy Prokopenko](http://andriyprokopenko.com/) ([sleepyboy](https://github.com/sleepyboy))
+* [Andriy Prokopenko](https://andriyprokopenko.com/) ([sleepyboy](https://github.com/sleepyboy))
 * [Artem Sapegin](http://sapegin.me/) ([sapegin](https://github.com/sapegin))
 * [Ezekiel Templin](http://blog.ezkl.org/) ([ezkl](https://github.com/ezkl))
-* [Jamie Wilkinson](http://www.jamiedubs.com) ([jamiew](https://github.com/jamiew))
+* [Jamie Wilkinson](https://www.jamiedubs.com) ([jamiew](https://github.com/jamiew))
 * [Ben Zörb](https://github.com/bezoerb) ([bezoerb](https://github.com/bezoerb))
