@@ -201,15 +201,11 @@ Following the practices of [FAT Lab](http://fffff.at), anyone who submits an acc
 
 ## Contributors
 
-* [Ethan Bruning](https://github.com/ebruning) ([ebruning](https://github.com/ebruning))
-* [Rafael Corrêa Gomes](https://rafaelstz.github.io/) ([rafaelstz](https://github.com/rafaelstz))
-* [Harold Dennison](http://hdennison.com/) ([hdennison](https://github.com/hdennison))
-* [CJ Lazell](http://cj.io/) ([cj](https://github.com/cj))
-* [Maciej Małecki](https://twitter.com/mmalecki) ([mmalecki](https://github.com/mmalecki))
-* [John Manoogian III](https://www.jm3.net) ([jm3](https://github.com/jm3))
-* [Pavel Prichodko](https://github.com/prichodko) ([prichodko](https://github.com/prichodko))
-* [Andriy Prokopenko](https://andriyprokopenko.com/) ([sleepyboy](https://github.com/sleepyboy))
-* [Artem Sapegin](http://sapegin.me/) ([sapegin](https://github.com/sapegin))
-* [Ezekiel Templin](http://blog.ezkl.org/) ([ezkl](https://github.com/ezkl))
-* [Jamie Wilkinson](https://www.jamiedubs.com) ([jamiew](https://github.com/jamiew))
-* [Ben Zörb](https://github.com/bezoerb) ([bezoerb](https://github.com/bezoerb))
+<!-- To add: npx all-contributors-cli add NAME code -->
+<!-- To generate: npx all-contributors-cli generate -->
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore -->
+| [<img src="https://avatars0.githubusercontent.com/u/1903?v=4" width="100px;"/><br /><sub><b>Jamie Wilkinson</b></sub>](http://jamiedubs.com)<br />[💻](https://github.com/jamiew/git-friendly/commits?author=jamiew "Code") [📖](https://github.com/jamiew/git-friendly/commits?author=jamiew "Documentation") | [<img src="https://avatars2.githubusercontent.com/u/70067?v=4" width="100px;"/><br /><sub><b>Artem Sapegin</b></sub>](http://sapegin.me)<br />[💻](https://github.com/jamiew/git-friendly/commits?author=sapegin "Code") [📖](https://github.com/jamiew/git-friendly/commits?author=sapegin "Documentation") | [<img src="https://avatars3.githubusercontent.com/u/692459?v=4" width="100px;"/><br /><sub><b>Maciej Małecki</b></sub>](http://mmalecki.com)<br />[💻](https://github.com/jamiew/git-friendly/commits?author=mmalecki "Code") | [<img src="https://avatars0.githubusercontent.com/u/12213?v=4" width="100px;"/><br /><sub><b>John Manoogian III</b></sub>](http://www.jm3.net)<br />[💻](https://github.com/jamiew/git-friendly/commits?author=jm3 "Code") | [<img src="https://avatars1.githubusercontent.com/u/610598?v=4" width="100px;"/><br /><sub><b>Rafael Corrêa Gomes</b></sub>](https://rafaelstz.github.io)<br />[📖](https://github.com/jamiew/git-friendly/commits?author=rafaelstz "Documentation") | [<img src="https://avatars0.githubusercontent.com/u/707900?v=4" width="100px;"/><br /><sub><b>Harold Dennison</b></sub>](https://github.com/hdennison)<br />[💻](https://github.com/jamiew/git-friendly/commits?author=hdennison "Code") | [<img src="https://avatars0.githubusercontent.com/u/237136?v=4" width="100px;"/><br /><sub><b>Ruan Carlos</b></sub>](http://ruancarlos.com.br)<br />[💻](https://github.com/jamiew/git-friendly/commits?author=ruanltbg "Code") |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| [<img src="https://avatars1.githubusercontent.com/u/310912?v=4" width="100px;"/><br /><sub><b>Ethan Bruning</b></sub>](https://github.com/ebruning)<br />[💻](https://github.com/jamiew/git-friendly/commits?author=ebruning "Code") | [<img src="https://avatars2.githubusercontent.com/u/40455?v=4" width="100px;"/><br /><sub><b>Ezekiel Templin</b></sub>](http://zeke.templ.in/)<br />[📖](https://github.com/jamiew/git-friendly/commits?author=ezkl "Documentation") | [<img src="https://avatars1.githubusercontent.com/u/676053?v=4" width="100px;"/><br /><sub><b>Andriy</b></sub>](http://andriyprokopenko.com)<br />[💻](https://github.com/jamiew/git-friendly/commits?author=sleepyboy "Code") | [<img src="https://avatars1.githubusercontent.com/u/1697800?v=4" width="100px;"/><br /><sub><b>Ben Zörb</b></sub>](https://github.com/bezoerb)<br />[💻](https://github.com/jamiew/git-friendly/commits?author=bezoerb "Code") | [<img src="https://avatars2.githubusercontent.com/u/14926950?v=4" width="100px;"/><br /><sub><b>Pavel Prichodko</b></sub>](https://github.com/prichodko)<br />[📖](https://github.com/jamiew/git-friendly/commits?author=prichodko "Documentation") | [<img src="https://avatars0.githubusercontent.com/u/1819?v=4" width="100px;"/><br /><sub><b>CJ Lazell</b></sub>](http://cj.io)<br />[💻](https://github.com/jamiew/git-friendly/commits?author=cj "Code") |
+<!-- ALL-CONTRIBUTORS-LIST:END -->
