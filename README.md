@@ -190,7 +190,7 @@ Now you can type `branch`, press Tab and you’ll see a list of branches in your
 
 ## License
 
-MIT license.
+[MIT license](LICENSE.md).
 
 Fork away, do whatever. Pull requests welcome.
 
