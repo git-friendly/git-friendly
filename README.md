@@ -1,15 +1,15 @@
 <img src="https://d3vv6lp55qjaqc.cloudfront.net/items/0F2U3y3k0z1z0W2y2H0e/git-friendly.jpg" width="100%" style="width:100%" />
 
-A collection of shell scripts for making **committing**, **pulling**, **pushing**, **branching**, **merging**, and **stashing** with Git fast and painless.
+A collection of shell scripts for making **pulling**, **pushing**, **branching**, **merging**, **stashing** and **committing** with Git fast and painless.
 
-Git sometimes requires typing two or three commands just to execute something basic like fetching new code. git-friendly adds a few new commands — `commit`, `pull`, `push`, `branch`, `merge` and `stash` which:
+Git sometimes requires typing two or three commands just to execute something basic like fetching new code. git-friendly adds a few new commands —  `pull`, `push`, `branch`, `merge`, `stash` and `commit` which:
 
 * do the most useful thing by default;
 * **push** also copies a GitHub compare URL to your clipboard;
-* **commit** adds all untracked files and commit all of them;
 * **pull** runs commands like `bundle install`, `npm install`, `yarn install`, and `composer install` if necessary;
 * **branch** tracks remote branches if they are available;
 * **stash** stashes untracked files by default.
+* **commit** adds all untracked files and commit all of them;
 
 *Less time fighting Git — more time actually doing work.*
 
