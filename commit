@@ -1,0 +1,18 @@
+#!/bin/bash
+#
+# Usage: commit [commitmessage]
+#
+# Tries to add and commit current changes into the current branch
+# It will stop you if you are behind & need to pull 1st
+#
+
+if [ -z "$1" ]; then
+  echo "⚠️  Error: Commit message is missing"
+  echo "Usage: commit [commitmessage]"
+  exit 1
+fi
+
+echo "📝  Committing changes..."
+git add .
+git commit -a -v -m "$@" 
+exit 0
