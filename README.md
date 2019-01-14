@@ -2,10 +2,11 @@
 
 A collection of shell scripts for making **committing**, **pulling**, **pushing**, **branching**, **merging**, and **stashing** with Git fast and painless.
 
-Git sometimes requires typing two or three commands just to execute something basic like fetching new code. git-friendly adds a few new commands — `acm`, `pull`, `push`, `branch`, `merge` and `stash` which:
+Git sometimes requires typing two or three commands just to execute something basic like fetching new code. git-friendly adds a few new commands — `commit`, `pull`, `push`, `branch`, `merge` and `stash` which:
 
 * do the most useful thing by default;
 * **push** also copies a GitHub compare URL to your clipboard;
+* **commit** adds all untracked files and commit all of them;
 * **pull** runs commands like `bundle install`, `npm install`, `yarn install`, and `composer install` if necessary;
 * **branch** tracks remote branches if they are available;
 * **stash** stashes untracked files by default.
@@ -44,7 +45,7 @@ export PATH=~/dev/git-friendly:$PATH
 
 ## Usage
 
-You now have new awesome commands: **branch**, **merge**, **pull**, **push** and **stash**:
+You now have new awesome commands: **commit**, **branch**, **merge**, **pull**, **push** and **stash**:
 
 ![](https://d3vv6lp55qjaqc.cloudfront.net/items/3S3H2W1l1F3d1m2x3w1U/pull.png)
 
@@ -116,6 +117,15 @@ Any extra arguments will be passed through to `git push`, for example `push -f`.
 ```
 stash
 stash pop
+```
+
+### `commit`
+
+* Add untracked files;
+* Commit all files with the given commit message.
+
+```
+commit "Feature: Add commit command"
 ```
 
 
