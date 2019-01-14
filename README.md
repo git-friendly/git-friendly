@@ -18,7 +18,7 @@ Git sometimes requires typing two or three commands just to execute something ba
 Run this one-liner, which will download the scripts into `/usr/local/bin`:
 
 ```bash
-curl -sS https://raw.githubusercontent.com/jamiew/git-friendly/master/install.sh | bash
+curl -sS https://raw.githubusercontent.com/nicolasritouet/git-friendly/master/install.sh | bash
 ```
 
 **Note:** If you don’t have write access to `/usr/local/bin` you’ll need to run this using `sudo`.
@@ -26,7 +26,7 @@ curl -sS https://raw.githubusercontent.com/jamiew/git-friendly/master/install.sh
 You can change the installation directory:
 
 ```bash
-curl -sS https://raw.githubusercontent.com/jamiew/git-friendly/master/install.sh | bash -s ~/friendly
+curl -sS https://raw.githubusercontent.com/nicolasritouet/git-friendly/master/install.sh | bash -s ~/friendly
 ```
 
 ## Manual Install
@@ -45,7 +45,7 @@ export PATH=~/dev/git-friendly:$PATH
 
 ## Usage
 
-You now have new awesome commands: **commit**, **branch**, **merge**, **pull**, **push** and **stash**:
+You now have new awesome commands: **branch**, **merge**, **pull**, **push**, **stash** and **commit**:
 
 ![](https://d3vv6lp55qjaqc.cloudfront.net/items/3S3H2W1l1F3d1m2x3w1U/pull.png)
 
@@ -55,7 +55,7 @@ Example session:
 pull
 branch awesomeness # Create a new branch (or switch to existing one)
 echo "BUMP" >> README
-git commit -a -m "Righteous bump"
+commit "Righteous bump"
 branch master      # Switch back to master
 merge awesomeness  # Merge awesomeness branch to master
 push               # Push changes
