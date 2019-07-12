@@ -129,6 +129,10 @@ To disable `bundle install`, `npm install`, `yarn install`, `bower install` or `
 * `GIT_FRIENDLY_NO_BOWER`: disables `bower install`
 * `GIT_FRIENDLY_NO_COMPOSER`: disables `composer install`
 
+To disable copying URL to clipboard after `push` use environmental variables:
+
+* `$GIT_FRIENDLY_NO_COPY_AFTER_PUSH`: disables copying URL to clipboard
+
 For example, add this line to your `~/.bash_profile` to disable `bundle install`:
 
 ```bash
