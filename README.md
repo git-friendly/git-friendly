@@ -121,7 +121,7 @@ stash pop
 
 ## Configuration
 
-To disable `bundle install`, `npm install`, `yarn install`, `bower install` or `composer install` for the `pull` command use environmental variables:
+To disable `bundle install`, `npm install`, `yarn install`, `bower install` or `composer install` for the `pull` command, use environment variables:
 
 * `GIT_FRIENDLY_NO_BUNDLE`: disables `bundle install`
 * `GIT_FRIENDLY_NO_NPM`: disables `npm install`
@@ -129,8 +129,7 @@ To disable `bundle install`, `npm install`, `yarn install`, `bower install` or `
 * `GIT_FRIENDLY_NO_BOWER`: disables `bower install`
 * `GIT_FRIENDLY_NO_COMPOSER`: disables `composer install`
 
-To disable copying URL to clipboard after `push` use the `GIT_FRIENDLY_NO_COPY_URL_AFTER_PUSH` environmental variable.
-
+To disable copying URL to clipboard after `push` use the `GIT_FRIENDLY_NO_COPY_URL_AFTER_PUSH` environment variable.
 
 For example, add this line to your `~/.bash_profile` to disable `bundle install`:
 
