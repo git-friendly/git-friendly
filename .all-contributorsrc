@@ -127,6 +127,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Seresigo",
+      "name": "Philipp Trubchenko",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/30799665?v=4",
+      "profile": "http://seresigo.com",
+      "contributions": [
+        "code"
+      ]
     }
-  ]
+  ],
+  "commitConvention": "none"
 }
