@@ -138,20 +138,6 @@ if [ "$GIT_FRIENDLY_NO_NPM" != "true" ]; then
   fi
 fi
 
-# Install Bower components
-if [ "$GIT_FRIENDLY_NO_BOWER" != "true" ]; then
-  if has_changed 'bower.json'; then
-    change_dir 'bower.json'
-    if cmd_exists 'bower' || [ -x ./node_modules/.bin/bower ]; then
-      echo
-      echo '⚔  Installing Bower packages...'
-      cmd_exists 'bower' && bower install || ./node_modules/.bin/bower install
-    fi
-    reset_dir
-  fi
-fi
-
-
 # Install Composer packages
 if [ "$GIT_FRIENDLY_NO_COMPOSER" != "true" ]; then
   if has_changed 'composer.lock'; then
