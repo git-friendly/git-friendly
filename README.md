@@ -99,7 +99,7 @@ merge [name]
 * pull from the remote using rebase;
 * update submodules;
 * pop your stash;
-* run `bundle install`, `npm install`, `yarn install`, `bower install` or `composer install` if there are any changes in `Gemfile`, `package.json`, etc.
+* run `bundle install`, `npm install`, `yarn install` or `composer install` if there are any changes in `Gemfile`, `package.json`, etc.
 
 ### `push`
 
@@ -121,12 +121,11 @@ stash pop
 
 ## Configuration
 
-To disable `bundle install`, `npm install`, `yarn install`, `bower install` or `composer install` for the `pull` command, use environment variables:
+To disable `bundle install`, `npm install`, `yarn install` or `composer install` for the `pull` command, use environment variables:
 
 * `GIT_FRIENDLY_NO_BUNDLE`: disables `bundle install`
 * `GIT_FRIENDLY_NO_NPM`: disables `npm install`
 * `GIT_FRIENDLY_NO_YARN`: disables `yarn install`
-* `GIT_FRIENDLY_NO_BOWER`: disables `bower install`
 * `GIT_FRIENDLY_NO_COMPOSER`: disables `composer install`
 
 To disable copying URL to clipboard after `push` use the `GIT_FRIENDLY_NO_COPY_URL_AFTER_PUSH` environment variable.
