@@ -129,9 +129,8 @@ export GIT_FRIENDLY_NO_BUNDLE=true
 
 Available environment variables:
 
-|-|-|-|
 | Variable | Description | Commands | Default value |
-|-|-|-|
+| --- | --- | --- | --- |
 | `GIT_FRIENDLY_NO_BUNDLE` | Disables `bundle install` | `pull` | `false` |
 | `GIT_FRIENDLY_NO_COMPOSER` | Disables `composer install` | `pull` | `false` |
 | `GIT_FRIENDLY_NO_NPM` | Disables `npm install` | `pull` | `false` |
