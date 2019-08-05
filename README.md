@@ -121,21 +121,22 @@ stash pop
 
 ## Configuration
 
-To disable `bundle install`, `npm install`, `yarn install` or `composer install` for the `pull` command, use environment variables:
-
-* `GIT_FRIENDLY_NO_BUNDLE`: disables `bundle install`
-* `GIT_FRIENDLY_NO_NPM`: disables `npm install`
-* `GIT_FRIENDLY_NO_YARN`: disables `yarn install`
-* `GIT_FRIENDLY_NO_COMPOSER`: disables `composer install`
-
-To disable copying URL to clipboard after `push` use the `GIT_FRIENDLY_NO_COPY_URL_AFTER_PUSH` environment variable.
-
-For example, add this line to your `~/.bash_profile` to disable `bundle install`:
+Change git-friendly behavior using environment variables. For example, add this line to your `~/.bash_profile` to disable running `bundle install` in the `pull` command:
 
 ```bash
 export GIT_FRIENDLY_NO_BUNDLE=true
 ```
 
+Available environment variables:
+
+| Variable | Description | Commands | Default value |
+| --- | --- | --- | --- |
+| `GIT_FRIENDLY_NO_BUNDLE` | Disables `bundle install` | `pull` | `false` |
+| `GIT_FRIENDLY_NO_COMPOSER` | Disables `composer install` | `pull` | `false` |
+| `GIT_FRIENDLY_NO_NPM` | Disables `npm install` | `pull` | `false` |
+| `GIT_FRIENDLY_NO_YARN` | Disables `yarn install` | `pull` | `false` |
+| `GIT_FRIENDLY_NO_COPY_URL_AFTER_PUSH` | Disables copying URL to clipboard | `push` | `false` |
+ 
 
 ## Bonus: Pimp Your Configs
 
