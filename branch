@@ -19,6 +19,8 @@ delete=
 if [ "$1" == "-d" ] || [ "$1" == "-D" ]; then
   delete=$1
   branch=$2
+elif [ "$1" == "-u" ]; then
+  set_upstream_to=$1
 fi
 
 if [ -z $branch ]; then
@@ -59,6 +61,7 @@ if [ "$delete" ]; then
   exit 0
 fi
 
+# Try to find this branch among our remotes
 for remote in "${remotes[@]}";
 do
   remote_branch_exists=$(git branch -r --no-color | egrep " $remote/$branch\$")
@@ -70,11 +73,12 @@ do
   fi
 done
 
+# If there's an origin remote with the named branch, use it
+# Otherwise track the first matching branch alphabetically
 if [ ${#remotes_with_branch[@]} -gt 0 ]; then
-  # if there's an origin remote with the named branch, use it
   if [ "$origin_has_branch" = "1" ] ; then
     remote=origin
-  else # track the first matching branch alphabetically
+  else
     remote=${remotes[0]}
   fi
   remote_branch_exists="$remote/$branch"
@@ -95,6 +99,12 @@ if [ -n "$local_branch_exists" ] && [ ! "$local_branch_exists" == '' ]; then
     fi
   # else
   #   echo "Remote branch does not exist, not doing anything"
+  fi
+
+  # Explicitly set upstream if you specified "branch -u upstream/master upstream"
+  if [ -n "$set_upstream_to" ]; then
+    echo "  Explicitly setting upstream to $set_upstream_to ..."
+    git branch --set-upstream-to $branch $set_upstream_to
   fi
 
 # If remote exists, create a local branch that tracks the remote
