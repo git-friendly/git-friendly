@@ -103,7 +103,7 @@ if [ -n "$local_branch_exists" ] && [ ! "$local_branch_exists" == '' ]; then
 
   # Explicitly set upstream if you specified "branch -u upstream/master upstream"
   if [ -n "$set_upstream_to" ]; then
-    echo "  Explicitly setting upstream to $set_upstream_to ..."
+    echo "  Explicitly setting upstream to $set_upstream_to..."
     git branch --set-upstream-to $branch $set_upstream_to
   fi
 
