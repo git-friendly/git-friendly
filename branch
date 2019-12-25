@@ -103,12 +103,6 @@ if [ -n "$local_branch_exists" ] && [ ! "$local_branch_exists" == '' ]; then
   #   echo "Remote branch does not exist, not doing anything"
   fi
 
-  # Explicitly set upstream if you specified "branch -u upstream/master upstream"
-  if [ -n "$set_upstream_to" ]; then
-    echo "  Explicitly setting upstream to $set_upstream_to..."
-    git branch --set-upstream-to $branch $set_upstream_to
-  fi
-
 # If remote exists, create a local branch that tracks the remote
 elif [ -n "$remote_branch_exists" ] && [ ! "$remote_branch_exists" == '' ]; then
   echo "📡  Tracking existing remote branch '$remote_branch_exists'..."
@@ -118,6 +112,12 @@ elif [ -n "$remote_branch_exists" ] && [ ! "$remote_branch_exists" == '' ]; then
 else
   echo "✏️  Creating new local branch..."
   git checkout -b $branch --no-track
+fi
+
+# Explicitly set upstream if you specified "branch -u upstream/master upstream"
+if [ -n "$set_upstream_to" ]; then
+  echo "  Explicitly setting upstream to $set_upstream_to..."
+  git branch --set-upstream-to $set_upstream_to
 fi
 
 exit 0
