@@ -2,6 +2,7 @@
 #
 # Usage: branch [branchname]
 # Usage: branch [-D] [-d] [branchname]
+# Usage: branch [-u remote-upstream] [branchname]
 # Usage: branch -
 #
 #
@@ -20,7 +21,8 @@ if [ "$1" == "-d" ] || [ "$1" == "-D" ]; then
   delete=$1
   branch=$2
 elif [ "$1" == "-u" ]; then
-  set_upstream_to=$1
+  set_upstream_to=$2
+  branch=$3
 fi
 
 if [ -z $branch ]; then
