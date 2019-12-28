@@ -4,11 +4,11 @@ A collection of shell scripts for making **pulling**, **pushing**, **branching**
 
 Git sometimes requires typing two or three commands just to execute something basic like fetching new code. git-friendly adds a few new commands — `pull`, `push`, `branch`, `merge` and `stash` which:
 
-* do the most useful thing by default;
-* **push** also copies a GitHub compare URL to your clipboard;
+* does the most useful thing by default; plus
+* **push** copies a GitHub compare URL to your clipboard;
 * **pull** runs commands like `bundle install`, `npm install`, `yarn install`, and `composer install` if necessary;
 * **branch** tracks remote branches if they are available;
-* **stash** stashes untracked files by default.
+* **stash** includes untracked files by default.
 
 *Less time fighting Git — more time actually doing work.*
 
@@ -27,6 +27,8 @@ You can change the installation directory:
 ```bash
 curl -sS https://raw.githubusercontent.com/jamiew/git-friendly/master/install.sh | bash -s ~/friendly
 ```
+
+If you'd like to help us create Homebrew or snap packages, please see [issue #70](https://github.com/jamiew/git-friendly/issues/70)
 
 ## Manual Install
 
