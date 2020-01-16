@@ -14,7 +14,7 @@ Git sometimes requires typing two or three commands just to execute something ba
 
 ## Install
 
-### Homebrew (MacOS)
+### Homebrew (macOS)
 
 ```bash
 brew install jamiew/git-friendly/git-friendly
