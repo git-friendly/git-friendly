@@ -14,6 +14,16 @@ Git sometimes requires typing two or three commands just to execute something ba
 
 ## Install
 
+### Homebrew (MacOS)
+
+```bash
+brew install jamiew/git-friendly/git-friendly
+```
+
+The Homebrew tap for this project [can be found here](https://github.com/jamiew/homebrew-git-friendly)
+
+### Installer script
+
 Run this one-liner, which will download the scripts into `/usr/local/bin`:
 
 ```bash
@@ -25,12 +35,10 @@ curl -sS https://raw.githubusercontent.com/jamiew/git-friendly/master/install.sh
 You can change the installation directory:
 
 ```bash
-curl -sS https://raw.githubusercontent.com/jamiew/git-friendly/master/install.sh | bash -s ~/friendly
+curl -sS https://raw.githubusercontent.com/jamiew/git-friendly/master/install.sh | bash -s ~/bin/git-friendly
 ```
 
-If you'd like to help us create Homebrew or snap packages, please see [issue #70](https://github.com/jamiew/git-friendly/issues/70)
-
-## Manual Install
+## Install from source
 
 Checkout the code:
 
@@ -46,7 +54,7 @@ export PATH=~/dev/git-friendly:$PATH
 
 ## Usage
 
-You now have new awesome commands: **branch**, **merge**, **pull**, **push** and **stash**:
+You now have some awesome new commands: **branch**, **merge**, **pull**, **push** and **stash**:
 
 ![](https://d3vv6lp55qjaqc.cloudfront.net/items/3S3H2W1l1F3d1m2x3w1U/pull.png)
 
