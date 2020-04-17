@@ -49,10 +49,6 @@ origin_has_branch=
 
 # Delete branch
 if [ "$delete" ]; then
-  if [ "$remote_branch_exists" ]; then
-    echo "💀  Removing remote branch..."
-    git push --delete $remote $branch
-  else
     echo "💀  Removing local branch..."
   fi
   git branch $delete $branch
