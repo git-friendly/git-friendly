@@ -49,8 +49,7 @@ origin_has_branch=
 
 # Delete branch
 if [ "$delete" ]; then
-    echo "💀  Removing local branch..."
-  fi
+  echo "💀  Removing local branch..."
   git branch $delete $branch
   exit 0
 fi
