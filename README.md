@@ -52,6 +52,16 @@ Then update your `~/.bash_profile` or `~/.bashrc` to make git-friendly available
 export PATH=~/dev/git-friendly:$PATH
 ```
 
+### Fedora
+
+Unofficial builds of stable releases can be found in Fedora Copr:
+[fuhrmann/git-friendly](https://copr.fedorainfracloud.org/coprs/fuhrmann/git-friendly/).
+
+``` sh
+dnf copr enable fuhrmann/git-friendly
+dnf install git-friendly
+```
+
 ## Usage
 
 You now have some awesome new commands: **branch**, **merge**, **pull**, **push** and **stash**:
