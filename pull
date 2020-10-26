@@ -90,14 +90,14 @@ stash=$(git stash --include-untracked)
 
 # Update our remote
 echo "🚀  Fetching from $remote..."
-git fetch $remote || rollback $?
+git fetch --recurse-submodules=no $remote || rollback $?
 
 # Pull, using rebase if configured
 rebase="--rebase" # TODO disable if env-var is set
-git pull $rebase $remote $remote_branch || rollback $?
+git pull --recurse-submodules=no $rebase $remote $remote_branch || rollback $?
 
 # Update submodules
-git submodule update || rollback $?
+git submodule update --recursive || rollback $?
 
 unstash
 
