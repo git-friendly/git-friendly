@@ -62,7 +62,7 @@ change_dir() {
 
 # Go back to
 reset_dir() {
-    cd "$current_dir"
+  cd "$current_dir"
 }
 
 # Test wether a file has changed
