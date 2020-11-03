@@ -22,7 +22,17 @@ brew install git-friendly/git-friendly/git-friendly
 
 The Homebrew tap for this project [can be found here](https://github.com/git-friendly/homebrew-git-friendly)
 
-### Installer script
+### Fedora
+
+Unofficial builds of stable releases can be found in Fedora Copr:
+[fuhrmann/git-friendly](https://copr.fedorainfracloud.org/coprs/fuhrmann/git-friendly/).
+
+``` sh
+dnf copr enable fuhrmann/git-friendly
+dnf install git-friendly
+```
+
+### Installer script (curl)
 
 Run this one-liner, which will download the scripts into `/usr/local/bin`:
 
@@ -50,16 +60,6 @@ Then update your `~/.bash_profile` or `~/.bashrc` to make git-friendly available
 
 ```bash
 export PATH=~/dev/git-friendly:$PATH
-```
-
-### Fedora
-
-Unofficial builds of stable releases can be found in Fedora Copr:
-[fuhrmann/git-friendly](https://copr.fedorainfracloud.org/coprs/fuhrmann/git-friendly/).
-
-``` sh
-dnf copr enable fuhrmann/git-friendly
-dnf install git-friendly
 ```
 
 ## Usage
