@@ -12,6 +12,9 @@
 # Executing without arguments prints all local & remote branches
 #
 
+# Abort if this isn't a git repository
+git rev-parse --is-inside-work-tree >/dev/null || exit $?
+
 remote="origin"
 branch=$1
 delete=
