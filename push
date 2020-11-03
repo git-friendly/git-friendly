@@ -9,6 +9,9 @@
 # e.g. for doing "push -f"
 #
 
+# Abort if this isn't a git repository
+git rev-parse --is-inside-work-tree >/dev/null || exit $?
+
 # Get parent branch
 # https://stackoverflow.com/a/17843908/1973105
 function get_parent() {

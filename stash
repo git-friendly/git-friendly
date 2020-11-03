@@ -5,6 +5,9 @@
 # Stashes all changes (including untracked), or run git stash will all arguments
 #
 
+# Abort if this isn't a git repository
+git rev-parse --is-inside-work-tree >/dev/null || exit $?
+
 # If ran without arguments, stall all files, including untracked
 if [ -z "$1" ]; then
 	echo "🐿️  Stashing changes..."
