@@ -6,6 +6,9 @@
 # safely stashing and re-applying your local changes, if any
 #
 
+# Abort if this isn't a git repository
+git rev-parse --is-inside-work-tree >/dev/null || exit $?
+
 # Colors
 color_error="$(tput sgr 0 1)$(tput setaf 1)"
 color_reset="$(tput sgr0)"
