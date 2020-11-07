@@ -1,4 +1,4 @@
-<img src="https://d3vv6lp55qjaqc.cloudfront.net/items/0F2U3y3k0z1z0W2y2H0e/git-friendly.jpg" width="100%" style="width:100%" />
+<img src="https://jamiedubs.com/images/git-friendly/git-friendly-logo.png" width="100%" style="width:100%" />
 
 A collection of shell scripts for making **pulling**, **pushing**, **branching**, **merging**, and **stashing** with Git fast and painless.
 
