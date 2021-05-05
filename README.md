@@ -75,7 +75,7 @@ pull
 branch awesomeness # Create a new branch (or switch to existing one)
 echo "BUMP" >> README
 git commit -a -m "Righteous bump"
-branch main      # Switch back to main
+branch main        # Switch back to main
 merge awesomeness  # Merge awesomeness branch to main
 push               # Push changes
 ```
