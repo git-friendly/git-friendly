@@ -50,7 +50,7 @@ fi
 if echo $push | grep "\[new branch\]" >/dev/null; then
   parent=$(get_parent)
   if [ -z "$parent" ]; then
-    parent="master"
+    parent="main"
   fi
   refs="$parent...$branch"
   echo "🚀  Pushed a new branch '$branch' remotely"
