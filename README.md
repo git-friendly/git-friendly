@@ -37,7 +37,7 @@ dnf install git-friendly
 Run this one-liner, which will download the scripts into `/usr/local/bin`:
 
 ```bash
-curl -sS https://raw.githubusercontent.com/git-friendly/git-friendly/master/install.sh | bash
+curl -sS https://raw.githubusercontent.com/git-friendly/git-friendly/main/install.sh | bash
 ```
 
 **Note:** If you don’t have write access to `/usr/local/bin` you’ll need to run this using `sudo`.
@@ -45,7 +45,7 @@ curl -sS https://raw.githubusercontent.com/git-friendly/git-friendly/master/inst
 You can change the installation directory:
 
 ```bash
-curl -sS https://raw.githubusercontent.com/git-friendly/git-friendly/master/install.sh | bash -s ~/bin/git-friendly
+curl -sS https://raw.githubusercontent.com/git-friendly/git-friendly/main/install.sh | bash -s ~/bin/git-friendly
 ```
 
 ## Install from source
@@ -75,8 +75,8 @@ pull
 branch awesomeness # Create a new branch (or switch to existing one)
 echo "BUMP" >> README
 git commit -a -m "Righteous bump"
-branch master      # Switch back to master
-merge awesomeness  # Merge awesomeness branch to master
+branch main      # Switch back to main
+merge awesomeness  # Merge awesomeness branch to main
 push               # Push changes
 ```
 

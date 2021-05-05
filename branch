@@ -7,7 +7,7 @@
 #
 # Switch to an existing branch, create a new local-only branch or delete a local or remote branch.
 # Adds remote tracking if a remote branch with the same name exists,
-# in any remote, preferring the "origin" master if there are duplicates.
+# in any remote, preferring the "origin" remote if there are duplicates.
 #
 # Executing without arguments prints all local & remote branches
 #
