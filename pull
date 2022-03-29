@@ -132,8 +132,7 @@ fi
 
 # Install node.js packages with pnpm
 if [ "$GIT_FRIENDLY_NO_PNPM" != "true" ]; then
-  if file_exists 'pnpm-lock.yaml' && ( has_changed 'pnpm-lock.yaml' || has_changed 'package.json' ) && [ $yarned -eq 0 ]]; then
-    echo "wow u got pnpm!"
+  if file_exists 'pnpm-lock.yaml' && ( has_changed 'pnpm-lock.yaml' || has_changed 'package.json' ) && [ $yarned -eq 0 ]; then
     change_dir 'pnpm-lock.yaml' || change_dir 'package.json'
     if cmd_exists 'pnpm' || [ -x ./node_modules/.bin/pnpm ]; then
       echo
