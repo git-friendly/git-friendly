@@ -6,7 +6,7 @@ Git sometimes requires typing two or three commands just to execute something ba
 
 * does the most useful thing by default; plus
 * **push** copies a GitHub compare URL to your clipboard;
-* **pull** runs commands like `bundle install`, `npm install`, `yarn install`, and `composer install` if necessary;
+* **pull** runs commands like `bundle install`, `npm install`, `yarn install` and `composer install` if necessary;
 * **branch** tracks remote branches if they are available;
 * **stash** includes untracked files by default.
 
@@ -155,8 +155,18 @@ Available environment variables:
 | `GIT_FRIENDLY_NO_COMPOSER` | Disables `composer install` | `pull` | `false` |
 | `GIT_FRIENDLY_NO_NPM` | Disables `npm install` | `pull` | `false` |
 | `GIT_FRIENDLY_NO_YARN` | Disables `yarn install` | `pull` | `false` |
+| `GIT_FRIENDLY_NO_PNPM` | Disables `pnpm install` | `pull` | `false` |
 | `GIT_FRIENDLY_NO_COPY_URL_AFTER_PUSH` | Disables copying URL to clipboard | `push` | `false` |
+
+## Supported package managers for 'pull'
+
+- bundler (ruby)
+- composer (PHP)
+- npm (js)
+- yarn (js)
+- pnpm (js)
  
+Support for more always welcome
 
 ## Bonus: Pimp Your Configs
 
@@ -165,7 +175,6 @@ We strongly recommend editing your global `~/.gitconfig` and adding features lik
 We also recommend adding the current Git branch to your Terminal prompt (PS1) or you’ll quickly lose your place — here is a [pimp_prompt() bash function](https://gist.github.com/790086) which goes in your `~/.bash_profile` or `~/.bashrc`, then type `source ~/.bashrc` to reload.
 
 ![](http://wow.sapegin.me/image/0Z1C1U00281j/pimped-prompt.jpg)
-
 
 
 ## Bonus: Shell Completion
