@@ -123,7 +123,7 @@ if [ "$GIT_FRIENDLY_NO_YARN" != "true" ]; then
     if cmd_exists 'yarn' || [ -x ./node_modules/.bin/yarn ]; then
       echo
       echo '⚔  Installing packages with yarn...'
-      cmd_exists 'yarn' && yarn install || ./node_modules/.bin/yarn install
+      cmd_exists 'yarn' && yarn install || ([ -x ./node_modules/.bin/yarn ] && ./node_modules/.bin/yarn install)
       yarned=1
     fi
     reset_dir
@@ -137,7 +137,7 @@ if [ "$GIT_FRIENDLY_NO_PNPM" != "true" ]; then
     if cmd_exists 'pnpm' || [ -x ./node_modules/.bin/pnpm ]; then
       echo
       echo '⚔  Installing packages with pnpm...'
-      cmd_exists 'pnpm' && pnpm install || ./node_modules/.bin/pnpm install
+      cmd_exists 'pnpm' && pnpm install || ([ -x ./node_modules/.bin/pnpm ] && ./node_modules/.bin/pnpm install)
     fi
     reset_dir
   fi
