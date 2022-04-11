@@ -138,6 +138,7 @@ if [ "$GIT_FRIENDLY_NO_PNPM" != "true" ]; then
       echo
       echo '⚔  Installing packages with pnpm...'
       cmd_exists 'pnpm' && pnpm install || ([ -x ./node_modules/.bin/pnpm ] && ./node_modules/.bin/pnpm install)
+      yarned=1
     fi
     reset_dir
   fi
