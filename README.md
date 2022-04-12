@@ -164,7 +164,7 @@ Available environment variables:
 - composer (PHP)
 - npm (js)
 - yarn (JavaScript)
-- pnpm (js)
+- pnpm (JavaScript)
  
 Support for more is always welcome.
 
