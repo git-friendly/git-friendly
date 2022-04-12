@@ -162,7 +162,7 @@ Available environment variables:
 
 - bundler (ruby)
 - composer (PHP)
-- npm (js)
+- npm (JavaScript)
 - yarn (JavaScript)
 - pnpm (JavaScript)
  
