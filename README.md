@@ -166,7 +166,7 @@ Available environment variables:
 - yarn (JavaScript)
 - pnpm (js)
  
-Support for more always welcome
+Support for more is always welcome.
 
 ## Bonus: Pimp Your Configs
 
