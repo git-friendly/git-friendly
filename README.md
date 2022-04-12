@@ -163,7 +163,7 @@ Available environment variables:
 - bundler (ruby)
 - composer (PHP)
 - npm (js)
-- yarn (js)
+- yarn (JavaScript)
 - pnpm (js)
  
 Support for more always welcome
