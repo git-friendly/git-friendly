@@ -120,10 +120,10 @@ yarned=0
 if [ "$GIT_FRIENDLY_NO_YARN" != "true" ]; then
   if file_exists 'yarn.lock' && ( has_changed 'yarn.lock' || has_changed 'package.json' ); then
     change_dir 'yarn.lock' || change_dir 'package.json'
-    if cmd_exists 'yarn' || [ -x ./node_modules/.bin/yarn ]; then
+    if cmd_exists 'yarn'; then
       echo
       echo '⚔  Installing packages with yarn...'
-      cmd_exists 'yarn' && yarn install || ./node_modules/.bin/yarn install
+      yarn install
       yarned=1
     fi
     reset_dir
@@ -134,10 +134,11 @@ fi
 if [ "$GIT_FRIENDLY_NO_PNPM" != "true" ]; then
   if file_exists 'pnpm-lock.yaml' && ( has_changed 'pnpm-lock.yaml' || has_changed 'package.json' ) && [ $yarned -eq 0 ]; then
     change_dir 'pnpm-lock.yaml' || change_dir 'package.json'
-    if cmd_exists 'pnpm' || [ -x ./node_modules/.bin/pnpm ]; then
+    if cmd_exists 'pnpm'; then
       echo
       echo '⚔  Installing packages with pnpm...'
-      cmd_exists 'pnpm' && pnpm install || ./node_modules/.bin/pnpm install
+      pnpm install
+      yarned=1
     fi
     reset_dir
   fi
