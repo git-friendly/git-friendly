@@ -1,0 +1,18 @@
+on:
+  push:
+    tags: 'v*'
+
+jobs:
+  homebrew:
+    name: Bump Homebrew formula
+    runs-on: ubuntu-latest
+    steps:
+      - uses: mislav/bump-homebrew-formula-action@v1
+        with:
+          formula-name: git-friendly
+					homebrew-tap: git-friendly/homebrew-git-friendly
+					# we can set below to false to automatically release,
+					# provided we add push privileges to COMMITTER_TOKEN
+					create-pullrequest: true
+        env:
+          COMMITTER_TOKEN: ${{ secrets.COMMITTER_TOKEN }}
