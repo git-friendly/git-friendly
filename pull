@@ -88,17 +88,12 @@ remote_branch=$( (git config "branch.${branch}.merge" || echo "refs/heads/$branc
 # Stash any local changes, including untracked files
 stash=$(git stash --include-untracked)
 
-# Update our remote
-echo "🚀  Fetching from $remote..."
-git fetch $remote || rollback $?
-
 # Pull, using rebase if configured
+echo "🚀  Fetching from $remote..."
 rebase="--rebase" # TODO disable if env-var is set
-git pull $rebase $remote $remote_branch || rollback $?
+git pull $rebase --recurse-submodules --jobs=10 $remote $remote_branch || rollback $?
 
-# Update submodules
-git submodule update || rollback $?
-
+# Pop any stashed changes
 unstash
 
 # Remove old, stale branches
