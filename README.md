@@ -98,10 +98,16 @@ branch -d [name]
 branch -D [name]
 ```
 
-And switching to a previous branch with `-`:
+Switching to a previous branch with `-`:
 
 ```
 branch -
+```
+
+Manually set an upstream merge target with `-u`. Works with both existing and new local branches.
+
+```
+branch -u origin/feature/my-long-branch-name localfeatre
 ```
 
 ### `merge`
