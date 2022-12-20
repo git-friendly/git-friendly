@@ -219,6 +219,8 @@ Now you can type `branch`, press Tab and you’ll see a list of branches in your
 
 **Note:** You’ll need to adjust the path in the first line if you’re not using Homebrew or macOS.
 
+**Note:** If zsh complains, deleting your zsh completion cache may help resolve the issue: `rm -f ~/.zcompdump`
+
 ## License
 
 [MIT license](LICENSE.md).
