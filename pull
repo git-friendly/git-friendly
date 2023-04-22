@@ -163,5 +163,14 @@ if [ "$GIT_FRIENDLY_NO_COMPOSER" != "true" ]; then
   fi
 fi
 
+# Install cargo dependencies (rust)
+if [ "$GIT_FRIENDLY_NO_CARGO" != "true" ]; then
+  if cmd_exists 'cargo' && has_changed 'Cargo.lock'; then
+    echo
+    echo '⚔  Building cargo --release...'
+    cargo build --release
+  fi
+fi
+
 echo "🦄  Done"
 exit 0
