@@ -32,7 +32,7 @@ if [ -z $branch ]; then
   echo -e "\nDelete branch:"
   echo -e "  $(basename $0) [-D] [-d] <name>"
   echo -e "\nCurrent branches: "
-  branches="git branch -a -vv"
+  branches="git branch -vv"
   $branches
   echo
   exit 0
