@@ -6,7 +6,7 @@ Git sometimes requires typing two or three commands just to execute something ba
 
 * does the most useful thing by default; plus
 * **push** copies a GitHub compare URL to your clipboard;
-* **pull** runs commands like `bundle install`, `npm install`, `yarn install` and `composer install` if necessary;
+* **pull** runs commands like `bundle install`, `npm install`, `yarn install`, `pnpm install` and `composer install` if necessary;
 * **branch** tracks remote branches if they are available;
 * **stash** includes untracked files by default.
 
