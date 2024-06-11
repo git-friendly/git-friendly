@@ -90,7 +90,12 @@ stash=$(git stash --include-untracked)
 
 # Pull, using rebase if configured
 echo "🚀  Fetching from $remote..."
-rebase="--rebase" # TODO disable if env-var is set
+if [ "$GIT_FRIENDLY_NO_REBASE_ON_PULL" != "true" ]; then
+  rebase="--rebase"
+else
+  rebase="--no-rebase"
+fi
+
 git pull $rebase --recurse-submodules --jobs=10 $remote $remote_branch || rollback $?
 
 # Pop any stashed changes
