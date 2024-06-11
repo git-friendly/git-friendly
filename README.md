@@ -6,7 +6,7 @@ Git sometimes requires typing two or three commands just to execute something ba
 
 * does the most useful thing by default; plus
 * **push** copies a GitHub compare URL to your clipboard;
-* **pull** runs commands like `bundle install`, `npm install`, `yarn install` and `composer install` if necessary;
+* **pull** runs commands like `bundle install`, `npm install`, `yarn install`, `pnpm install` and `composer install` if necessary;
 * **branch** tracks remote branches if they are available;
 * **stash** includes untracked files by default.
 
@@ -119,7 +119,7 @@ merge [name]
 * pull from the remote using rebase;
 * update submodules;
 * pop your stash;
-* run `bundle install`, `npm install`, `yarn install` or `composer install` if there are any changes in `Gemfile`, `package.json`, etc.
+* run `bundle install`, `npm install`, `yarn install`, `pnpm install` or `composer install` if there are any changes in `Gemfile`, `package.json`, etc.
 
 ### `push`
 
