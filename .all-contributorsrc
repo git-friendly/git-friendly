@@ -136,6 +136,33 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Fuhrmann",
+      "name": "Ricardo Fuhrmann",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1160365?v=4",
+      "profile": "https://ricardof.dev/",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "elihorne",
+      "name": "Eli Horne",
+      "avatar_url": "https://avatars.githubusercontent.com/u/51566?v=4",
+      "profile": "https://elihorne.com/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "nicksp",
+      "name": "Nick Khan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/579331?v=4",
+      "profile": "https://nikkhan.com/",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "commitConvention": "none"
