@@ -40,7 +40,8 @@ Run this one-liner, which will download the scripts into `/usr/local/bin`:
 curl -sS https://raw.githubusercontent.com/git-friendly/git-friendly/main/install.sh | bash
 ```
 
-**Note:** If you don’t have write access to `/usr/local/bin` you’ll need to run this using `sudo`.
+> [!NOTE]  
+> If you don’t have write access to `/usr/local/bin` you’ll need to run this command using `sudo`.
 
 You can change the installation directory:
 
@@ -203,7 +204,8 @@ fi;
 
 Now typing `branch <tab>` will suggest or autocomplete branches you can checkout to, `branch -d <tab>` branches you can delete and `merge <tab>` branches you can merge.
 
-**Note:** You need to call your [git-completion](https://github.com/git/git/blob/0b0cc9f86731f894cff8dd25299a9b38c254569e/contrib/completion/git-completion.bash) script before the snippet.
+> [!NOTE]  
+> You need to call your [git-completion](https://github.com/git/git/blob/0b0cc9f86731f894cff8dd25299a9b38c254569e/contrib/completion/git-completion.bash) script before this snippet.
 
 ### Zsh Shell Completion
 
@@ -217,7 +219,8 @@ compdef __git_branch_names branch
 
 Now you can type `branch`, press Tab and you’ll see a list of branches in your repo.
 
-**Note:** You’ll need to adjust the path in the first line if you’re not using Homebrew or macOS.
+> [!NOTE]  
+> You’ll need to adjust the path in the first line if you’re not using Homebrew or macOS.
 
 ## License
 
