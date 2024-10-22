@@ -157,6 +157,7 @@ Available environment variables:
 | `GIT_FRIENDLY_NO_NPM` | Disables `npm install` | `pull` | `false` |
 | `GIT_FRIENDLY_NO_YARN` | Disables `yarn install` | `pull` | `false` |
 | `GIT_FRIENDLY_NO_PNPM` | Disables `pnpm install` | `pull` | `false` |
+| `GIT_FRIENDLY_NO_REBASE_ON_PULL` | Disables rebasing local commits on top of the updated remote branch | `pull` | `false` |
 | `GIT_FRIENDLY_NO_COPY_URL_AFTER_PUSH` | Disables copying URL to clipboard | `push` | `false` |
 
 ## Supported package managers for 'pull'
