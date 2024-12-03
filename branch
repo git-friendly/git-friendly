@@ -33,6 +33,9 @@ if [ -z $branch ]; then
   echo -e "  $(basename $0) [-D] [-d] <name>"
   echo -e "\nCurrent branches: "
   branches="git branch -vv"
+  if [ "$1" == "-r" ]; then
+    branches="$branches -r"
+  fi
   $branches
   echo
   exit 0
@@ -46,7 +49,7 @@ fi
 
 local_branch_exists=$(git branch --no-color | egrep " $branch\$")
 remote_branch_exists=$(git branch -r --no-color | egrep " $remote/$branch\$")
-remotes=( $(git remote) )
+remotes=($(git remote))
 remotes_with_branch=()
 origin_has_branch=
 
@@ -57,12 +60,11 @@ if [ "$delete" ]; then
   exit 0
 fi
 
-for remote in "${remotes[@]}";
-do
+for remote in "${remotes[@]}"; do
   remote_branch_exists=$(git branch -r --no-color | egrep " $remote/$branch\$")
-  if [ "$remote_branch_exists" ] ; then
+  if [ "$remote_branch_exists" ]; then
     remotes_with_branch=("${remotes_with_branch[@]}" "$remote")
-    if [ "$remote" = "origin" ] ; then
+    if [ "$remote" = "origin" ]; then
       origin_has_branch=1
     fi
   fi
@@ -70,7 +72,7 @@ done
 
 if [ ${#remotes_with_branch[@]} -gt 0 ]; then
   # if there's an origin remote with the named branch, use it
-  if [ "$origin_has_branch" = "1" ] ; then
+  if [ "$origin_has_branch" = "1" ]; then
     remote=origin
   else # track the first matching branch alphabetically
     remote=${remotes[0]}
