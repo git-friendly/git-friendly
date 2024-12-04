@@ -19,12 +19,14 @@ remote="origin"
 branch=$1
 delete=
 
+# If deleting a branch, stash the flag and branch name to use later
 if [ "$1" == "-d" ] || [ "$1" == "-D" ]; then
   delete=$1
   branch=$2
 fi
 
-if [ -z $branch ]; then
+# If no branch specified (or -r), just print usage plus list of branches
+if [ -z $branch ] || [ $branch == "-r" ]; then
   echo -e "\nSwitch to or create a new branch:"
   echo -e "  $(basename $0) [name]"
   echo -e "\nSwitch to the previous branch:"
@@ -32,7 +34,10 @@ if [ -z $branch ]; then
   echo -e "\nDelete branch:"
   echo -e "  $(basename $0) [-D] [-d] <name>"
   echo -e "\nCurrent branches: "
-  branches="git branch -a -vv"
+  branches="git branch -vv"
+  if [ "$1" == "-r" ]; then
+    branches="$branches -r"
+  fi
   $branches
   echo
   exit 0
@@ -44,12 +49,6 @@ if [ "$branch" == "-" ]; then
   exit 0
 fi
 
-local_branch_exists=$(git branch --no-color | egrep " $branch\$")
-remote_branch_exists=$(git branch -r --no-color | egrep " $remote/$branch\$")
-remotes=( $(git remote) )
-remotes_with_branch=()
-origin_has_branch=
-
 # Delete branch
 if [ "$delete" ]; then
   echo "💀  Removing local branch..."
@@ -57,28 +56,36 @@ if [ "$delete" ]; then
   exit 0
 fi
 
-for remote in "${remotes[@]}";
-do
+# Otherwise we're either switching to an existing branch or creating a branch
+local_branch_exists=$(git branch --no-color | egrep " $branch\$")
+remote_branch_exists=$(git branch -r --no-color | egrep " $remote/$branch\$")
+remotes=($(git remote))
+remotes_with_branch=()
+origin_has_branch=
+
+for remote in "${remotes[@]}"; do
   remote_branch_exists=$(git branch -r --no-color | egrep " $remote/$branch\$")
-  if [ "$remote_branch_exists" ] ; then
+  if [ "$remote_branch_exists" ]; then
     remotes_with_branch=("${remotes_with_branch[@]}" "$remote")
-    if [ "$remote" = "origin" ] ; then
+    if [ "$remote" = "origin" ]; then
       origin_has_branch=1
     fi
   fi
 done
 
+# Try to match the local branch name to a remote branch (across multiple remotes)
 if [ ${#remotes_with_branch[@]} -gt 0 ]; then
-  # if there's an origin remote with the named branch, use it
-  if [ "$origin_has_branch" = "1" ] ; then
+  if [ "$origin_has_branch" = "1" ]; then
+    # Default to using 'origin' remote if it has a matching branch
     remote=origin
-  else # track the first matching branch alphabetically
+  else
+    # Otherwise, use the first matching remote branch alphabetically (index 0)
     remote=${remotes[0]}
   fi
   remote_branch_exists="$remote/$branch"
 fi
 
-# If local exists already, switch to it
+# If local branch exists already, just switch to it
 if [ -n "$local_branch_exists" ] && [ ! "$local_branch_exists" == '' ]; then
   echo "👓  Switching to existing local branch..."
   git checkout $branch
@@ -91,8 +98,6 @@ if [ -n "$local_branch_exists" ] && [ ! "$local_branch_exists" == '' ]; then
       echo "⚒️  Your local branch is not tracking the corresponding remote branch, fixing..."
       git branch --set-upstream-to $branch $remote/$branch
     fi
-  # else
-  #   echo "Remote branch does not exist, not doing anything"
   fi
 
 # If remote exists, create a local branch that tracks the remote
