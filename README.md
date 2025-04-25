@@ -16,7 +16,7 @@ Git sometimes requires typing two or three commands just to execute something ba
 
 ### Homebrew (macOS)
 
-```bash
+```sh
 brew install git-friendly/git-friendly/git-friendly
 ```
 
@@ -36,7 +36,7 @@ dnf install git-friendly
 
 Run this one-liner, which will download the scripts into `/usr/local/bin`:
 
-```bash
+```sh
 curl -sS https://raw.githubusercontent.com/git-friendly/git-friendly/main/install.sh | bash
 ```
 
@@ -53,13 +53,13 @@ curl -sS https://raw.githubusercontent.com/git-friendly/git-friendly/main/instal
 
 Checkout the code:
 
-```bash
+```sh
 git clone git://github.com/git-friendly/git-friendly.git ~/dev/git-friendly
 ```
 
 Then update your `~/.bash_profile` or `~/.bashrc` to make git-friendly available each time you launch a new terminal:
 
-```bash
+```sh
 export PATH=~/dev/git-friendly:$PATH
 ```
 
@@ -71,7 +71,7 @@ You now have some awesome new commands: **branch**, **merge**, **pull**, **push*
 
 Example session:
 
-```bash
+```sh
 pull
 branch awesomeness # Create a new branch (or switch to existing one)
 echo "BUMP" >> README
@@ -87,20 +87,20 @@ push               # Push changes
 
 Switch branches or create new local branch if it doesn’t exist. Intelligently sets up remote branch tracking so you can just type `git pull` and not always `git pull origin newbranch`. If no argument specified, will list all local and remote branches.
 
-```
+```sh
 branch [name]
 ```
 
 Supports branch deletion with `-d` or `-D` keys:
 
-```
+```sh
 branch -d [name]
 branch -D [name]
 ```
 
 And switching to a previous branch with `-`:
 
-```
+```sh
 branch -
 ```
 
@@ -209,7 +209,7 @@ Now typing `branch <tab>` will suggest or autocomplete branches you can checkout
 
 Add to your `.zshrc`:
 
-```bash
+```zsh
 fpath=($(brew --prefix)/share/zsh/functions $fpath)
 autoload -Uz _git && _git
 compdef __git_branch_names branch
