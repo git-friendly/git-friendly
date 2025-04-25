@@ -40,7 +40,7 @@ Run this one-liner, which will download the scripts into `/usr/local/bin`:
 curl -sS https://raw.githubusercontent.com/git-friendly/git-friendly/main/install.sh | bash
 ```
 
-> [!NOTE]  
+> [!NOTE]
 > If you don’t have write access to `/usr/local/bin` you’ll need to run this command using `sudo`.
 
 You can change the installation directory:
@@ -80,7 +80,6 @@ branch main        # Switch back to main
 merge awesomeness  # Merge awesomeness branch to main
 push               # Push changes
 ```
-
 
 ## Commands
 
@@ -139,7 +138,6 @@ stash
 stash pop
 ```
 
-
 ## Configuration
 
 Change git-friendly behavior using environment variables. For example, add this line to your `~/.bash_profile` to disable running `bundle install` in the `pull` command:
@@ -162,12 +160,12 @@ Available environment variables:
 
 ## Supported package managers for 'pull'
 
-- bundler (ruby)
-- composer (PHP)
-- npm (JavaScript)
-- yarn (JavaScript)
-- pnpm (JavaScript)
- 
+* bundler (ruby)
+* composer (PHP)
+* npm (JavaScript)
+* yarn (JavaScript)
+* pnpm (JavaScript)
+
 Support for more is always welcome.
 
 ## Bonus: Pimp Your Configs
@@ -177,7 +175,6 @@ We strongly recommend editing your global `~/.gitconfig` and adding features lik
 We also recommend adding the current Git branch to your Terminal prompt (PS1) or you’ll quickly lose your place — here is a [pimp_prompt() bash function](https://gist.github.com/790086) which goes in your `~/.bash_profile` or `~/.bashrc`, then type `source ~/.bashrc` to reload.
 
 ![](http://wow.sapegin.me/image/0Z1C1U00281j/pimped-prompt.jpg)
-
 
 ## Bonus: Shell Completion
 
@@ -205,7 +202,7 @@ fi;
 
 Now typing `branch <tab>` will suggest or autocomplete branches you can checkout to, `branch -d <tab>` branches you can delete and `merge <tab>` branches you can merge.
 
-> [!NOTE]  
+> [!NOTE]
 > You need to call your [git-completion](https://github.com/git/git/blob/0b0cc9f86731f894cff8dd25299a9b38c254569e/contrib/completion/git-completion.bash) script before this snippet.
 
 ### Zsh Shell Completion
@@ -220,7 +217,7 @@ compdef __git_branch_names branch
 
 Now you can type `branch`, press Tab and you’ll see a list of branches in your repo.
 
-> [!NOTE]  
+> [!NOTE]
 > You’ll need to adjust the path in the first line if you’re not using Homebrew or macOS.
 
 ## License
@@ -232,7 +229,6 @@ Fork away, do whatever. Pull requests welcome.
 Following the practices of [Rubinius](http://www.programblings.com/2008/04/15/rubinius-for-the-layman-part-2-how-rubinius-is-friendly/), anyone who submits an accepted patch is granted a commit bit (write access to the repository).
 
 Following the practices of [FAT Lab](http://fffff.at), anyone who submits an accepted patch is granted credit and attribution bits.
-
 
 ## Contributors
 

@@ -23,10 +23,10 @@ color_error="$(tput sgr 0 1)$(tput setaf 1)"
 color_reset="$(tput sgr0)"
 
 # TODO DRY this b/w pull and push
-branch=$(git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/') || exit $?
+branch=$(git branch --no-color 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/') || exit $?
 default_remote="origin"
 remote=$(git config "branch.${branch}.remote" || echo "$default_remote")
-remote_branch=$( (git config "branch.${branch}.merge" || echo "refs/heads/$branch") | cut -d/ -f3- )
+remote_branch=$( (git config "branch.${branch}.merge" || echo "refs/heads/$branch") | cut -d/ -f3-)
 
 # Push & save output
 if [ -z $* ]; then
@@ -76,8 +76,8 @@ if [[ "$remote_url" =~ "github.com" ]]; then
   github_url="$url$repo_name/compare/$refs"
   if [ "$GIT_FRIENDLY_NO_COPY_URL_AFTER_PUSH" != "true" ]; then
     copied="\nCompare URL copied to clipboard:"
-    which pbcopy >& /dev/null && echo $github_url | pbcopy && echo -e "$copied"
-    which xclip >& /dev/null && echo $github_url | xclip -selection clipboard && echo -e "$copied"
+    which pbcopy >&/dev/null && echo $github_url | pbcopy && echo -e "$copied"
+    which xclip >&/dev/null && echo $github_url | xclip -selection clipboard && echo -e "$copied"
   fi
 
   echo $github_url
