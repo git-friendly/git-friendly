@@ -155,6 +155,20 @@ if [ "$GIT_FRIENDLY_NO_NPM" != "true" ]; then
   fi
 fi
 
+# Install packages with bun
+if [ "$GIT_FRIENDLY_NO_BUN" != "true" ]; then
+  if file_exists 'bun.lockb' && (has_changed 'bun.lockb' || has_changed 'package.json') && [ $yarned -eq 0 ]; then
+    change_dir 'bun.lockb' || change_dir 'package.json'
+    if cmd_exists 'bun'; then
+      echo
+      echo '⚔  Installing packages with bun...'
+      bun install
+      yarned=1
+    fi
+    reset_dir
+  fi
+fi
+
 # Install Composer packages
 if [ "$GIT_FRIENDLY_NO_COMPOSER" != "true" ]; then
   if has_changed 'composer.lock'; then
