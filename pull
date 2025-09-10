@@ -96,13 +96,10 @@ else
   rebase="--no-rebase"
 fi
 
-git pull $rebase --recurse-submodules --jobs=10 $remote $remote_branch || rollback $?
+git pull $rebase --prune --recurse-submodules --jobs=10 $remote $remote_branch || rollback $?
 
 # Pop any stashed changes
 unstash
-
-# Remove old, stale branches
-git remote prune $remote >/dev/null 2>&1 &
 
 # Bundle em if you got em!
 if [ "$GIT_FRIENDLY_NO_BUNDLE" != "true" ]; then
