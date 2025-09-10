@@ -55,7 +55,25 @@ if echo $push | grep "\[new branch\]" >/dev/null; then
   refs="$parent...$branch"
   echo "🚀  Pushed a new branch '$branch' remotely"
 else
-  refs=$(echo $push | awk '{ print $3}' | sed 's/\.\./\.\.\./')
+  # Extract refs from the actual push line, ignoring remote messages
+  refs=$(echo "$push" | grep -E '^\s*[a-f0-9]+\.\.[a-f0-9]+\s+' | head -1 | awk '{ print $1}' | sed 's/\.\./\.\.\./')
+  
+  # Fallback: if we can't parse refs, construct from branch names
+  if [ -z "$refs" ]; then
+    # Try to get the last successful commit from git log
+    last_commit=$(git log --oneline -1 --format="%H" 2>/dev/null)
+    if [ ! -z "$last_commit" ]; then
+      # Get parent branch and construct comparison
+      parent=$(get_parent)
+      if [ -z "$parent" ]; then
+        parent="main"
+      fi
+      refs="$parent...$branch"
+    else
+      refs="$branch"
+    fi
+  fi
+  
   echo "🚀  Pushed:"
   echo "$push"
 fi
