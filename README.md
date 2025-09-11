@@ -109,7 +109,7 @@ branch -
 * Merge the specified branch into the current branch;
 * rebase first if the branch is local-only.
 
-```
+```sh
 merge [name]
 ```
 
@@ -185,6 +185,7 @@ We also recommend adding the current Git branch to your Terminal prompt (PS1) or
 Add to your shell config file `.bash_profile`, `.bashrc` or `.profile`:
 
 #### Simple completion (local branches only)
+
 ```bash
 if type __git_complete &> /dev/null; then
   _branch () {
@@ -202,6 +203,7 @@ fi;
 ```
 
 #### Enhanced completion (includes all remote branches)
+
 ```bash
 if type __git_complete &> /dev/null; then
   _branch () {
