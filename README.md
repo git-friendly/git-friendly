@@ -184,6 +184,7 @@ We also recommend adding the current Git branch to your Terminal prompt (PS1) or
 
 Add to your shell config file `.bash_profile`, `.bashrc` or `.profile`:
 
+#### Simple completion (local branches only)
 ```bash
 if type __git_complete &> /dev/null; then
   _branch () {
@@ -192,6 +193,26 @@ if type __git_complete &> /dev/null; then
       _git_branch
     else
       _git_checkout
+    fi
+  }
+
+  __git_complete branch _branch
+  __git_complete merge _git_merge
+fi;
+```
+
+#### Enhanced completion (includes all remote branches)
+```bash
+if type __git_complete &> /dev/null; then
+  _branch () {
+    delete="${words[1]}"
+    if [ "$delete" == "-d" ] || [ "$delete" == "-D" ]; then
+      _git_branch
+    else
+      # Get both local and remote branches, strip remote prefixes
+      local branches=$(git for-each-ref --format='%(refname:short)' refs/heads/ refs/remotes/ | \
+                      sed 's|^[^/]*/||' | sort -u)
+      COMPREPLY=($(compgen -W "$branches" -- "$cur"))
     fi
   }
 
