@@ -2,11 +2,11 @@
 #
 # Usage: worktree [branchname]
 # Usage: worktree -l
-# Usage: worktree -r [worktree-path]
+# Usage: worktree -r|-d|-D [worktree-path]
 #
 # Create a new git worktree with a well-named directory and switch to it.
 # If branch already exists locally or remotely, create worktree from that branch.
-# Lists worktrees with -l flag, removes worktree with -r flag.
+# Lists worktrees with -l flag, removes worktree with -r/-d/-D flags.
 #
 
 # Abort if this isn't a git repository
@@ -24,7 +24,7 @@ remove_worktree=
 # Handle flags
 if [ "$1" == "-l" ] || [ "$1" == "--list" ]; then
   list_worktrees=1
-elif [ "$1" == "-r" ] || [ "$1" == "--remove" ]; then
+elif [ "$1" == "-r" ] || [ "$1" == "--remove" ] || [ "$1" == "-d" ] || [ "$1" == "-D" ]; then
   remove_worktree=1
   branch=$2
 fi
@@ -40,7 +40,7 @@ fi
 if [ "$remove_worktree" ]; then
   if [ -z "$branch" ]; then
     echo "${color_error}Error: Specify worktree path to remove${color_reset}"
-    echo "Usage: $(basename $0) -r <worktree-path>"
+    echo "Usage: $(basename $0) -r|-d|-D <worktree-path>"
     exit 1
   fi
   echo "💀  Removing worktree: $branch"
@@ -55,7 +55,7 @@ if [ -z "$branch" ]; then
   echo -e "\nList all worktrees:"
   echo -e "  $(basename $0) -l"
   echo -e "\nRemove a worktree:"
-  echo -e "  $(basename $0) -r <worktree-path>"
+  echo -e "  $(basename $0) -r|-d|-D <worktree-path>"
   echo -e "\nCurrent worktrees:"
   git worktree list
   echo
