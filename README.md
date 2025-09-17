@@ -1,8 +1,8 @@
 <img src="https://jamiedubs.com/images/git-friendly/git-friendly-logo.png" width="100%" style="width:100%" />
 
-A collection of shell scripts for making **pulling**, **pushing**, **branching**, **merging**, and **stashing** with Git fast and painless.
+A collection of shell scripts for making **pulling**, **pushing**, **branching**, **merging**, **stashing**, and **worktrees** with Git fast and painless.
 
-Git sometimes requires typing two or three commands just to execute something basic like fetching new code. git-friendly adds a few new commands — `pull`, `push`, `branch`, `merge` and `stash` which:
+Git sometimes requires typing two or three commands just to execute something basic like fetching new code. git-friendly adds a few new commands — `pull`, `push`, `branch`, `merge`, `stash` and `worktree` which:
 
 * does the most useful thing by default; plus
 * **push** copies a GitHub compare URL to your clipboard;
@@ -65,7 +65,7 @@ export PATH=~/dev/git-friendly:$PATH
 
 ## Usage
 
-You now have some awesome new commands: **branch**, **merge**, **pull**, **push** and **stash**:
+You now have some awesome new commands: **branch**, **merge**, **pull**, **push**, **stash** and **worktree**:
 
 ![](https://d3vv6lp55qjaqc.cloudfront.net/items/3S3H2W1l1F3d1m2x3w1U/pull.png)
 
@@ -138,6 +138,20 @@ stash
 stash pop
 ```
 
+### `worktree`
+
+Create and manage Git worktrees with ease. Perfect for working on multiple branches simultaneously without switching contexts. Works great with [Claude Code](https://claude.ai/code) for AI-assisted development across branches.
+
+```sh
+worktree feature-branch  # Create worktree for new/existing branch
+worktree -l              # List all worktrees
+worktree -r path/to/tree # Remove a worktree
+```
+
+* Automatically creates well-named worktree directories (e.g., `repo-name-branch-name`)
+* Detects and uses existing local or remote branches
+* Switches you directly into the new worktree directory
+
 ## Configuration
 
 Change git-friendly behavior using environment variables. For example, add this line to your `~/.bash_profile` to disable running `bundle install` in the `pull` command:
@@ -197,10 +211,11 @@ if type __git_complete &> /dev/null; then
 
   __git_complete branch _branch
   __git_complete merge _git_merge
+  __git_complete worktree _git_worktree
 fi;
 ```
 
-Now typing `branch <tab>` will suggest or autocomplete branches you can checkout to, `branch -d <tab>` branches you can delete and `merge <tab>` branches you can merge.
+Now typing `branch <tab>` will suggest or autocomplete branches you can checkout to, `branch -d <tab>` branches you can delete, `merge <tab>` branches you can merge, and `worktree <tab>` will suggest branches for creating worktrees.
 
 > [!NOTE]
 > You need to call your [git-completion](https://github.com/git/git/blob/0b0cc9f86731f894cff8dd25299a9b38c254569e/contrib/completion/git-completion.bash) script before this snippet.
