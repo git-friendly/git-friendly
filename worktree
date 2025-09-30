@@ -1,0 +1,136 @@
+#!/bin/bash
+#
+# Usage: worktree [branchname]
+# Usage: worktree -l
+# Usage: worktree -r|-d|-D [worktree-path]
+#
+# Create a new git worktree with a well-named directory and switch to it.
+# If branch already exists locally or remotely, create worktree from that branch.
+# Lists worktrees with -l flag, removes worktree with -r/-d/-D flags.
+#
+
+# Abort if this isn't a git repository
+git rev-parse --is-inside-work-tree >/dev/null || exit $?
+
+# Colors
+color_error="$(tput sgr 0 1)$(tput setaf 1)"
+color_reset="$(tput sgr0)"
+
+remote="origin"
+branch=$1
+list_worktrees=
+remove_worktree=
+
+# Handle flags
+if [ "$1" == "-l" ] || [ "$1" == "--list" ]; then
+  list_worktrees=1
+elif [ "$1" == "-r" ] || [ "$1" == "--remove" ] || [ "$1" == "-d" ] || [ "$1" == "-D" ]; then
+  remove_worktree=1
+  branch=$2
+fi
+
+# List worktrees
+if [ "$list_worktrees" ]; then
+  echo "📚  Current worktrees:"
+  git worktree list
+  exit 0
+fi
+
+# Remove worktree
+if [ "$remove_worktree" ]; then
+  if [ -z "$branch" ]; then
+    echo "${color_error}Error: Specify worktree path to remove${color_reset}"
+    echo "Usage: $(basename $0) -r|-d|-D <worktree-path>"
+    exit 1
+  fi
+  echo "💀  Removing worktree: $branch"
+  git worktree remove "$branch"
+  exit $?
+fi
+
+# If no branch specified, show usage
+if [ -z "$branch" ]; then
+  echo -e "\nCreate a new worktree:"
+  echo -e "  $(basename $0) <branchname>"
+  echo -e "\nList all worktrees:"
+  echo -e "  $(basename $0) -l"
+  echo -e "\nRemove a worktree:"
+  echo -e "  $(basename $0) -r|-d|-D <worktree-path>"
+  echo -e "\nCurrent worktrees:"
+  git worktree list
+  echo
+  exit 0
+fi
+
+# Get the repository name and main worktree directory
+repo_root=$(git rev-parse --show-toplevel)
+repo_name=$(basename "$repo_root")
+parent_dir=$(dirname "$repo_root")
+
+# Check if branch exists locally or remotely
+local_branch_exists=$(git branch --no-color | egrep " $branch\$")
+remote_branch_exists=$(git branch -r --no-color | egrep " $remote/$branch\$")
+
+# Find all remotes that have this branch
+remotes=($(git remote))
+remotes_with_branch=()
+origin_has_branch=
+
+for rem in "${remotes[@]}"; do
+  remote_branch=$(git branch -r --no-color | egrep " $rem/$branch\$")
+  if [ "$remote_branch" ]; then
+    remotes_with_branch=("${remotes_with_branch[@]}" "$rem")
+    if [ "$rem" = "origin" ]; then
+      origin_has_branch=1
+    fi
+  fi
+done
+
+# Determine which remote to use (prefer origin)
+if [ ${#remotes_with_branch[@]} -gt 0 ]; then
+  if [ "$origin_has_branch" = "1" ]; then
+    remote=origin
+  else
+    remote=${remotes_with_branch[0]}
+  fi
+  remote_branch_exists="$remote/$branch"
+fi
+
+# Create worktree directory path
+worktree_dir="${parent_dir}/${repo_name}-${branch}"
+
+# Check if worktree already exists
+if [ -d "$worktree_dir" ]; then
+  echo "👓  Worktree already exists at $worktree_dir, switching to it..."
+  cd "$worktree_dir"
+  exec $SHELL
+  exit 0
+fi
+
+# Create worktree based on branch existence
+if [ -n "$local_branch_exists" ] && [ ! "$local_branch_exists" == '' ]; then
+  # Use existing local branch
+  echo "👓  Creating worktree from existing local branch '$branch'..."
+  git worktree add "$worktree_dir" "$branch"
+elif [ -n "$remote_branch_exists" ] && [ ! "$remote_branch_exists" == '' ]; then
+  # Create from remote branch
+  echo "📡  Creating worktree from remote branch '$remote_branch_exists'..."
+  git worktree add -b "$branch" "$worktree_dir" "$remote_branch_exists"
+else
+  # Create new branch
+  echo "✏️  Creating worktree with new branch '$branch'..."
+  git worktree add -b "$branch" "$worktree_dir"
+fi
+
+# Check if worktree creation succeeded
+if [ $? -eq 0 ]; then
+  echo "🌳  Worktree created at: $worktree_dir"
+  echo "🚀  Switching to new worktree..."
+  cd "$worktree_dir"
+  exec $SHELL
+else
+  echo "${color_error}Failed to create worktree${color_reset}"
+  exit 1
+fi
+
+exit 0
