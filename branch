@@ -96,7 +96,7 @@ if [ -n "$local_branch_exists" ] && [ ! "$local_branch_exists" == '' ]; then
     # echo "Remote branch exists. Local branch is tracking: $tracking"
     if [[ ! "$tracking" =~ "$remote" ]]; then
       echo "⚒️  Your local branch is not tracking the corresponding remote branch, fixing..."
-      git branch --set-upstream-to $branch $remote/$branch
+      git branch --set-upstream-to=$remote/$branch $branch
     fi
   fi
 
