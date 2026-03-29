@@ -1,0 +1,88 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up test repo
+        run: |
+          export PATH="$PWD:$PATH"
+          git config --global user.email "test@test.com"
+          git config --global user.name "Test"
+
+          mkdir /tmp/test-repo && cd /tmp/test-repo
+          git init
+          echo "hello" > file.txt
+          git add file.txt
+          git commit -m "Initial commit"
+
+      - name: Test branch - list branches
+        run: |
+          export PATH="$PWD:$PATH"
+          cd /tmp/test-repo
+          branch
+
+      - name: Test branch - create and switch
+        run: |
+          export PATH="$PWD:$PATH"
+          cd /tmp/test-repo
+          branch test-feature
+          [ "$(git branch --show-current)" = "test-feature" ]
+
+      - name: Test branch - switch back
+        run: |
+          export PATH="$PWD:$PATH"
+          cd /tmp/test-repo
+          branch main
+          [ "$(git branch --show-current)" = "main" ]
+
+      - name: Test branch - switch to previous
+        run: |
+          export PATH="$PWD:$PATH"
+          cd /tmp/test-repo
+          branch -
+          [ "$(git branch --show-current)" = "test-feature" ]
+
+      - name: Test stash
+        run: |
+          export PATH="$PWD:$PATH"
+          cd /tmp/test-repo
+          echo "uncommitted" > newfile.txt
+          stash
+          [ ! -f newfile.txt ]
+          stash pop
+          [ -f newfile.txt ]
+          rm newfile.txt
+
+      - name: Test merge
+        run: |
+          export PATH="$PWD:$PATH"
+          cd /tmp/test-repo
+          branch main
+          branch merge-me
+          echo "merge content" > merge.txt
+          git add merge.txt
+          git commit -m "Add merge content"
+          branch main
+          merge merge-me
+          [ -f merge.txt ]
+
+      - name: Test branch - delete
+        run: |
+          export PATH="$PWD:$PATH"
+          cd /tmp/test-repo
+          branch -d merge-me
+          branch -d test-feature
+          # Verify they're gone
+          ! git branch --list merge-me | grep -q merge-me
+          ! git branch --list test-feature | grep -q test-feature
