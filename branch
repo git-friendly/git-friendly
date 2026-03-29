@@ -34,11 +34,13 @@ if [ -z $branch ] || [ $branch == "-r" ]; then
   echo -e "\nDelete branch:"
   echo -e "  $(basename $0) [-D] [-d] <name>"
   echo -e "\nCurrent branches: "
-  branches="git branch -vv"
   if [ "$1" == "-r" ]; then
-    branches="$branches -r"
+    git branch -r --sort=-committerdate --color=always \
+      --format='  %(refname:short) %(color:yellow)(%(committerdate:relative))%(color:reset) %(subject)'
+  else
+    git branch --sort=-committerdate --color=always \
+      --format='%(if)%(HEAD)%(then)* %(color:green)%(refname:short)%(color:reset)%(else)  %(refname:short)%(end) %(color:yellow)(%(committerdate:relative))%(color:reset) %(subject)'
   fi
-  $branches
   echo
   exit 0
 fi
