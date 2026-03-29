@@ -1,0 +1,222 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up test repos
+        run: |
+          export PATH="$PWD:$PATH"
+          git config --global user.email "test@test.com"
+          git config --global user.name "Test"
+          git config --global init.defaultBranch main
+
+          # Create a bare repo to act as "remote"
+          git init --bare /tmp/remote-repo.git
+
+          # Clone it as our working repo
+          git clone /tmp/remote-repo.git /tmp/test-repo
+          cd /tmp/test-repo
+          echo "hello" > file.txt
+          git add file.txt
+          git commit -m "Initial commit"
+          git push origin main
+
+      - name: Test - outside git repo fails gracefully
+        run: |
+          export PATH="$PWD:$PATH"
+          cd /tmp
+          ! branch 2>/dev/null
+          ! pull 2>/dev/null
+          ! push 2>/dev/null
+          ! stash 2>/dev/null
+
+      - name: Test branch - list
+        run: |
+          export PATH="$PWD:$PATH"
+          cd /tmp/test-repo
+          branch
+
+      - name: Test branch - create and switch
+        run: |
+          export PATH="$PWD:$PATH"
+          cd /tmp/test-repo
+          branch test-feature
+          [ "$(git branch --show-current)" = "test-feature" ]
+
+      - name: Test branch - switch to existing
+        run: |
+          export PATH="$PWD:$PATH"
+          cd /tmp/test-repo
+          branch main
+          [ "$(git branch --show-current)" = "main" ]
+
+      - name: Test branch - switch to previous
+        run: |
+          export PATH="$PWD:$PATH"
+          cd /tmp/test-repo
+          branch -
+          [ "$(git branch --show-current)" = "test-feature" ]
+
+      - name: Test branch - track remote branch
+        run: |
+          export PATH="$PWD:$PATH"
+          cd /tmp/test-repo
+          git push origin test-feature
+          branch main
+          # Delete local, then re-create from remote
+          git branch -d test-feature
+          branch test-feature
+          # Should be tracking the remote now
+          git config branch.test-feature.remote | grep -q origin
+
+      - name: Test branch -r
+        run: |
+          export PATH="$PWD:$PATH"
+          cd /tmp/test-repo
+          branch -r | grep -q origin
+
+      - name: Test branch -d and -D
+        run: |
+          export PATH="$PWD:$PATH"
+          cd /tmp/test-repo
+          branch main
+
+          # -d: delete a fully merged branch
+          branch -d test-feature
+
+          # -D: force delete an unmerged branch
+          branch unmerged-work
+          echo "wip" > wip.txt
+          git add wip.txt
+          git commit -m "Unmerged work"
+          branch main
+          branch -D unmerged-work
+
+          # Verify both are gone
+          ! git branch --list test-feature | grep -q test-feature
+          ! git branch --list unmerged-work | grep -q unmerged-work
+
+      - name: Test stash - untracked files
+        run: |
+          export PATH="$PWD:$PATH"
+          cd /tmp/test-repo
+          echo "uncommitted" > newfile.txt
+          stash
+          [ ! -f newfile.txt ]
+          stash pop
+          [ -f newfile.txt ]
+          rm newfile.txt
+
+      - name: Test stash - passthrough arguments
+        run: |
+          export PATH="$PWD:$PATH"
+          cd /tmp/test-repo
+          echo "changed" >> file.txt
+          stash push -m "my stash message"
+          stash list | grep -q "my stash message"
+          stash pop
+
+      - name: Test pull - basic
+        run: |
+          export PATH="$PWD:$PATH"
+          cd /tmp/test-repo
+          git checkout main
+
+          # Push a commit to the remote from a second clone
+          git clone /tmp/remote-repo.git /tmp/other-clone
+          cd /tmp/other-clone
+          echo "remote change" > remote.txt
+          git add remote.txt
+          git commit -m "Remote change"
+          git push origin main
+
+          # Pull should fetch it
+          cd /tmp/test-repo
+          pull
+          [ -f remote.txt ]
+
+      - name: Test pull - stashes dirty working tree
+        run: |
+          export PATH="$PWD:$PATH"
+
+          # Make another remote change
+          cd /tmp/other-clone
+          echo "another" >> remote.txt
+          git add remote.txt
+          git commit -m "Another remote change"
+          git push origin main
+
+          # Pull with local uncommitted changes
+          cd /tmp/test-repo
+          echo "local wip" > local.txt
+          pull
+          [ -f local.txt ]
+          rm local.txt
+
+      - name: Test pull - no-rebase flag
+        run: |
+          export PATH="$PWD:$PATH"
+
+          cd /tmp/other-clone
+          echo "yet another" >> remote.txt
+          git add remote.txt
+          git commit -m "Yet another"
+          git push origin main
+
+          cd /tmp/test-repo
+          GIT_FRIENDLY_NO_REBASE_ON_PULL=true pull
+
+      - name: Test push - basic
+        run: |
+          export PATH="$PWD:$PATH"
+          cd /tmp/test-repo
+          echo "push test" > pushed.txt
+          git add pushed.txt
+          git commit -m "Push test"
+          push
+
+          # Verify it arrived at the remote
+          cd /tmp/other-clone
+          git pull origin main
+          [ -f pushed.txt ]
+
+      - name: Test push - new branch
+        run: |
+          export PATH="$PWD:$PATH"
+          cd /tmp/test-repo
+          branch push-branch
+          echo "new branch content" > branch-file.txt
+          git add branch-file.txt
+          git commit -m "New branch push"
+          push
+
+          # Verify remote has the branch
+          git -C /tmp/remote-repo.git branch | grep -q push-branch
+
+      - name: Test push - everything up-to-date
+        run: |
+          export PATH="$PWD:$PATH"
+          cd /tmp/test-repo
+          push 2>&1 | grep -q "up-to-date"
+
+      - name: Test merge
+        run: |
+          export PATH="$PWD:$PATH"
+          cd /tmp/test-repo
+          branch main
+          branch merge-me
+          echo "merge content" > merge.txt
+          git add merge.txt
+          git commit -m "Add merge content"
+          branch main
+          merge merge-me
+          [ -f merge.txt ]
+          branch -d merge-me
