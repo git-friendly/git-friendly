@@ -1,0 +1,18 @@
+name: Update Homebrew formula
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  homebrew:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: mislav/bump-homebrew-formula-action@v3
+        with:
+          formula-name: git-friendly
+          homebrew-tap: git-friendly/homebrew-git-friendly
+          tag-name: ${{ github.event.release.tag_name }}
+          download-url: https://github.com/git-friendly/git-friendly/archive/${{ github.event.release.tag_name }}.tar.gz
+        env:
+          COMMITTER_TOKEN: ${{ secrets.COMMITTER_TOKEN }}
