@@ -19,6 +19,7 @@ jobs:
           export PATH="$PWD:$PATH"
           git config --global user.email "test@test.com"
           git config --global user.name "Test"
+          git config --global init.defaultBranch main
 
           # Create a bare repo to act as "remote"
           git init --bare /tmp/remote-repo.git
