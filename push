@@ -45,22 +45,29 @@ elif echo $push | grep "Everything up-to-date" >/dev/null; then
   exit 0
 fi
 
-# Parse relevant commit refs and let user know what we did
-# 1st-time push to new branch gets special treatment
+# Extract commit hash range and display what we pushed
+commit_range=$(echo "$push" | grep -oE '[a-f0-9]{7,}\.\.[a-f0-9]{7,}' | head -1)
+
 if echo $push | grep "\[new branch\]" >/dev/null; then
-  parent=$(get_parent)
-  if [ -z "$parent" ]; then
-    parent="main"
-  fi
-  refs="$parent...$branch"
   echo "🚀  Pushed a new branch '$branch' remotely"
 else
-  refs=$(echo $push | awk '{ print $3}' | sed 's/\.\./\.\.\./')
   echo "🚀  Pushed:"
-  echo "$push"
+  if [ ! -z "$commit_range" ]; then
+    echo "$push" | grep -E '[a-f0-9]{7,}\.\.[a-f0-9]{7,}' | head -1 | sed 's/^[ \t]*/   /'
+  else
+    echo "$push" | grep -v '^remote:' | grep -v '^To ' | head -5
+  fi
 fi
 
-# Parse output into a GitHub compare URL
+# Build compare refs: commit hashes for main/master, branch names for feature branches
+if [ ! -z "$commit_range" ] && { [ "$branch" = "main" ] || [ "$branch" = "master" ]; }; then
+  refs="$commit_range"
+else
+  parent=$(get_parent)
+  refs="${parent:-main}...$branch"
+fi
+
+# Build GitHub URL: prefer PR URL > compare URL
 remote_url=$(git remote show $remote -n | grep Push | awk '{ print $3 }')
 
 if [[ "$remote_url" =~ "github.com" ]]; then
@@ -73,9 +80,21 @@ if [[ "$remote_url" =~ "github.com" ]]; then
   fi
 
   repo_name=$(echo $remote_url | sed $regEx)
-  github_url="$url$repo_name/compare/$refs"
+
+  # Check for PR URL from GitHub's push output, then from gh CLI
+  github_url=$(echo "$push" | grep -o 'https://github\.com/[^/]*/[^/]*/pull/new/[^[:space:]]*' | head -1)
+
+  if [ -z "$github_url" ] && [ "$branch" != "main" ] && [ "$branch" != "master" ] && command -v gh >/dev/null 2>&1; then
+    pr_number=$(gh pr list --head "$branch" --json number --jq '.[0].number' 2>/dev/null)
+    if [ ! -z "$pr_number" ] && [ "$pr_number" != "null" ]; then
+      github_url="$url$repo_name/pull/$pr_number"
+    fi
+  fi
+
+  github_url="${github_url:-$url$repo_name/compare/$refs}"
+
   if [ "$GIT_FRIENDLY_NO_COPY_URL_AFTER_PUSH" != "true" ]; then
-    copied="\nCompare URL copied to clipboard:"
+    copied="\nCopied URL to clipboard:"
     which pbcopy >&/dev/null && echo $github_url | pbcopy && echo -e "$copied"
     which xclip >&/dev/null && echo $github_url | xclip -selection clipboard && echo -e "$copied"
   fi
