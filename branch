@@ -20,11 +20,8 @@ branch=$1
 delete=
 
 # Colors
-color_green="$(tput setaf 2)"
-color_yellow="$(tput setaf 3)"
-color_cyan="$(tput setaf 6)"
-color_dim="$(tput dim)"
 color_bold="$(tput bold)"
+color_dim="$(tput dim)"
 color_reset="$(tput sgr0)"
 
 # If deleting a branch, stash the flag and branch name to use later
@@ -60,14 +57,46 @@ if [ -z $branch ] || [ $branch == "-r" ]; then
     echo "    ${cmd} -r               List remote branches"
   fi
   echo
+  # Color scheme
+  esc_date="$(tput setaf 5)"   # magenta
+  esc_track="$(tput setaf 3)"  # yellow
+
   if [ "$1" == "-r" ]; then
     echo "  ${color_dim}Remote branches:${color_reset}"
-    git branch -r --sort=-committerdate --color=always \
-      --format='    %(color:cyan)%(refname:short)%(color:reset) %(color:yellow)%(committerdate:relative)%(color:reset) %(color:dim)%(subject)%(color:reset)'
+    data=$(git branch -r --sort=-committerdate \
+      --format='%(committerdate:relative)	%(refname:short)	%(subject)')
+    date_w=0
+    while IFS=$'\t' read -r date _ _; do
+      (( ${#date} > date_w )) && date_w=${#date}
+    done <<< "$data"
+    while IFS=$'\t' read -r date name subject; do
+      printf "    ${esc_date}%-${date_w}s${color_reset}  %s  ${color_dim}%s${color_reset}\n" \
+        "$date" "$name" "$subject"
+    done <<< "$data"
   else
     echo "  ${color_dim}Local branches:${color_reset}"
-    git branch --sort=-committerdate --color=always \
-      --format='%(if)%(HEAD)%(then)%(color:bold green)  > %(refname:short)%(color:reset)%(else)    %(color:green)%(refname:short)%(color:reset)%(end) %(color:yellow)%(committerdate:relative)%(color:reset) %(color:dim)%(subject)%(color:reset)'
+    data=$(git branch --sort=-committerdate \
+      --format='%(HEAD)	%(committerdate:relative)	%(refname:short)	%(upstream:short)	%(subject)')
+    date_w=0
+    while IFS=$'\t' read -r _ date _ _ _; do
+      (( ${#date} > date_w )) && date_w=${#date}
+    done <<< "$data"
+    while IFS=$'\t' read -r head date name upstream subject; do
+      if [ "$head" == "*" ]; then
+        prefix="*"
+        name_fmt="${color_bold}${name}${color_reset}"
+      else
+        prefix=" "
+        name_fmt="$name"
+      fi
+      if [ -n "$upstream" ]; then
+        track_fmt=" ${esc_track}[${upstream}]${color_reset}"
+      else
+        track_fmt=""
+      fi
+      printf "%s ${esc_date}%-${date_w}s${color_reset}  %s%s  ${color_dim}%s${color_reset}\n" \
+        "$prefix" "$date" "$name_fmt" "$track_fmt" "$subject"
+    done <<< "$data"
   fi
   echo
   exit 0
