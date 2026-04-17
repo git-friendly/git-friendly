@@ -33,8 +33,8 @@ if [ "$1" == "-d" ] || [ "$1" == "-D" ]; then
   branch=$2
 fi
 
-# If no branch specified (or -r), just print usage plus list of branches
-if [ -z $branch ] || [ $branch == "-r" ]; then
+# Show help
+if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
   cmd=$(basename $0)
   echo
   echo "  Usage:"
@@ -42,6 +42,23 @@ if [ -z $branch ] || [ $branch == "-r" ]; then
   echo "    ${cmd} -                Switch to previous branch"
   echo "    ${cmd} -d|-D <name>     Delete a branch"
   echo "    ${cmd} -r               List remote branches"
+  echo
+  echo "  Set GIT_FRIENDLY_NO_HELP=1 to hide usage when listing branches."
+  echo
+  exit 0
+fi
+
+# If no branch specified (or -r), list branches
+if [ -z $branch ] || [ $branch == "-r" ]; then
+  if [ -z "$GIT_FRIENDLY_NO_HELP" ]; then
+    cmd=$(basename $0)
+    echo
+    echo "  Usage:"
+    echo "    ${cmd} [name]           Switch to or create a branch"
+    echo "    ${cmd} -                Switch to previous branch"
+    echo "    ${cmd} -d|-D <name>     Delete a branch"
+    echo "    ${cmd} -r               List remote branches"
+  fi
   echo
   if [ "$1" == "-r" ]; then
     echo "  ${color_dim}Remote branches:${color_reset}"
