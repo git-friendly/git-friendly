@@ -35,10 +35,13 @@ if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
   cmd=$(basename $0)
   echo
   echo "  Usage:"
+  echo "    ${cmd}                  List local branches"
   echo "    ${cmd} [name]           Switch to or create a branch"
   echo "    ${cmd} -                Switch to previous branch"
   echo "    ${cmd} -d|-D <name>     Delete a branch"
   echo "    ${cmd} -r               List remote branches"
+  echo
+  echo "  Automatically tracks a matching remote branch if one exists."
   echo
   exit 0
 fi
