@@ -25,6 +25,14 @@ if [ "$1" == "-d" ] || [ "$1" == "-D" ]; then
   branch=$2
 fi
 
+# Strip remote prefix (e.g. "origin/foo" → "foo") for autocomplete convenience
+for _r in $(git remote 2>/dev/null); do
+  if [[ "$branch" == "$_r/"* ]]; then
+    branch="${branch#"$_r/"}"
+    break
+  fi
+done
+
 # If no branch specified (or -r), just print usage plus list of branches
 if [ -z $branch ] || [ $branch == "-r" ]; then
   echo -e "\nSwitch to or create a new branch:"
