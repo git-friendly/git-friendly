@@ -40,22 +40,11 @@ if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
   echo "    ${cmd} -d|-D <name>     Delete a branch"
   echo "    ${cmd} -r               List remote branches"
   echo
-  echo "  Set GIT_FRIENDLY_NO_HELP=1 to hide usage when listing branches."
-  echo
   exit 0
 fi
 
 # If no branch specified (or -r), list branches
 if [ -z $branch ] || [ $branch == "-r" ]; then
-  if [ -z "$GIT_FRIENDLY_NO_HELP" ]; then
-    cmd=$(basename $0)
-    echo
-    echo "  Usage:"
-    echo "    ${cmd} [name]           Switch to or create a branch"
-    echo "    ${cmd} -                Switch to previous branch"
-    echo "    ${cmd} -d|-D <name>     Delete a branch"
-    echo "    ${cmd} -r               List remote branches"
-  fi
   echo
   # Color scheme
   esc_date="$(tput setaf 5)"   # magenta
