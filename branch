@@ -30,6 +30,14 @@ if [ "$1" == "-d" ] || [ "$1" == "-D" ]; then
   branch=$2
 fi
 
+# Strip remote prefix (e.g. "origin/foo" → "foo") for autocomplete convenience
+for _r in $(git remote 2>/dev/null); do
+  if [[ "$branch" == "$_r/"* ]]; then
+    branch="${branch#"$_r/"}"
+    break
+  fi
+done
+
 # Show help
 if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
   cmd=$(basename $0)
