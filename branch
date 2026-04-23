@@ -57,45 +57,58 @@ fi
 # If no branch specified (or -r), list branches
 if [ -z $branch ] || [ $branch == "-r" ]; then
   echo
-  # Color scheme
-  esc_date="$(tput setaf 5)"   # magenta
-  esc_track="$(tput setaf 3)"  # yellow
+  # Color scheme (matches git branch -vvv defaults)
+  esc_green="$(tput setaf 2)"
+  esc_yellow="$(tput setaf 3)"
+  esc_cyan="$(tput setaf 6)"
+  esc_magenta="$(tput setaf 5)"
+
+  # Use unit separator (0x1f) as delimiter — tabs get collapsed by bash read
+  sep=$'\x1f'
 
   if [ "$1" == "-r" ]; then
     echo "  ${color_dim}Remote branches:${color_reset}"
     data=$(git branch -r --sort=-committerdate \
-      --format='%(committerdate:relative)	%(refname:short)	%(subject)')
-    date_w=0
-    while IFS=$'\t' read -r date _ _; do
-      (( ${#date} > date_w )) && date_w=${#date}
+      --format="%(refname:short)${sep}%(objectname:short)${sep}%(subject)${sep}%(committerdate:relative)")
+    name_w=0
+    while IFS="$sep" read -r name _ _ _; do
+      (( ${#name} > name_w )) && name_w=${#name}
     done <<< "$data"
-    while IFS=$'\t' read -r date name subject; do
-      printf "    ${esc_date}%-${date_w}s${color_reset}  %s  ${color_dim}%s${color_reset}\n" \
-        "$date" "$name" "$subject"
+    while IFS="$sep" read -r name hash subject date; do
+      printf "    %-${name_w}s ${esc_yellow}%s${color_reset} %s  ${esc_magenta}%s${color_reset}\n" \
+        "$name" "$hash" "$subject" "$date"
     done <<< "$data"
   else
     echo "  ${color_dim}Local branches:${color_reset}"
     data=$(git branch --sort=-committerdate \
-      --format='%(HEAD)	%(committerdate:relative)	%(refname:short)	%(upstream:short)	%(subject)')
-    date_w=0
-    while IFS=$'\t' read -r _ date _ _ _; do
-      (( ${#date} > date_w )) && date_w=${#date}
+      --format="%(HEAD)${sep}%(refname:short)${sep}%(objectname:short)${sep}%(upstream:short)${sep}%(upstream:track)${sep}%(subject)${sep}%(committerdate:relative)")
+    name_w=0
+    while IFS="$sep" read -r _ name _ _ _ _ _; do
+      (( ${#name} > name_w )) && name_w=${#name}
     done <<< "$data"
-    while IFS=$'\t' read -r head date name upstream subject; do
+    while IFS="$sep" read -r head name hash upstream track subject date; do
       if [ "$head" == "*" ]; then
         prefix="*"
-        name_fmt="${color_bold}${name}${color_reset}"
+        name_fmt="${esc_green}${color_bold}$(printf "%-${name_w}s" "$name")${color_reset}"
       else
         prefix=" "
-        name_fmt="$name"
+        name_fmt="$(printf "%-${name_w}s" "$name")"
       fi
+      # Merge upstream and track info into one bracket like git branch -vvv
       if [ -n "$upstream" ]; then
-        track_fmt=" ${esc_track}[${upstream}]${color_reset}"
+        # %(upstream:track) gives e.g. "[ahead 1]" or "[ahead 1, behind 2]" — strip its brackets
+        track_inner="${track#\[}"
+        track_inner="${track_inner%\]}"
+        if [ -n "$track_inner" ]; then
+          tracking=" ${esc_cyan}[${upstream}: ${track_inner}]${color_reset}"
+        else
+          tracking=" ${esc_cyan}[${upstream}]${color_reset}"
+        fi
       else
-        track_fmt=""
+        tracking=""
       fi
-      printf "%s ${esc_date}%-${date_w}s${color_reset}  %s%s  ${color_dim}%s${color_reset}\n" \
-        "$prefix" "$date" "$name_fmt" "$track_fmt" "$subject"
+      printf "%s %s ${esc_yellow}%s${color_reset}%s %s  ${esc_magenta}%s${color_reset}\n" \
+        "$prefix" "$name_fmt" "$hash" "$tracking" "$subject" "$date"
     done <<< "$data"
   fi
   echo
