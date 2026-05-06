@@ -107,10 +107,10 @@ git remote prune $remote >/dev/null 2>&1 &
 
 # Bundle em if you got em!
 if [ "$GIT_FRIENDLY_NO_BUNDLE" != "true" ]; then
-  if cmd_exists 'bundle' && has_changed 'Gemfile'; then
+  if cmd_exists 'bundle' && (has_changed 'Gemfile' || has_changed 'gems.rb'); then
     echo
     echo '⚔  Bundling gems...'
-    change_dir 'Gemfile'
+    change_dir 'Gemfile' || change_dir 'gems.rb'
     bundle check >/dev/null 2>&1 || bundle install
     reset_dir
   fi
@@ -158,8 +158,8 @@ fi
 
 # Install packages with bun
 if [ "$GIT_FRIENDLY_NO_BUN" != "true" ]; then
-  if file_exists 'bun.lockb' && (has_changed 'bun.lockb' || has_changed 'package.json') && [ $yarned -eq 0 ]; then
-    change_dir 'bun.lockb' || change_dir 'package.json'
+  if (file_exists 'bun.lock' || file_exists 'bun.lockb') && (has_changed 'bun.lock' || has_changed 'bun.lockb' || has_changed 'package.json') && [ $yarned -eq 0 ]; then
+    change_dir 'bun.lock' || change_dir 'bun.lockb' || change_dir 'package.json'
     if cmd_exists 'bun'; then
       echo
       echo '⚔  Installing packages with bun...'
