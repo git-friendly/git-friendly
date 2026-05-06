@@ -104,7 +104,7 @@ fi
 
 # Switch to the previous branch
 if [ "$branch" == "-" ]; then
-  git checkout -
+  git switch -
   exit 0
 fi
 
@@ -116,14 +116,14 @@ if [ "$delete" ]; then
 fi
 
 # Otherwise we're either switching to an existing branch or creating a branch
-local_branch_exists=$(git branch --no-color | egrep " $branch\$")
-remote_branch_exists=$(git branch -r --no-color | egrep " $remote/$branch\$")
+local_branch_exists=$(git branch --no-color | grep -E " $branch\$")
+remote_branch_exists=$(git branch -r --no-color | grep -E " $remote/$branch\$")
 remotes=($(git remote))
 remotes_with_branch=()
 origin_has_branch=
 
 for remote in "${remotes[@]}"; do
-  remote_branch_exists=$(git branch -r --no-color | egrep " $remote/$branch\$")
+  remote_branch_exists=$(git branch -r --no-color | grep -E " $remote/$branch\$")
   if [ "$remote_branch_exists" ]; then
     remotes_with_branch=("${remotes_with_branch[@]}" "$remote")
     if [ "$remote" = "origin" ]; then
@@ -147,7 +147,7 @@ fi
 # If local branch exists already, just switch to it
 if [ -n "$local_branch_exists" ] && [ ! "$local_branch_exists" == '' ]; then
   echo "👓  Switching to existing local branch..."
-  git checkout $branch
+  git switch $branch
 
   # Track remote branch if not already
   if [ -n "$remote_branch_exists" ] && [ ! "$remote_branch_exists" == '' ]; then
@@ -162,12 +162,12 @@ if [ -n "$local_branch_exists" ] && [ ! "$local_branch_exists" == '' ]; then
 # If remote exists, create a local branch that tracks the remote
 elif [ -n "$remote_branch_exists" ] && [ ! "$remote_branch_exists" == '' ]; then
   echo "📡  Tracking existing remote branch '$remote_branch_exists'..."
-  git checkout -b $branch --track $remote/$branch
+  git switch -c $branch --track $remote/$branch
 
 # Otherwise create a new local branch
 else
   echo "✏️  Creating new local branch..."
-  git checkout -b $branch --no-track
+  git switch -c $branch --no-track
 fi
 
 exit 0
