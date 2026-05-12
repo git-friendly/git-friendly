@@ -88,8 +88,13 @@ remote_branch=$( (git config "branch.${branch}.merge" || echo "refs/heads/$branc
 # Stash any local changes, including untracked files
 stash=$(git stash --include-untracked)
 
-# Pull, using rebase if configured
+# Fetch all branches (and prune stale ones) so remote-tracking refs
+# stay complete — `git pull <remote> <branch>` alone only updates the
+# one ref you name.
 echo "🚀  Fetching from $remote..."
+git fetch --prune --jobs=10 "$remote" || rollback $?
+
+# Pull, using rebase if configured
 if [ "$GIT_FRIENDLY_NO_REBASE_ON_PULL" != "true" ]; then
   rebase="--rebase"
 else
@@ -100,10 +105,6 @@ git pull $rebase --recurse-submodules --jobs=10 $remote $remote_branch || rollba
 
 # Pop any stashed changes
 unstash
-
-# Remove old, stale branches
-# This works a lot better than "git pull --prune" for unknown reasons
-git remote prune $remote >/dev/null 2>&1 &
 
 # Bundle em if you got em!
 if [ "$GIT_FRIENDLY_NO_BUNDLE" != "true" ]; then
