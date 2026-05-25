@@ -161,6 +161,17 @@ if [ "$GIT_FRIENDLY_NO_NPM" != "true" ] && cmd_exists 'npm' \
   reset_dir
 fi
 
+# Install uv packages (Python). Anchored on uv.lock so we never run uv
+# against a non-uv pyproject.toml (poetry/hatch/pip-tools also use one).
+if [ "$GIT_FRIENDLY_NO_UV" != "true" ] && cmd_exists 'uv' \
+   && file_exists 'uv.lock' && (has_changed 'uv.lock' || has_changed 'pyproject.toml'); then
+  change_dir 'uv.lock' || change_dir 'pyproject.toml'
+  echo
+  echo '⚔  Installing packages with uv...'
+  uv sync
+  reset_dir
+fi
+
 # Install Composer packages
 if [ "$GIT_FRIENDLY_NO_COMPOSER" != "true" ]; then
   if has_changed 'composer.lock'; then
