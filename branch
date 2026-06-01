@@ -67,7 +67,7 @@ if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
 fi
 
 # If no branch specified (or -r), list branches
-if [ -z $branch ] || [ $branch == "-r" ]; then
+if [ -z "$branch" ] || [ "$branch" = "-r" ]; then
   echo
   # Color scheme (matches git branch -vvv defaults)
   esc_green="$(tput setaf 2)"

@@ -65,16 +65,12 @@ reset_dir() {
   cd "$current_dir"
 }
 
-# Test wether a file has changed
+# Test whether a file has changed since the pre-pull HEAD.
 # $1 - filename
 has_changed() {
-  # store changed files for install check (
-  # ORIG_HEAD is last value of HEAD before pull
+  # ORIG_HEAD is the value of HEAD before the pull.
   changed_files="$(git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD 2>/dev/null)"
-  if $(echo "$changed_files" | grep --quiet "$1"); then
-    return 0
-  fi
-  return 1
+  echo "$changed_files" | grep --quiet "$1"
 }
 
 branch=$(git branch --show-current) || exit $?
