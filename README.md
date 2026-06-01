@@ -6,7 +6,7 @@ Git sometimes requires typing two or three commands just to execute something ba
 
 * does the most useful thing by default; plus
 * **push** copies a GitHub compare URL to your clipboard;
-* **pull** runs commands like `bundle install`, `npm install`, `yarn install`, `pnpm install` and `composer install` if necessary;
+* **pull** runs commands like `bundle install`, `npm install`, `yarn install`, `pnpm install`, `uv sync` and `composer install` if necessary;
 * **branch** tracks remote branches if they are available;
 * **stash** includes untracked files by default.
 
@@ -119,7 +119,7 @@ merge [name]
 * pull from the remote using rebase;
 * update submodules;
 * pop your stash;
-* run `bundle install`, `npm install`, `yarn install`, `pnpm install` or `composer install` if there are any changes in `Gemfile`, `package.json`, etc.
+* run `bundle install`, `npm install`, `yarn install`, `pnpm install`, `uv sync` or `composer install` if there are any changes in `Gemfile`, `package.json`, `uv.lock`, etc.
 
 ### `push`
 
@@ -155,6 +155,7 @@ Available environment variables:
 | `GIT_FRIENDLY_NO_NPM` | Disables `npm install` | `pull` | `false` |
 | `GIT_FRIENDLY_NO_YARN` | Disables `yarn install` | `pull` | `false` |
 | `GIT_FRIENDLY_NO_PNPM` | Disables `pnpm install` | `pull` | `false` |
+| `GIT_FRIENDLY_NO_UV` | Disables `uv sync` | `pull` | `false` |
 | `GIT_FRIENDLY_NO_REBASE_ON_PULL` | Disables rebasing local commits on top of the updated remote branch | `pull` | `false` |
 | `GIT_FRIENDLY_NO_COPY_URL_AFTER_PUSH` | Disables copying URL to clipboard | `push` | `false` |
 
@@ -165,6 +166,7 @@ Available environment variables:
 * npm (JavaScript)
 * yarn (JavaScript)
 * pnpm (JavaScript)
+* uv (Python)
 
 Support for more is always welcome.
 

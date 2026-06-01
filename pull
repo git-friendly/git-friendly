@@ -88,8 +88,14 @@ remote_branch=$( (git config "branch.${branch}.merge" || echo "refs/heads/$branc
 # Stash any local changes, including untracked files
 stash=$(git stash --include-untracked)
 
-# Pull, using rebase if configured
+# Fetch all branches (and prune stale ones) so remote-tracking refs
+# stay complete — `git pull <remote> <branch>` alone only updates the
+# one ref you name. Skip submodules here; the recursive pull below owns
+# submodule updates, so recursing now just double-fetches them.
 echo "🚀  Fetching from $remote..."
+git fetch --prune --no-recurse-submodules --jobs=10 "$remote" || rollback $?
+
+# Pull, using rebase if configured
 if [ "$GIT_FRIENDLY_NO_REBASE_ON_PULL" != "true" ]; then
   rebase="--rebase"
 else
@@ -100,10 +106,6 @@ git pull $rebase --recurse-submodules --jobs=10 $remote $remote_branch || rollba
 
 # Pop any stashed changes
 unstash
-
-# Remove old, stale branches
-# This works a lot better than "git pull --prune" for unknown reasons
-git remote prune $remote >/dev/null 2>&1 &
 
 # Bundle em if you got em!
 if [ "$GIT_FRIENDLY_NO_BUNDLE" != "true" ]; then
@@ -116,58 +118,59 @@ if [ "$GIT_FRIENDLY_NO_BUNDLE" != "true" ]; then
   fi
 fi
 
-# Install Node.js packages with Yarn
-yarned=0
-if [ "$GIT_FRIENDLY_NO_YARN" != "true" ]; then
-  if file_exists 'yarn.lock' && (has_changed 'yarn.lock' || has_changed 'package.json'); then
-    change_dir 'yarn.lock' || change_dir 'package.json'
-    if cmd_exists 'yarn'; then
-      echo
-      echo '⚔  Installing packages with yarn...'
-      yarn install
-      yarned=1
-    fi
-    reset_dir
-  fi
+# JS packages — each block fires when its own lockfile is present;
+# npm is the fallback used only when no JS lockfile exists at all.
+has_js_lockfile() {
+  file_exists 'yarn.lock' || file_exists 'pnpm-lock.yaml' \
+    || file_exists 'bun.lock' || file_exists 'bun.lockb'
+}
+
+if [ "$GIT_FRIENDLY_NO_YARN" != "true" ] && cmd_exists 'yarn' \
+   && file_exists 'yarn.lock' && (has_changed 'yarn.lock' || has_changed 'package.json'); then
+  change_dir 'yarn.lock' || change_dir 'package.json'
+  echo
+  echo '⚔  Installing packages with yarn...'
+  yarn install
+  reset_dir
 fi
 
-# Install node.js packages with pnpm
-if [ "$GIT_FRIENDLY_NO_PNPM" != "true" ]; then
-  if file_exists 'pnpm-lock.yaml' && (has_changed 'pnpm-lock.yaml' || has_changed 'package.json') && [ $yarned -eq 0 ]; then
-    change_dir 'pnpm-lock.yaml' || change_dir 'package.json'
-    if cmd_exists 'pnpm'; then
-      echo
-      echo '⚔  Installing packages with pnpm...'
-      pnpm install
-      yarned=1
-    fi
-    reset_dir
-  fi
+if [ "$GIT_FRIENDLY_NO_PNPM" != "true" ] && cmd_exists 'pnpm' \
+   && file_exists 'pnpm-lock.yaml' && (has_changed 'pnpm-lock.yaml' || has_changed 'package.json'); then
+  change_dir 'pnpm-lock.yaml' || change_dir 'package.json'
+  echo
+  echo '⚔  Installing packages with pnpm...'
+  pnpm install
+  reset_dir
 fi
 
-# Install Node.js packages with npm
-if [ "$GIT_FRIENDLY_NO_NPM" != "true" ]; then
-  if cmd_exists 'npm' && has_changed 'package.json' && [ $yarned -eq 0 ]; then
-    echo
-    echo '⚔  Installing packages with npm...'
-    change_dir 'package.json'
-    npm install
-    reset_dir
-  fi
+if [ "$GIT_FRIENDLY_NO_BUN" != "true" ] && cmd_exists 'bun' \
+   && (file_exists 'bun.lock' || file_exists 'bun.lockb') \
+   && (has_changed 'bun.lock' || has_changed 'bun.lockb' || has_changed 'package.json'); then
+  change_dir 'bun.lock' || change_dir 'bun.lockb' || change_dir 'package.json'
+  echo
+  echo '⚔  Installing packages with bun...'
+  bun install
+  reset_dir
 fi
 
-# Install packages with bun
-if [ "$GIT_FRIENDLY_NO_BUN" != "true" ]; then
-  if (file_exists 'bun.lock' || file_exists 'bun.lockb') && (has_changed 'bun.lock' || has_changed 'bun.lockb' || has_changed 'package.json') && [ $yarned -eq 0 ]; then
-    change_dir 'bun.lock' || change_dir 'bun.lockb' || change_dir 'package.json'
-    if cmd_exists 'bun'; then
-      echo
-      echo '⚔  Installing packages with bun...'
-      bun install
-      yarned=1
-    fi
-    reset_dir
-  fi
+if [ "$GIT_FRIENDLY_NO_NPM" != "true" ] && cmd_exists 'npm' \
+   && has_changed 'package.json' && ! has_js_lockfile; then
+  change_dir 'package.json'
+  echo
+  echo '⚔  Installing packages with npm...'
+  npm install
+  reset_dir
+fi
+
+# Install uv packages (Python). Anchored on uv.lock so we never run uv
+# against a non-uv pyproject.toml (poetry/hatch/pip-tools also use one).
+if [ "$GIT_FRIENDLY_NO_UV" != "true" ] && cmd_exists 'uv' \
+   && file_exists 'uv.lock' && (has_changed 'uv.lock' || has_changed 'pyproject.toml'); then
+  change_dir 'uv.lock' || change_dir 'pyproject.toml'
+  echo
+  echo '⚔  Installing packages with uv...'
+  uv sync
+  reset_dir
 fi
 
 # Install Composer packages

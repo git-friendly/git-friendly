@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Usage: branch [branchname]
-# Usage: branch [-D] [-d] [branchname]
+# Usage: branch [-D|-d] <branchname>...
 # Usage: branch -
 #
 #
@@ -18,24 +18,36 @@ git rev-parse --is-inside-work-tree >/dev/null || exit $?
 remote="origin"
 branch=$1
 delete=
+branches=()
 
 # Colors
 color_bold="$(tput bold)"
 color_dim="$(tput dim)"
 color_reset="$(tput sgr0)"
 
-# If deleting a branch, stash the flag and branch name to use later
+# If deleting, stash the flag and collect all remaining args as branches to delete
 if [ "$1" == "-d" ] || [ "$1" == "-D" ]; then
   delete=$1
-  branch=$2
+  shift
+  branches=("$@")
+  branch=$1
 fi
 
 # Strip remote prefix (e.g. "origin/foo" → "foo") for autocomplete convenience
-for _r in $(git remote 2>/dev/null); do
+_remotes=$(git remote 2>/dev/null)
+for _r in $_remotes; do
   if [[ "$branch" == "$_r/"* ]]; then
     branch="${branch#"$_r/"}"
     break
   fi
+done
+for i in "${!branches[@]}"; do
+  for _r in $_remotes; do
+    if [[ "${branches[$i]}" == "$_r/"* ]]; then
+      branches[$i]="${branches[$i]#"$_r/"}"
+      break
+    fi
+  done
 done
 
 # Show help
@@ -46,7 +58,7 @@ if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
   echo "    ${cmd}                  List local branches"
   echo "    ${cmd} [name]           Switch to or create a branch"
   echo "    ${cmd} -                Switch to previous branch"
-  echo "    ${cmd} -d|-D <name>     Delete a branch"
+  echo "    ${cmd} -d|-D <name>...  Delete one or more branches"
   echo "    ${cmd} -r               List remote branches"
   echo
   echo "  Automatically tracks a matching remote branch if one exists."
@@ -57,45 +69,58 @@ fi
 # If no branch specified (or -r), list branches
 if [ -z $branch ] || [ $branch == "-r" ]; then
   echo
-  # Color scheme
-  esc_date="$(tput setaf 5)"   # magenta
-  esc_track="$(tput setaf 3)"  # yellow
+  # Color scheme (matches git branch -vvv defaults)
+  esc_green="$(tput setaf 2)"
+  esc_yellow="$(tput setaf 3)"
+  esc_cyan="$(tput setaf 6)"
+  esc_magenta="$(tput setaf 5)"
+
+  # Use unit separator (0x1f) as delimiter — tabs get collapsed by bash read
+  sep=$'\x1f'
 
   if [ "$1" == "-r" ]; then
     echo "  ${color_dim}Remote branches:${color_reset}"
     data=$(git branch -r --sort=-committerdate \
-      --format='%(committerdate:relative)	%(refname:short)	%(subject)')
-    date_w=0
-    while IFS=$'\t' read -r date _ _; do
-      (( ${#date} > date_w )) && date_w=${#date}
+      --format="%(refname:short)${sep}%(objectname:short)${sep}%(subject)${sep}%(committerdate:relative)")
+    name_w=0
+    while IFS="$sep" read -r name _ _ _; do
+      (( ${#name} > name_w )) && name_w=${#name}
     done <<< "$data"
-    while IFS=$'\t' read -r date name subject; do
-      printf "    ${esc_date}%-${date_w}s${color_reset}  %s  ${color_dim}%s${color_reset}\n" \
-        "$date" "$name" "$subject"
+    while IFS="$sep" read -r name hash subject date; do
+      printf "    %-${name_w}s ${esc_yellow}%s${color_reset} %s  ${esc_magenta}%s${color_reset}\n" \
+        "$name" "$hash" "$subject" "$date"
     done <<< "$data"
   else
     echo "  ${color_dim}Local branches:${color_reset}"
     data=$(git branch --sort=-committerdate \
-      --format='%(HEAD)	%(committerdate:relative)	%(refname:short)	%(upstream:short)	%(subject)')
-    date_w=0
-    while IFS=$'\t' read -r _ date _ _ _; do
-      (( ${#date} > date_w )) && date_w=${#date}
+      --format="%(HEAD)${sep}%(refname:short)${sep}%(objectname:short)${sep}%(upstream:short)${sep}%(upstream:track)${sep}%(subject)${sep}%(committerdate:relative)")
+    name_w=0
+    while IFS="$sep" read -r _ name _ _ _ _ _; do
+      (( ${#name} > name_w )) && name_w=${#name}
     done <<< "$data"
-    while IFS=$'\t' read -r head date name upstream subject; do
+    while IFS="$sep" read -r head name hash upstream track subject date; do
       if [ "$head" == "*" ]; then
         prefix="*"
-        name_fmt="${color_bold}${name}${color_reset}"
+        name_fmt="${esc_green}${color_bold}$(printf "%-${name_w}s" "$name")${color_reset}"
       else
         prefix=" "
-        name_fmt="$name"
+        name_fmt="$(printf "%-${name_w}s" "$name")"
       fi
+      # Merge upstream and track info into one bracket like git branch -vvv
       if [ -n "$upstream" ]; then
-        track_fmt=" ${esc_track}[${upstream}]${color_reset}"
+        # %(upstream:track) gives e.g. "[ahead 1]" or "[ahead 1, behind 2]" — strip its brackets
+        track_inner="${track#\[}"
+        track_inner="${track_inner%\]}"
+        if [ -n "$track_inner" ]; then
+          tracking=" ${esc_cyan}[${upstream}: ${track_inner}]${color_reset}"
+        else
+          tracking=" ${esc_cyan}[${upstream}]${color_reset}"
+        fi
       else
-        track_fmt=""
+        tracking=""
       fi
-      printf "%s ${esc_date}%-${date_w}s${color_reset}  %s%s  ${color_dim}%s${color_reset}\n" \
-        "$prefix" "$date" "$name_fmt" "$track_fmt" "$subject"
+      printf "%s %s ${esc_yellow}%s${color_reset}%s %s  ${esc_magenta}%s${color_reset}\n" \
+        "$prefix" "$name_fmt" "$hash" "$tracking" "$subject" "$date"
     done <<< "$data"
   fi
   echo
@@ -108,10 +133,18 @@ if [ "$branch" == "-" ]; then
   exit 0
 fi
 
-# Delete branch
+# Delete branch(es)
 if [ "$delete" ]; then
-  echo "💀  Removing local branch..."
-  git branch $delete $branch
+  if [ ${#branches[@]} -eq 0 ]; then
+    echo "Usage: $(basename $0) $delete <name>..." >&2
+    exit 1
+  fi
+  if [ ${#branches[@]} -gt 1 ]; then
+    echo "💀  Removing local branches..."
+  else
+    echo "💀  Removing local branch..."
+  fi
+  git branch "$delete" "${branches[@]}"
   exit 0
 fi
 
