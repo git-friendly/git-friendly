@@ -9,8 +9,8 @@ mkdir -p ${dest}
 
 # Download all scripts
 for s in ${FILES[*]}; do
-  curl -sS -o ${dest}/${s} https://raw.githubusercontent.com/git-friendly/git-friendly/main/${s}
-  if [ ! -f ${dest}/${s} ]; then
+  curl -fsSL -o "${dest}/${s}" "https://raw.githubusercontent.com/git-friendly/git-friendly/main/${s}"
+  if [ ! -f "${dest}/${s}" ]; then
     echo
     echo "Oops! The '${s}' command cannot be copied to ${dest}, installation failed."
     echo "Try to rerun with sudo or specify a custom directory, see for details:"

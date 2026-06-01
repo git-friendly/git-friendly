@@ -144,7 +144,7 @@ if [ "$delete" ]; then
   else
     echo "💀  Removing local branch..."
   fi
-  git branch "$delete" "${branches[@]}"
+  git branch "$delete" "${branches[@]}" || exit $?
   exit 0
 fi
 
@@ -179,28 +179,28 @@ if [ ${#remotes_with_branch[@]} -gt 0 ]; then
 fi
 
 # If local branch exists already, just switch to it
-if [ -n "$local_branch_exists" ] && [ ! "$local_branch_exists" == '' ]; then
+if [ -n "$local_branch_exists" ]; then
   echo "👓  Switching to existing local branch..."
-  git switch $branch
+  git switch "$branch"
 
   # Track remote branch if not already
-  if [ -n "$remote_branch_exists" ] && [ ! "$remote_branch_exists" == '' ]; then
+  if [ -n "$remote_branch_exists" ]; then
     tracking=$(git rev-parse --abbrev-ref --symbolic-full-name "$branch@{upstream}" 2>/dev/null)
     if [[ "$tracking" != "$remote"/* ]]; then
       echo "⚒️  Your local branch is not tracking the corresponding remote branch, fixing..."
-      git branch --set-upstream-to=$remote/$branch $branch
+      git branch --set-upstream-to="$remote/$branch" "$branch"
     fi
   fi
 
 # If remote exists, create a local branch that tracks the remote
-elif [ -n "$remote_branch_exists" ] && [ ! "$remote_branch_exists" == '' ]; then
+elif [ -n "$remote_branch_exists" ]; then
   echo "📡  Tracking existing remote branch '$remote_branch_exists'..."
-  git switch -c $branch --track $remote/$branch
+  git switch -c "$branch" --track "$remote/$branch"
 
 # Otherwise create a new local branch
 else
   echo "✏️  Creating new local branch..."
-  git switch -c $branch --no-track
+  git switch -c "$branch" --no-track
 fi
 
 exit 0

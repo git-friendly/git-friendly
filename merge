@@ -8,15 +8,20 @@
 
 remote="origin"
 branch=$1
-current_branch=$(git branch --show-current)
 
-if [ -z $branch ]; then
+if [ -z "$branch" ]; then
   echo "Usage: $0 [branchname]"
   exit 1
 fi
 
 # Abort if this isn't a git repository
 git rev-parse --is-inside-work-tree >/dev/null || exit $?
+
+current_branch=$(git branch --show-current)
+if [ -z "$current_branch" ]; then
+  echo "❌  You're not on a branch (detached HEAD). Check out a branch first." >&2
+  exit 1
+fi
 
 # If there is a remote version of this branch, rebase onto current_branch first
 # If there's a remote (public) branch, we do not want to be rewriting histories

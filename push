@@ -24,17 +24,21 @@ color_reset="$(tput sgr0)"
 
 # TODO DRY this b/w pull and push
 branch=$(git branch --show-current) || exit $?
+if [ -z "$branch" ]; then
+  echo "${color_error}❌  You're not on a branch (detached HEAD). Check out a branch first.${color_reset}" >&2
+  exit 1
+fi
 default_remote="origin"
 remote=$(git config "branch.${branch}.remote" || echo "$default_remote")
 remote_branch=$( (git config "branch.${branch}.merge" || echo "refs/heads/$branch") | cut -d/ -f3-)
 
 # Push & save output
-if [ -z $* ]; then
-  args="$remote $remote_branch"
+if [ $# -eq 0 ]; then
+  args=("$remote" "$remote_branch")
 else
-  args="$*"
+  args=("$@")
 fi
-push=$(git push --set-upstream $args 2>&1)
+push=$(git push --set-upstream "${args[@]}" 2>&1)
 exit_code=$?
 
 if [ $exit_code != 0 ]; then
@@ -95,8 +99,8 @@ if [[ "$remote_url" =~ "github.com" ]]; then
 
   if [ "$GIT_FRIENDLY_NO_COPY_URL_AFTER_PUSH" != "true" ]; then
     copied="\nCopied URL to clipboard:"
-    which pbcopy >&/dev/null && echo $github_url | pbcopy && echo -e "$copied"
-    which xclip >&/dev/null && echo $github_url | xclip -selection clipboard && echo -e "$copied"
+    command -v pbcopy >/dev/null 2>&1 && echo $github_url | pbcopy && echo -e "$copied"
+    command -v xclip >/dev/null 2>&1 && echo $github_url | xclip -selection clipboard && echo -e "$copied"
   fi
 
   echo $github_url
