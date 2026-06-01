@@ -68,7 +68,7 @@ else
 fi
 
 # Build GitHub URL: prefer PR URL > compare URL
-remote_url=$(git remote show $remote -n | grep Push | awk '{ print $3 }')
+remote_url=$(git remote get-url --push $remote)
 
 if [[ "$remote_url" =~ "github.com" ]]; then
 

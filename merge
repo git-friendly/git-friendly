@@ -20,9 +20,8 @@ git rev-parse --is-inside-work-tree >/dev/null || exit $?
 
 # If there is a remote version of this branch, rebase onto current_branch first
 # If there's a remote (public) branch, we do not want to be rewriting histories
-tracking=$(git branch -vv | grep -E "^\*" | awk '{ print $4 '})
-echo "tracking=$tracking"
-if [[ ! "$tracking" =~ "$remote" ]]; then
+tracking=$(git rev-parse --abbrev-ref --symbolic-full-name "@{upstream}" 2>/dev/null)
+if [[ "$tracking" != "$remote"/* ]]; then
   echo "⚒  Local-only branch, rebasing $branch onto $current_branch first..."
   git switch $branch
   git rebase $current_branch || exit 1

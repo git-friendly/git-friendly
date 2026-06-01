@@ -149,16 +149,17 @@ if [ "$delete" ]; then
 fi
 
 # Otherwise we're either switching to an existing branch or creating a branch
-local_branch_exists=$(git branch --no-color | grep -E " $branch\$")
-remote_branch_exists=$(git branch -r --no-color | grep -E " $remote/$branch\$")
+local_branch_exists=
+git show-ref --verify --quiet "refs/heads/$branch" && local_branch_exists=1
+
+remote_branch_exists=
 remotes=($(git remote))
 remotes_with_branch=()
 origin_has_branch=
 
 for remote in "${remotes[@]}"; do
-  remote_branch_exists=$(git branch -r --no-color | grep -E " $remote/$branch\$")
-  if [ "$remote_branch_exists" ]; then
-    remotes_with_branch=("${remotes_with_branch[@]}" "$remote")
+  if git show-ref --verify --quiet "refs/remotes/$remote/$branch"; then
+    remotes_with_branch+=("$remote")
     if [ "$remote" = "origin" ]; then
       origin_has_branch=1
     fi
@@ -184,9 +185,8 @@ if [ -n "$local_branch_exists" ] && [ ! "$local_branch_exists" == '' ]; then
 
   # Track remote branch if not already
   if [ -n "$remote_branch_exists" ] && [ ! "$remote_branch_exists" == '' ]; then
-    tracking=$(git branch -vv | grep "*" | awk '{ print $4 '})
-    # echo "Remote branch exists. Local branch is tracking: $tracking"
-    if [[ ! "$tracking" =~ "$remote" ]]; then
+    tracking=$(git rev-parse --abbrev-ref --symbolic-full-name "$branch@{upstream}" 2>/dev/null)
+    if [[ "$tracking" != "$remote"/* ]]; then
       echo "⚒️  Your local branch is not tracking the corresponding remote branch, fixing..."
       git branch --set-upstream-to=$remote/$branch $branch
     fi
