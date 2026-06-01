@@ -220,3 +220,110 @@ jobs:
           merge merge-me
           [ -f merge.txt ]
           branch -d merge-me
+
+      - name: Test branch - nonexistent delete propagates failure
+        run: |
+          export PATH="$PWD:$PATH"
+          cd /tmp/test-repo
+          # `branch -d` on a nonexistent branch must exit non-zero
+          ! branch -d definitely-no-such-branch 2>/dev/null
+
+      - name: Test branch - name with slash
+        run: |
+          export PATH="$PWD:$PATH"
+          cd /tmp/test-repo
+          branch feature/has-slash
+          [ "$(git branch --show-current)" = "feature/has-slash" ]
+          branch main
+          git branch -D feature/has-slash
+
+      - name: Test detached HEAD - pull/push/merge fail cleanly
+        run: |
+          export PATH="$PWD:$PATH"
+          cd /tmp/test-repo
+          git checkout main
+          git checkout --detach HEAD
+          ! pull 2>/dev/null
+          ! push 2>/dev/null
+          ! merge main 2>/dev/null
+          git checkout main
+
+      - name: Test pull - skips pop when nothing was stashed
+        run: |
+          export PATH="$PWD:$PATH"
+          cd /tmp/other-clone
+          echo "pop test" >> remote.txt
+          git add remote.txt
+          git commit -m "Pop test change"
+          git push origin main
+
+          cd /tmp/test-repo
+          # Clean working tree — pull must not run `git stash pop`
+          out=$(pull 2>&1)
+          echo "$out" | grep -q "Popping stash" && exit 1
+          echo "$out" | grep -q "🦄  Done"
+
+      - name: Test pull - pop runs exactly once when something was stashed
+        run: |
+          export PATH="$PWD:$PATH"
+          cd /tmp/other-clone
+          echo "another pop" >> remote.txt
+          git add remote.txt
+          git commit -m "Another pop"
+          git push origin main
+
+          cd /tmp/test-repo
+          echo "untracked wip" > pop-wip.txt
+          out=$(pull 2>&1)
+          pops=$(echo "$out" | grep -c "Popping stash")
+          [ "$pops" = "1" ]
+          [ -f pop-wip.txt ]
+          rm -f pop-wip.txt
+
+      - name: Test pull - has_changed only fires install hooks on actual change
+        run: |
+          export PATH="$PWD:$PATH"
+
+          # Add a yarn.lock + package.json on the remote — first pull should set up the repo
+          cd /tmp/other-clone
+          echo '{}' > package.json
+          : > yarn.lock
+          git add package.json yarn.lock
+          git commit -m "Add JS lockfile"
+          git push origin main
+
+          cd /tmp/test-repo
+          pull >/dev/null 2>&1
+
+          # Push an unrelated change; pull must NOT re-run yarn install
+          cd /tmp/other-clone
+          echo "unrelated" > unrelated.txt
+          git add unrelated.txt
+          git commit -m "Unrelated change"
+          git push origin main
+
+          cd /tmp/test-repo
+          out=$(pull 2>&1)
+          echo "$out" | grep -q "Installing packages with yarn" && {
+            echo "BUG: yarn install fired without lockfile change"
+            exit 1
+          }
+          true
+
+      - name: Test push - passthrough flag (--force-with-lease)
+        run: |
+          export PATH="$PWD:$PATH"
+          cd /tmp/test-repo
+          echo "force test" > force.txt
+          git add force.txt
+          git commit -m "Force test"
+          push --force-with-lease
+
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install shellcheck
+        run: sudo apt-get update && sudo apt-get install -y shellcheck
+      - name: Run shellcheck
+        run: shellcheck -S warning branch merge pull push stash install.sh
