@@ -15,7 +15,7 @@ git rev-parse --is-inside-work-tree >/dev/null || exit $?
 # Get parent branch
 # https://stackoverflow.com/a/17843908/1973105
 function get_parent() {
-  git show-branch | grep '*' | grep -v "$(git rev-parse --abbrev-ref HEAD)" | head -n1 | sed 's/.*\[\(.*\)\].*/\1/' | sed 's/[\^~].*//'
+  git show-branch | grep -F '*' | grep -v "$(git rev-parse --abbrev-ref HEAD)" | head -n1 | sed 's/.*\[\(.*\)\].*/\1/' | sed 's/[\^~].*//'
 }
 
 # Colors
@@ -74,7 +74,7 @@ fi
 # Build GitHub URL: prefer PR URL > compare URL
 remote_url=$(git remote get-url --push $remote)
 
-if [[ "$remote_url" =~ "github.com" ]]; then
+if [[ "$remote_url" =~ github\.com ]]; then
 
   if [[ ${remote_url:0:4} == "git@" ]]; then
     regEx='s/.*\:\(.*\)\.git/\1/'

@@ -54,7 +54,7 @@ file_exists() {
 change_dir() {
   file=$(git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD | grep "$1")
   if [[ -e "./$base_dir$file" ]]; then
-    cd $(dirname "./$base_dir$file")
+    cd "$(dirname "./$base_dir$file")" || return 1
     return 0
   fi
   return 1
@@ -62,7 +62,7 @@ change_dir() {
 
 # Go back to
 reset_dir() {
-  cd "$current_dir"
+  cd "$current_dir" || return 1
 }
 
 # Test whether a file has changed since the pre-pull HEAD.
