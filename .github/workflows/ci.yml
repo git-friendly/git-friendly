@@ -123,6 +123,8 @@ jobs:
           stash push -m "my stash message"
           stash list | grep -q "my stash message"
           stash pop
+          # leave a clean working tree so later tests can rely on it
+          git checkout -- file.txt
 
       - name: Test pull - basic
         run: |
