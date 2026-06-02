@@ -8,7 +8,7 @@ FILES=(branch merge pull push stash)
 mkdir -p ${dest}
 
 # Download all scripts
-for s in ${FILES[*]}; do
+for s in "${FILES[@]}"; do
   curl -fsSL -o "${dest}/${s}" "https://raw.githubusercontent.com/git-friendly/git-friendly/main/${s}"
   if [ ! -f "${dest}/${s}" ]; then
     echo

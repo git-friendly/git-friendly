@@ -153,7 +153,10 @@ local_branch_exists=
 git show-ref --verify --quiet "refs/heads/$branch" && local_branch_exists=1
 
 remote_branch_exists=
-remotes=($(git remote))
+remotes=()
+while IFS= read -r line; do
+  remotes+=("$line")
+done < <(git remote)
 remotes_with_branch=()
 origin_has_branch=
 
