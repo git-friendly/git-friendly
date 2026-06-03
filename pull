@@ -19,7 +19,7 @@ base_dir=$(git rev-parse --show-cdup)
 
 # Pop any stashed changes
 unstash() {
-  if [[ ! "$stash" =~ "No local changes to save" ]]; then
+  if [ -n "$stashed" ]; then
     echo
     echo "🍯  Popping stash..."
     git stash pop
@@ -37,10 +37,7 @@ rollback() {
 # Test whether a command exists
 # $1 - cmd to test
 cmd_exists() {
-  if which $1 >/dev/null 2>&1; then
-    return 0
-  fi
-  return 1
+  command -v "$1" >/dev/null 2>&1
 }
 
 # Test whether a file exists
@@ -57,7 +54,7 @@ file_exists() {
 change_dir() {
   file=$(git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD | grep "$1")
   if [[ -e "./$base_dir$file" ]]; then
-    cd $(dirname "./$base_dir$file")
+    cd "$(dirname "./$base_dir$file")" || return 1
     return 0
   fi
   return 1
@@ -65,28 +62,34 @@ change_dir() {
 
 # Go back to
 reset_dir() {
-  cd "$current_dir"
+  cd "$current_dir" || return 1
 }
 
-# Test wether a file has changed
+# Test whether a file has changed since the pre-pull HEAD.
 # $1 - filename
 has_changed() {
-  # store changed files for install check (
-  # ORIG_HEAD is last value of HEAD before pull
+  # ORIG_HEAD is the value of HEAD before the pull.
   changed_files="$(git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD 2>/dev/null)"
-  if $(echo "$changed_files" | grep --quiet "$1"); then
-    return 0
-  fi
-  return 1
+  echo "$changed_files" | grep --quiet "$1"
 }
 
-branch=$(git branch --no-color 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/') || exit $?
+branch=$(git branch --show-current) || exit $?
+if [ -z "$branch" ]; then
+  echo "${color_error}❌  You're not on a branch (detached HEAD). Check out a branch first.${color_reset}" >&2
+  exit 1
+fi
 default_remote="origin"
 remote=$(git config "branch.${branch}.remote" || echo "$default_remote")
 remote_branch=$( (git config "branch.${branch}.merge" || echo "refs/heads/$branch") | cut -d/ -f3-)
 
-# Stash any local changes, including untracked files
-stash=$(git stash --include-untracked)
+# Stash any local changes, including untracked files.
+# Compare refs/stash before/after to know if anything was actually stashed —
+# more robust than parsing the human-readable output (which is localized).
+stash_before=$(git rev-parse --verify --quiet refs/stash || true)
+git stash --include-untracked
+stash_after=$(git rev-parse --verify --quiet refs/stash || true)
+stashed=
+[ "$stash_before" != "$stash_after" ] && stashed=1
 
 # Fetch all branches (and prune stale ones) so remote-tracking refs
 # stay complete — `git pull <remote> <branch>` alone only updates the

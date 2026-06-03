@@ -67,7 +67,7 @@ if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
 fi
 
 # If no branch specified (or -r), list branches
-if [ -z $branch ] || [ $branch == "-r" ]; then
+if [ -z "$branch" ] || [ "$branch" = "-r" ]; then
   echo
   # Color scheme (matches git branch -vvv defaults)
   esc_green="$(tput setaf 2)"
@@ -129,7 +129,7 @@ fi
 
 # Switch to the previous branch
 if [ "$branch" == "-" ]; then
-  git checkout -
+  git switch -
   exit 0
 fi
 
@@ -144,21 +144,25 @@ if [ "$delete" ]; then
   else
     echo "💀  Removing local branch..."
   fi
-  git branch "$delete" "${branches[@]}"
+  git branch "$delete" "${branches[@]}" || exit $?
   exit 0
 fi
 
 # Otherwise we're either switching to an existing branch or creating a branch
-local_branch_exists=$(git branch --no-color | egrep " $branch\$")
-remote_branch_exists=$(git branch -r --no-color | egrep " $remote/$branch\$")
-remotes=($(git remote))
+local_branch_exists=
+git show-ref --verify --quiet "refs/heads/$branch" && local_branch_exists=1
+
+remote_branch_exists=
+remotes=()
+while IFS= read -r line; do
+  remotes+=("$line")
+done < <(git remote)
 remotes_with_branch=()
 origin_has_branch=
 
 for remote in "${remotes[@]}"; do
-  remote_branch_exists=$(git branch -r --no-color | egrep " $remote/$branch\$")
-  if [ "$remote_branch_exists" ]; then
-    remotes_with_branch=("${remotes_with_branch[@]}" "$remote")
+  if git show-ref --verify --quiet "refs/remotes/$remote/$branch"; then
+    remotes_with_branch+=("$remote")
     if [ "$remote" = "origin" ]; then
       origin_has_branch=1
     fi
@@ -178,29 +182,28 @@ if [ ${#remotes_with_branch[@]} -gt 0 ]; then
 fi
 
 # If local branch exists already, just switch to it
-if [ -n "$local_branch_exists" ] && [ ! "$local_branch_exists" == '' ]; then
+if [ -n "$local_branch_exists" ]; then
   echo "👓  Switching to existing local branch..."
-  git checkout $branch
+  git switch "$branch"
 
   # Track remote branch if not already
-  if [ -n "$remote_branch_exists" ] && [ ! "$remote_branch_exists" == '' ]; then
-    tracking=$(git branch -vv | grep "*" | awk '{ print $4 '})
-    # echo "Remote branch exists. Local branch is tracking: $tracking"
-    if [[ ! "$tracking" =~ "$remote" ]]; then
+  if [ -n "$remote_branch_exists" ]; then
+    tracking=$(git rev-parse --abbrev-ref --symbolic-full-name "$branch@{upstream}" 2>/dev/null)
+    if [[ "$tracking" != "$remote"/* ]]; then
       echo "⚒️  Your local branch is not tracking the corresponding remote branch, fixing..."
-      git branch --set-upstream-to=$remote/$branch $branch
+      git branch --set-upstream-to="$remote/$branch" "$branch"
     fi
   fi
 
 # If remote exists, create a local branch that tracks the remote
-elif [ -n "$remote_branch_exists" ] && [ ! "$remote_branch_exists" == '' ]; then
+elif [ -n "$remote_branch_exists" ]; then
   echo "📡  Tracking existing remote branch '$remote_branch_exists'..."
-  git checkout -b $branch --track $remote/$branch
+  git switch -c "$branch" --track "$remote/$branch"
 
 # Otherwise create a new local branch
 else
   echo "✏️  Creating new local branch..."
-  git checkout -b $branch --no-track
+  git switch -c "$branch" --no-track
 fi
 
 exit 0
