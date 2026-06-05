@@ -1,5 +1,15 @@
 name: Update Homebrew formula
 
+# Bumps the formula in the git-friendly/homebrew-git-friendly tap to the
+# released version. The formula is trivial (url/version/sha256, no bottles),
+# so we just rewrite those three fields and push — no third-party action.
+#
+# If this ever breaks (e.g. the tap layout grows bottles/deps), drop-in
+# alternatives that wrap the official `brew bump-formula-pr`:
+#   - dawidd6/action-homebrew-bump-formula  (maintained, supports livecheck)
+#   - mislav/bump-homebrew-formula-action   (what this replaced; was finicky
+#                                            with fine-grained tokens — HTTP 303)
+
 on:
   release:
     types: [published]
@@ -17,11 +27,30 @@ jobs:
   homebrew:
     runs-on: ubuntu-latest
     steps:
-      - uses: mislav/bump-homebrew-formula-action@v3
-        with:
-          formula-name: git-friendly
-          homebrew-tap: git-friendly/homebrew-git-friendly
-          tag-name: ${{ github.event.release.tag_name || github.event.inputs.tag }}
-          download-url: https://github.com/git-friendly/git-friendly/archive/${{ github.event.release.tag_name || github.event.inputs.tag }}.tar.gz
+      - name: Bump formula in tap
         env:
+          # PAT with write access to the tap repo. A plain git push over HTTPS
+          # avoids the GitHub-API redirect quirks that bit the old action.
           COMMITTER_TOKEN: ${{ secrets.COMMITTER_TOKEN }}
+          TAG: ${{ github.event.release.tag_name || github.event.inputs.tag }}
+        run: |
+          set -euo pipefail
+          version="${TAG#v}"
+          url="https://github.com/git-friendly/git-friendly/archive/refs/tags/${TAG}.tar.gz"
+          sha=$(curl -fsSL "$url" | sha256sum | cut -d' ' -f1)
+
+          git clone "https://x-access-token:${COMMITTER_TOKEN}@github.com/git-friendly/homebrew-git-friendly" tap
+          cd tap
+          sed -i -E \
+            -e "s|^( *url ).*|\1\"${url}\"|" \
+            -e "s|^( *version ).*|\1\"${version}\"|" \
+            -e "s|^( *sha256 ).*|\1\"${sha}\"|" \
+            git-friendly.rb
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add git-friendly.rb
+          # No-op cleanly if the formula is already current.
+          git diff --cached --quiet && { echo "Formula already up to date"; exit 0; }
+          git commit -m "git-friendly ${version}"
+          git push
