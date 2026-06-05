@@ -3,6 +3,15 @@ name: Update Homebrew formula
 on:
   release:
     types: [published]
+  # Allow re-bumping by hand (e.g. if the release-time run failed).
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Tag to bump the formula to (e.g. v1.1.0)
+        required: true
+
+# Cross-repo write happens via COMMITTER_TOKEN, so the default token needs nothing.
+permissions: {}
 
 jobs:
   homebrew:
@@ -12,7 +21,7 @@ jobs:
         with:
           formula-name: git-friendly
           homebrew-tap: git-friendly/homebrew-git-friendly
-          tag-name: ${{ github.event.release.tag_name }}
-          download-url: https://github.com/git-friendly/git-friendly/archive/${{ github.event.release.tag_name }}.tar.gz
+          tag-name: ${{ github.event.release.tag_name || github.event.inputs.tag }}
+          download-url: https://github.com/git-friendly/git-friendly/archive/${{ github.event.release.tag_name || github.event.inputs.tag }}.tar.gz
         env:
           COMMITTER_TOKEN: ${{ secrets.COMMITTER_TOKEN }}

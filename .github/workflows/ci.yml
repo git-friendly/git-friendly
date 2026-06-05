@@ -5,6 +5,15 @@ on:
     branches: [main]
   pull_request:
 
+# Least privilege: tests only read the repo.
+permissions:
+  contents: read
+
+# Cancel superseded runs on the same ref (e.g. rapid pushes to a PR).
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -13,7 +22,8 @@ jobs:
 
       - name: Set up test repos
         run: |
-          export PATH="$PWD:$PATH"
+          # Put the git-friendly scripts on PATH for every later step.
+          echo "$GITHUB_WORKSPACE" >> "$GITHUB_PATH"
           git config --global user.email "test@test.com"
           git config --global user.name "Test"
           git config --global init.defaultBranch main
@@ -31,7 +41,6 @@ jobs:
 
       - name: Test - outside git repo fails gracefully
         run: |
-          export PATH="$PWD:$PATH"
           cd /tmp
           ! branch 2>/dev/null
           ! pull 2>/dev/null
@@ -40,34 +49,29 @@ jobs:
 
       - name: Test branch - list
         run: |
-          export PATH="$PWD:$PATH"
           cd /tmp/test-repo
           branch
 
       - name: Test branch - create and switch
         run: |
-          export PATH="$PWD:$PATH"
           cd /tmp/test-repo
           branch test-feature
           [ "$(git branch --show-current)" = "test-feature" ]
 
       - name: Test branch - switch to existing
         run: |
-          export PATH="$PWD:$PATH"
           cd /tmp/test-repo
           branch main
           [ "$(git branch --show-current)" = "main" ]
 
       - name: Test branch - switch to previous
         run: |
-          export PATH="$PWD:$PATH"
           cd /tmp/test-repo
           branch -
           [ "$(git branch --show-current)" = "test-feature" ]
 
       - name: Test branch - track remote branch
         run: |
-          export PATH="$PWD:$PATH"
           cd /tmp/test-repo
           git push origin test-feature
           branch main
@@ -79,13 +83,11 @@ jobs:
 
       - name: Test branch -r
         run: |
-          export PATH="$PWD:$PATH"
           cd /tmp/test-repo
           branch -r | grep -q origin
 
       - name: Test branch -d and -D
         run: |
-          export PATH="$PWD:$PATH"
           cd /tmp/test-repo
           branch main
 
@@ -106,7 +108,6 @@ jobs:
 
       - name: Test stash - untracked files
         run: |
-          export PATH="$PWD:$PATH"
           cd /tmp/test-repo
           echo "uncommitted" > newfile.txt
           stash
@@ -117,7 +118,6 @@ jobs:
 
       - name: Test stash - passthrough arguments
         run: |
-          export PATH="$PWD:$PATH"
           cd /tmp/test-repo
           echo "changed" >> file.txt
           stash push -m "my stash message"
@@ -128,7 +128,6 @@ jobs:
 
       - name: Test pull - basic
         run: |
-          export PATH="$PWD:$PATH"
           cd /tmp/test-repo
           git checkout main
 
@@ -147,8 +146,6 @@ jobs:
 
       - name: Test pull - stashes dirty working tree
         run: |
-          export PATH="$PWD:$PATH"
-
           # Make another remote change
           cd /tmp/other-clone
           echo "another" >> remote.txt
@@ -165,8 +162,6 @@ jobs:
 
       - name: Test pull - no-rebase flag
         run: |
-          export PATH="$PWD:$PATH"
-
           cd /tmp/other-clone
           echo "yet another" >> remote.txt
           git add remote.txt
@@ -178,7 +173,6 @@ jobs:
 
       - name: Test push - basic
         run: |
-          export PATH="$PWD:$PATH"
           cd /tmp/test-repo
           echo "push test" > pushed.txt
           git add pushed.txt
@@ -192,7 +186,6 @@ jobs:
 
       - name: Test push - new branch
         run: |
-          export PATH="$PWD:$PATH"
           cd /tmp/test-repo
           branch push-branch
           echo "new branch content" > branch-file.txt
@@ -205,13 +198,11 @@ jobs:
 
       - name: Test push - everything up-to-date
         run: |
-          export PATH="$PWD:$PATH"
           cd /tmp/test-repo
           push 2>&1 | grep -q "up-to-date"
 
       - name: Test merge
         run: |
-          export PATH="$PWD:$PATH"
           cd /tmp/test-repo
           branch main
           branch merge-me
@@ -225,14 +216,12 @@ jobs:
 
       - name: Test branch - nonexistent delete propagates failure
         run: |
-          export PATH="$PWD:$PATH"
           cd /tmp/test-repo
           # `branch -d` on a nonexistent branch must exit non-zero
           ! branch -d definitely-no-such-branch 2>/dev/null
 
       - name: Test branch - name with slash
         run: |
-          export PATH="$PWD:$PATH"
           cd /tmp/test-repo
           branch feature/has-slash
           [ "$(git branch --show-current)" = "feature/has-slash" ]
@@ -241,7 +230,6 @@ jobs:
 
       - name: Test detached HEAD - pull/push/merge fail cleanly
         run: |
-          export PATH="$PWD:$PATH"
           cd /tmp/test-repo
           git checkout main
           git checkout --detach HEAD
@@ -252,7 +240,6 @@ jobs:
 
       - name: Test pull - skips pop when nothing was stashed
         run: |
-          export PATH="$PWD:$PATH"
           cd /tmp/other-clone
           echo "pop test" >> remote.txt
           git add remote.txt
@@ -267,7 +254,6 @@ jobs:
 
       - name: Test pull - pop runs exactly once when something was stashed
         run: |
-          export PATH="$PWD:$PATH"
           cd /tmp/other-clone
           echo "another pop" >> remote.txt
           git add remote.txt
@@ -284,8 +270,6 @@ jobs:
 
       - name: Test pull - has_changed only fires install hooks on actual change
         run: |
-          export PATH="$PWD:$PATH"
-
           # Add a yarn.lock + package.json on the remote — first pull should set up the repo
           cd /tmp/other-clone
           echo '{}' > package.json
@@ -314,7 +298,6 @@ jobs:
 
       - name: Test push - passthrough flag (--force-with-lease)
         run: |
-          export PATH="$PWD:$PATH"
           cd /tmp/test-repo
           echo "force test" > force.txt
           git add force.txt
@@ -325,7 +308,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install shellcheck
-        run: sudo apt-get update && sudo apt-get install -y shellcheck
+      # shellcheck ships preinstalled on the ubuntu-latest runner image.
       - name: Run shellcheck
         run: shellcheck -S warning branch merge pull push stash install.sh
