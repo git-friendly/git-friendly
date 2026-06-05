@@ -12,6 +12,14 @@ Git sometimes requires typing two or three commands just to execute something ba
 
 *Less time fighting Git — more time actually doing work.*
 
+## Requirements
+
+* **git ≥ 2.23** (2019) — `branch` and `merge` use `git switch`
+* **bash ≥ 3.2** (2006) — works with macOS's stock bash; no bash 4 features required
+* **gh ≥ 2.0** (2021) — optional, used only to detect a PR URL in `push`
+
+Everything else (package managers like `npm`/`pnpm`/`bun`/`uv`, clipboard tools like `pbcopy`/`xclip`) is optional and only used when present.
+
 ## Install
 
 ### Homebrew (macOS)
