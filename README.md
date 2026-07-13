@@ -217,18 +217,20 @@ Now typing `branch <tab>` will suggest or autocomplete branches you can checkout
 
 ### Zsh Shell Completion
 
-Add to your `.zshrc`:
+Add to your `.zshrc`, after your `compinit` call:
 
 ```zsh
-fpath=($(brew --prefix)/share/zsh/functions $fpath)
-autoload -Uz _git && _git
-compdef __git_branch_names branch
+_git_friendly () {
+  local __git_cmd_idx=0
+  _git
+}
+compdef _git_friendly branch=git-checkout
+compdef _git_friendly merge=git-merge
 ```
 
-Now you can type `branch`, press Tab and you’ll see a list of branches in your repo.
+Now typing `branch <tab>` (or `branch -d <tab>`) will suggest or autocomplete branch names, and `merge <tab>` will complete merge targets.
 
-> [!NOTE]
-> You’ll need to adjust the path in the first line if you’re not using Homebrew or macOS.
+The same snippet works for macOS's system zsh and Homebrew zsh, and with either git completion you may have loaded: zsh's built-in one, or the wrapper git itself ships. (Homebrew's `git` formula installs that wrapper into `$(brew --prefix)/share/zsh/site-functions`, where it shadows the built-in — automatically under Homebrew zsh, or if you've added that directory to `fpath` yourself under system zsh.) The `__git_cmd_idx=0` line keeps the wrapper's helpers quiet and is harmless for the built-in.
 
 ## License
 
