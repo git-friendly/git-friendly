@@ -238,35 +238,34 @@ jobs:
           ! merge main 2>/dev/null
           git checkout main
 
-      - name: Test pull - skips pop when nothing was stashed
+      - name: Test pull - clean tree needs no autostash
         run: |
           cd /tmp/other-clone
-          echo "pop test" >> remote.txt
+          echo "autostash test" >> remote.txt
           git add remote.txt
-          git commit -m "Pop test change"
+          git commit -m "Autostash test change"
           git push origin main
 
           cd /tmp/test-repo
-          # Clean working tree — pull must not run `git stash pop`
+          # Nothing to shelve, so git must not create an autostash
           out=$(pull 2>&1)
-          echo "$out" | grep -q "Popping stash" && exit 1
+          echo "$out" | grep -q "autostash" && exit 1
           echo "$out" | grep -q "🦄  Done"
 
-      - name: Test pull - pop runs exactly once when something was stashed
+      - name: Test pull - autostash restores a dirty tracked file
         run: |
           cd /tmp/other-clone
-          echo "another pop" >> remote.txt
+          echo "more" >> remote.txt
           git add remote.txt
-          git commit -m "Another pop"
+          git commit -m "More remote work"
           git push origin main
 
           cd /tmp/test-repo
-          echo "untracked wip" > pop-wip.txt
+          echo "dirty wip" >> file.txt
           out=$(pull 2>&1)
-          pops=$(echo "$out" | grep -c "Popping stash")
-          [ "$pops" = "1" ]
-          [ -f pop-wip.txt ]
-          rm -f pop-wip.txt
+          echo "$out" | grep -q "Applied autostash"
+          grep -q "dirty wip" file.txt
+          git checkout file.txt
 
       - name: Test pull - has_changed only fires install hooks on actual change
         run: |
@@ -295,6 +294,45 @@ jobs:
             exit 1
           }
           true
+
+      - name: Test pull - conflicted rebase holds the autostash until continue
+        run: |
+          # Own clones and own branch, so the conflict can't disturb other tests
+          git clone /tmp/remote-repo.git /tmp/conflict-repo
+          cd /tmp/conflict-repo
+          git checkout -b conflict-test
+          echo "shared" > conflict.txt
+          git add conflict.txt
+          git commit -m "Conflict base"
+          git push -u origin conflict-test
+
+          # The remote rewrites the same file
+          git clone /tmp/remote-repo.git /tmp/conflict-other
+          cd /tmp/conflict-other
+          git checkout conflict-test
+          echo "theirs" > conflict.txt
+          git commit -am "Theirs"
+          git push origin conflict-test
+
+          # We commit our own version, and leave an unrelated file dirty
+          cd /tmp/conflict-repo
+          echo "mine" > conflict.txt
+          git commit -am "Mine"
+          echo "wip must survive" >> file.txt
+
+          # The rebase stops on the conflict, so pull reports failure
+          ! pull
+
+          # Our dirty change stays shelved instead of landing in a half-rebased
+          # tree, which is what the old manual stash/pop used to do
+          [ -d .git/rebase-merge ]
+          grep -q "wip must survive" file.txt && exit 1
+
+          # Finishing the rebase brings it back
+          echo "resolved" > conflict.txt
+          git add conflict.txt
+          GIT_EDITOR=true git rebase --continue
+          grep -q "wip must survive" file.txt
 
       - name: Test push - passthrough flag (--force-with-lease)
         run: |
