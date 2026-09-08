@@ -28,15 +28,19 @@ fi
 tracking=$(git rev-parse --abbrev-ref --symbolic-full-name "@{upstream}" 2>/dev/null)
 if [[ "$tracking" != "$remote"/* ]]; then
   echo "⚒  Local-only branch, rebasing $branch onto $current_branch first..."
-  git switch $branch
-  git rebase $current_branch || exit 1
+  # Bail if the switch fails. Carrying on would rebase whichever branch we
+  # were left standing on, which is silently the wrong one.
+  git switch "$branch" || exit 1
+  git rebase --autostash "$current_branch" || exit 1
 else
   echo "📡  This branch exists remotely, not rebasing"
 fi
 
 echo "✂️  Merge $branch into $current_branch"
-git switch $current_branch
-git merge $branch || exit 1
+git switch "$current_branch" || exit 1
+# --autostash shelves and restores local changes, so a dirty file that
+# neither side of the merge touches no longer blocks it
+git merge --autostash "$branch" || exit 1
 
 echo
 echo "🦄  Done"
