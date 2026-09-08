@@ -169,7 +169,7 @@ jobs:
           git push origin main
 
           cd /tmp/test-repo
-          GIT_FRIENDLY_NO_REBASE_ON_PULL=true pull
+          GIT_FRIENDLY_NO_REBASE_ON_PULL=1 pull
 
       - name: Test push - basic
         run: |

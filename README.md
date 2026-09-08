@@ -154,6 +154,8 @@ Change git-friendly behavior using environment variables. For example, add this 
 export GIT_FRIENDLY_NO_BUNDLE=true
 ```
 
+Any value except `0` or `false` switches an option on.
+
 Available environment variables:
 
 | Variable | Description | Commands | Default value |
@@ -163,6 +165,7 @@ Available environment variables:
 | `GIT_FRIENDLY_NO_NPM` | Disables `npm install` | `pull` | `false` |
 | `GIT_FRIENDLY_NO_YARN` | Disables `yarn install` | `pull` | `false` |
 | `GIT_FRIENDLY_NO_PNPM` | Disables `pnpm install` | `pull` | `false` |
+| `GIT_FRIENDLY_NO_BUN` | Disables `bun install` | `pull` | `false` |
 | `GIT_FRIENDLY_NO_UV` | Disables `uv sync` | `pull` | `false` |
 | `GIT_FRIENDLY_NO_REBASE_ON_PULL` | Disables rebasing local commits on top of the updated remote branch | `pull` | `false` |
 | `GIT_FRIENDLY_NO_COPY_URL_AFTER_PUSH` | Disables copying URL to clipboard | `push` | `false` |
