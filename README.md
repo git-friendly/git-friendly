@@ -235,6 +235,24 @@ Now typing `branch <tab>` (or `branch -d <tab>`) will suggest or autocomplete br
 
 The same snippet works for macOS's system zsh and Homebrew zsh, and with either git completion you may have loaded: zsh's built-in one, or the wrapper git itself ships. (Homebrew's `git` formula installs that wrapper into `$(brew --prefix)/share/zsh/site-functions`, where it shadows the built-in — automatically under Homebrew zsh, or if you've added that directory to `fpath` yourself under system zsh.) The `__git_cmd_idx=0` line keeps the wrapper's helpers quiet and is harmless for the built-in.
 
+### fzf
+
+[fzf](https://github.com/junegunn/fzf) turns those completions into a fuzzy picker.
+
+In zsh, install [fzf-tab](https://github.com/Aloxaf/fzf-tab) after your `compinit` call. The snippet above then makes `branch <tab>` an interactive branch picker.
+
+In bash, with `eval "$(fzf --bash)"` loaded, add this and type `branch **<tab>`:
+
+```bash
+_fzf_complete_branch () {
+  _fzf_complete --reverse --prompt="branch> " -- "$@" < <(
+    git for-each-ref --format="%(refname:lstrip=2)" --sort=-committerdate refs/heads refs/remotes | grep -v '/HEAD$'
+  )
+}
+
+complete -F _fzf_complete_branch -o default -o bashdefault branch
+```
+
 ## License
 
 [MIT license](LICENSE.md).
