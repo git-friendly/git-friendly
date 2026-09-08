@@ -14,7 +14,7 @@ Git sometimes requires typing two or three commands just to execute something ba
 
 ## Requirements
 
-* **git ≥ 2.23** (2019) — `branch` and `merge` use `git switch`
+* **git ≥ 2.27** (2020) — `branch` and `merge` use `git switch`; `pull` uses `--autostash`
 * **bash ≥ 3.2** (2006) — works with macOS's stock bash; no bash 4 features required
 * **gh ≥ 2.0** (2021) — optional, used only to detect a PR URL in `push`
 

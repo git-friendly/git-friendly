@@ -17,23 +17,6 @@ color_reset="$(tput sgr0)"
 current_dir="$(pwd)"
 base_dir=$(git rev-parse --show-cdup)
 
-# Pop any stashed changes
-unstash() {
-  if [ -n "$stashed" ]; then
-    echo
-    echo "🍯  Popping stash..."
-    git stash pop
-  fi
-}
-
-# Pop any stashed changes and exit
-rollback() {
-  echo
-  echo "${color_error}Something went wrong, rolling back${color_reset}"
-  unstash
-  exit $1
-}
-
 # Test whether a command exists
 # $1 - cmd to test
 cmd_exists() {
@@ -90,21 +73,12 @@ default_remote="origin"
 remote=$(git config "branch.${branch}.remote" || echo "$default_remote")
 remote_branch=$( (git config "branch.${branch}.merge" || echo "refs/heads/$branch") | cut -d/ -f3-)
 
-# Stash any local changes, including untracked files.
-# Compare refs/stash before/after to know if anything was actually stashed —
-# more robust than parsing the human-readable output (which is localized).
-stash_before=$(git rev-parse --verify --quiet refs/stash || true)
-git stash --include-untracked
-stash_after=$(git rev-parse --verify --quiet refs/stash || true)
-stashed=
-[ "$stash_before" != "$stash_after" ] && stashed=1
-
 # Fetch all branches (and prune stale ones) so remote-tracking refs
 # stay complete — `git pull <remote> <branch>` alone only updates the
 # one ref you name. Skip submodules here; the recursive pull below owns
 # submodule updates, so recursing now just double-fetches them.
 echo "🚀  Fetching from $remote..."
-git fetch --prune --no-recurse-submodules --jobs=10 "$remote" || rollback $?
+git fetch --prune --no-recurse-submodules --jobs=10 "$remote" || exit $?
 
 # Pull, using rebase if configured
 if ! is_enabled "$GIT_FRIENDLY_NO_REBASE_ON_PULL"; then
@@ -113,10 +87,11 @@ else
   rebase="--no-rebase"
 fi
 
-git pull $rebase --recurse-submodules --jobs=10 $remote $remote_branch || rollback $?
-
-# Pop any stashed changes
-unstash
+# --autostash lets git shelve and restore local changes itself. It beats a
+# manual stash/pop around the pull: when a rebase stops on a conflict git
+# holds the changes back until `git rebase --continue`, instead of popping
+# them into a half-rebased tree. Note it does not stash untracked files.
+git pull $rebase --autostash --recurse-submodules --jobs=10 $remote $remote_branch || exit $?
 
 # Bundle em if you got em!
 if ! is_enabled "$GIT_FRIENDLY_NO_BUNDLE"; then
