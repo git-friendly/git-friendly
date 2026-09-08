@@ -214,6 +214,47 @@ jobs:
           [ -f merge.txt ]
           branch -d merge-me
 
+      - name: Test merge - autostash carries a dirty file through
+        run: |
+          cd /tmp/test-repo
+          branch main
+          branch dirty-merge
+          echo "dirty merge content" > dirty-merge.txt
+          git add dirty-merge.txt
+          git commit -m "Add dirty merge content"
+          branch main
+
+          # A dirty file neither side touches used to abort the rebase with
+          # "cannot rebase: You have unstaged changes"
+          echo "wip must survive" >> file.txt
+          merge dirty-merge
+          [ -f dirty-merge.txt ]
+          grep -q "wip must survive" file.txt
+          [ "$(git branch --show-current)" = "main" ]
+
+          git checkout file.txt
+          branch -d dirty-merge
+
+      - name: Test merge - a blocked switch stops the merge
+        run: |
+          cd /tmp/test-repo
+          branch main
+          branch blocked-merge
+          echo "theirs" > blocked.txt
+          git add blocked.txt
+          git commit -m "Add blocked content"
+          branch main
+
+          # An untracked file in the way blocks `git switch`. Carrying on would
+          # rebase main onto itself and merge anyway, so merge must stop here.
+          echo "mine, uncommitted" > blocked.txt
+          ! merge blocked-merge
+          [ "$(git branch --show-current)" = "main" ]
+          grep -q "mine, uncommitted" blocked.txt
+
+          rm blocked.txt
+          branch -D blocked-merge
+
       - name: Test branch - nonexistent delete propagates failure
         run: |
           cd /tmp/test-repo
