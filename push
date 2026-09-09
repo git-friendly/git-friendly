@@ -32,35 +32,37 @@ default_remote="origin"
 remote=$(git config "branch.${branch}.remote" || echo "$default_remote")
 remote_branch=$( (git config "branch.${branch}.merge" || echo "refs/heads/$branch") | cut -d/ -f3-)
 
-# Push & save output
+# Push, letting git write straight to the terminal. Capturing the output would
+# swallow pre-push hooks (lint, typecheck, tests), which can run for minutes
+# with nothing on screen, and hooks that check for a tty would drop their
+# progress display. So read what happened from the refs instead of the output.
 if [ $# -eq 0 ]; then
   args=("$remote" "$remote_branch")
 else
   args=("$@")
 fi
-push=$(git push --set-upstream "${args[@]}" 2>&1)
+
+# Where the remote branch stood before the push, so we can tell afterwards
+# whether we created it, moved it, or changed nothing.
+before=$(git rev-parse --short "refs/remotes/$remote/$remote_branch" 2>/dev/null)
+
+git push --set-upstream "${args[@]}"
 exit_code=$?
 
 if [ $exit_code != 0 ]; then
-  echo -e "${color_error}Ouch, push failed!${color_reset}\n\n$push"
+  echo -e "\n${color_error}Ouch, push failed!${color_reset}" >&2
   exit $exit_code
-elif echo $push | grep "Everything up-to-date" >/dev/null; then
-  echo "✌️  Git says everything is up-to-date!"
-  exit 0
 fi
 
-# Extract commit hash range and display what we pushed
-commit_range=$(echo "$push" | grep -oE '[a-f0-9]{7,}\.\.[a-f0-9]{7,}' | head -1)
+after=$(git rev-parse --short HEAD)
 
-if echo $push | grep "\[new branch\]" >/dev/null; then
-  echo "🚀  Pushed a new branch '$branch' remotely"
+if [ -z "$before" ]; then
+  echo -e "\n🚀  Pushed a new branch '$branch' remotely"
+elif [ "$before" = "$after" ]; then
+  echo -e "\n✌️  Git says everything is up-to-date!"
+  exit 0
 else
-  echo "🚀  Pushed:"
-  if [ ! -z "$commit_range" ]; then
-    echo "$push" | grep -E '[a-f0-9]{7,}\.\.[a-f0-9]{7,}' | head -1 | sed 's/^[ \t]*/   /'
-  else
-    echo "$push" | grep -v '^remote:' | grep -v '^To ' | head -5
-  fi
+  commit_range="$before..$after"
 fi
 
 # Build compare refs: commit hashes for main/master, branch names for feature branches
@@ -85,10 +87,9 @@ if [[ "$remote_url" =~ github\.com ]]; then
 
   repo_name=$(echo $remote_url | sed $regEx)
 
-  # Check for PR URL from GitHub's push output, then from gh CLI
-  github_url=$(echo "$push" | grep -o 'https://github\.com/[^/]*/[^/]*/pull/new/[^[:space:]]*' | head -1)
-
-  if [ -z "$github_url" ] && [ "$branch" != "main" ] && [ "$branch" != "master" ] && command -v gh >/dev/null 2>&1; then
+  # GitHub prints its own "create a pull request" URL during the push, so we
+  # only look up an already-open PR here and fall back to the compare URL.
+  if [ "$branch" != "main" ] && [ "$branch" != "master" ] && command -v gh >/dev/null 2>&1; then
     pr_number=$(gh pr list --head "$branch" --json number --jq '.[0].number' 2>/dev/null)
     if [ ! -z "$pr_number" ] && [ "$pr_number" != "null" ]; then
       github_url="$url$repo_name/pull/$pr_number"

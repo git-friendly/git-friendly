@@ -134,6 +134,8 @@ merge [name]
 * Push your changes to the remote;
 * copy a compare URL, like [https://github.com/git-friendly/git-friendly/compare/e96033...5daed4](https://github.com/git-friendly/git-friendly/compare/e96033...5daed4), to your clipboard (works on Mac and Linux).
 
+Git's output goes straight to your terminal, so slow `pre-push` hooks show their progress as they run.
+
 Any extra arguments will be passed through to `git push`, for example `push -f`.
 
 ### `stash`
