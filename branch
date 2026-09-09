@@ -130,7 +130,7 @@ fi
 # Switch to the previous branch
 if [ "$branch" == "-" ]; then
   git switch -
-  exit 0
+  exit $?
 fi
 
 # Delete branch(es)
@@ -148,7 +148,9 @@ if [ "$delete" ]; then
   exit 0
 fi
 
-# Otherwise we're either switching to an existing branch or creating a branch
+# Otherwise we're either switching to an existing branch or creating a branch.
+# Every switch below exits on failure: git has already printed why, and
+# returning 0 from a branch we never reached breaks chains like `branch x && push`.
 local_branch_exists=
 git show-ref --verify --quiet "refs/heads/$branch" && local_branch_exists=1
 
@@ -184,7 +186,7 @@ fi
 # If local branch exists already, just switch to it
 if [ -n "$local_branch_exists" ]; then
   echo "👓  Switching to existing local branch..."
-  git switch "$branch"
+  git switch "$branch" || exit $?
 
   # Track remote branch if not already
   if [ -n "$remote_branch_exists" ]; then
@@ -198,12 +200,12 @@ if [ -n "$local_branch_exists" ]; then
 # If remote exists, create a local branch that tracks the remote
 elif [ -n "$remote_branch_exists" ]; then
   echo "📡  Tracking existing remote branch '$remote_branch_exists'..."
-  git switch -c "$branch" --track "$remote/$branch"
+  git switch -c "$branch" --track "$remote/$branch" || exit $?
 
 # Otherwise create a new local branch
 else
   echo "✏️  Creating new local branch..."
-  git switch -c "$branch" --no-track
+  git switch -c "$branch" --no-track || exit $?
 fi
 
 exit 0
