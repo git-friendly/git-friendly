@@ -71,6 +71,8 @@ Then update your `~/.bash_profile` or `~/.bashrc` to make git-friendly available
 export PATH=~/dev/git-friendly:$PATH
 ```
 
+CI checks commands, shell scripts, and GitHub Actions workflows. Run `actionlint` locally before changing workflows.
+
 ## Usage
 
 You now have some awesome new commands: **branch**, **merge**, **pull**, **push** and **stash**:
