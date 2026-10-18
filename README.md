@@ -22,13 +22,13 @@ Everything else (package managers like `npm`/`pnpm`/`bun`/`uv`, clipboard tools 
 
 ## Install
 
-### Homebrew (macOS)
+### Homebrew (macOS and Linux)
 
 ```sh
 brew install git-friendly/git-friendly/git-friendly
 ```
 
-The Homebrew tap for this project [can be found here](https://github.com/git-friendly/homebrew-git-friendly)
+The [formula](Formula/git-friendly.rb) lives here and publishes automatically to the [Homebrew tap](https://github.com/git-friendly/homebrew-git-friendly). Releases update its URL and checksum in both repositories.
 
 ### Fedora
 

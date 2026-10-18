@@ -1,56 +1,71 @@
-name: Update Homebrew formula
-
-# Bumps the formula in the git-friendly/homebrew-git-friendly tap to the
-# released version. The formula is trivial (url/version/sha256, no bottles),
-# so we just rewrite those three fields and push — no third-party action.
-#
-# If this ever breaks (e.g. the tap layout grows bottles/deps), drop-in
-# alternatives that wrap the official `brew bump-formula-pr`:
-#   - dawidd6/action-homebrew-bump-formula  (maintained, supports livecheck)
-#   - mislav/bump-homebrew-formula-action   (what this replaced; was finicky
-#                                            with fine-grained tokens — HTTP 303)
+name: Publish Homebrew formula
 
 on:
+  push:
+    branches: [main]
+    paths: ["Formula/**"]
   release:
     types: [published]
-  # Allow re-bumping by hand (e.g. if the release-time run failed).
   workflow_dispatch:
     inputs:
       tag:
-        description: Tag to bump the formula to (e.g. v1.1.0)
-        required: true
+        description: Release tag to publish (leave empty to sync the current formula)
+        required: false
 
-# Cross-repo write happens via COMMITTER_TOKEN, so the default token needs nothing.
-permissions: {}
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-homebrew
+  cancel-in-progress: false
 
 jobs:
   homebrew:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -euo pipefail {0}
     steps:
-      - name: Bump formula in tap
+      - name: Check out the formula source
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: main
+
+      - name: Check out the published tap
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: git-friendly/homebrew-git-friendly
+          ref: main
+          path: .homebrew-tap
+          token: ${{ secrets.COMMITTER_TOKEN }}
+
+      - name: Update release metadata
         env:
-          # PAT with write access to the tap repo. A plain git push over HTTPS
-          # avoids the GitHub-API redirect quirks that bit the old action.
-          COMMITTER_TOKEN: ${{ secrets.COMMITTER_TOKEN }}
-          TAG: ${{ github.event.release.tag_name || github.event.inputs.tag }}
+          TAG: ${{ github.event.release.tag_name || inputs.tag }}
         run: |
-          set -euo pipefail
-          version="${TAG#v}"
-          url="https://github.com/git-friendly/git-friendly/archive/refs/tags/${TAG}.tar.gz"
-          sha=$(curl -fsSL "$url" | sha256sum | cut -d' ' -f1)
+          if [[ -n "$TAG" ]]; then
+            url="https://github.com/git-friendly/git-friendly/archive/refs/tags/${TAG}.tar.gz"
+            sha=$(curl -fsSL "$url" | sha256sum | cut -d' ' -f1)
+            ruby -e '
+              path, url, sha = ARGV
+              formula = File.read(path)
+              formula.sub!(/^  url .*/, "  url #{url.dump}")
+              formula.sub!(/^  sha256 .*/, "  sha256 #{sha.dump}")
+              File.write(path, formula)
+            ' Formula/git-friendly.rb "$url" "$sha"
+          fi
 
-          git clone "https://x-access-token:${COMMITTER_TOKEN}@github.com/git-friendly/homebrew-git-friendly" tap
-          cd tap
-          sed -i -E \
-            -e "s|^( *url ).*|\1\"${url}\"|" \
-            -e "s|^( *version ).*|\1\"${version}\"|" \
-            -e "s|^( *sha256 ).*|\1\"${sha}\"|" \
-            git-friendly.rb
-
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add git-friendly.rb
-          # No-op cleanly if the formula is already current.
-          git diff --cached --quiet && { echo "Formula already up to date"; exit 0; }
-          git commit -m "git-friendly ${version}"
-          git push
+      - name: Publish formula to both repositories
+        run: |
+          cp Formula/git-friendly.rb .homebrew-tap/Formula/git-friendly.rb
+          cp Formula/README.md .homebrew-tap/README.md
+          git -C .homebrew-tap add README.md
+          for repo in . .homebrew-tap; do
+            git -C "$repo" config user.name "github-actions[bot]"
+            git -C "$repo" config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git -C "$repo" add Formula/git-friendly.rb
+            if ! git -C "$repo" diff --cached --quiet; then
+              git -C "$repo" commit --no-gpg-sign -m "Update the Homebrew formula"
+              git -C "$repo" push origin HEAD:main
+            fi
+          done
