@@ -1,11 +1,11 @@
-This tap publishes the Homebrew formula for [git-friendly](https://github.com/git-friendly/git-friendly).
+This is a **legacy Homebrew compatibility tap**. Development and documentation now live in [git-friendly/git-friendly](https://github.com/git-friendly/git-friendly).
 
-Install on macOS or Linux:
+The existing install command still works on macOS and Linux:
 
 ```sh
 brew install git-friendly/git-friendly/git-friendly
 ```
 
-- Edit the formula and this README in the source repository's [Formula directory](https://github.com/git-friendly/git-friendly/tree/main/Formula), not in the published tap.
-- Source CI checks installation, audit, and command behavior on macOS and Linux. Formula changes publish here automatically without changing the install command.
-- Releases update the URL and checksum in both repositories. To retry publication, run the source repository's “Publish Homebrew formula” workflow, with a release tag or no tag to sync the current formula.
+- **Existing users:** No action is needed today. Releases still publish formula updates here automatically.
+- **Contributors:** Submit changes to the main repository's [Formula directory](https://github.com/git-friendly/git-friendly/tree/main/Formula), not this repo. This README is mirrored from there too.
+- **Status:** This repo is not archived or read-only yet. CI and automatic publishing remain enabled. User migration and removal of tap publishing must happen before archival.
