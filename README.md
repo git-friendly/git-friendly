@@ -12,14 +12,6 @@ Git sometimes requires typing two or three commands just to execute something ba
 
 *Less time fighting Git — more time actually doing work.*
 
-## Requirements
-
-* **git ≥ 2.27** (2020) — `branch` and `merge` use `git switch`; `pull` uses `--autostash`
-* **bash ≥ 3.2** (2006) — works with macOS's stock bash; no bash 4 features required
-* **gh ≥ 2.0** (2021) — optional, used only to detect a PR URL in `push`
-
-Everything else (package managers like `npm`/`pnpm`/`bun`/`uv`, clipboard tools like `pbcopy`/`xclip`) is optional and only used when present.
-
 ## Install
 
 ### Homebrew (macOS and Linux)
@@ -62,30 +54,39 @@ curl -sS https://raw.githubusercontent.com/git-friendly/git-friendly/main/instal
 Checkout the code:
 
 ```sh
-git clone git://github.com/git-friendly/git-friendly.git ~/dev/git-friendly
+git clone https://github.com/git-friendly/git-friendly.git "$HOME/dev/git-friendly"
 ```
 
-Then update your `~/.bash_profile` or `~/.bashrc` to make git-friendly available each time you launch a new terminal:
+Then update `~/.zshrc` for Zsh, or `~/.bash_profile` / `~/.bashrc` for Bash, to make git-friendly available each time you launch a new terminal:
 
 ```sh
-export PATH=~/dev/git-friendly:$PATH
+export PATH="$HOME/dev/git-friendly:$PATH"
 ```
 
 CI checks commands, shell scripts, and GitHub Actions workflows. Run `actionlint` locally before changing workflows.
 
+## Requirements
+
+Use the commands from Bash or Zsh, including macOS's default Zsh. The scripts themselves run in Bash.
+
+* **git ≥ 2.27** (2020) — `branch` and `merge` use `git switch`; `pull` uses `--autostash`
+* **bash ≥ 3.2** (2006) — works with macOS's stock bash; no bash 4 features required
+* **gh ≥ 2.0** (2021) — optional, used only to detect a PR URL in `push`
+
+Everything else (package managers like `npm`/`pnpm`/`bun`/`uv`, clipboard tools like `pbcopy`/`xclip`) is optional and only used when present.
+
 ## Usage
 
 You now have some awesome new commands: **branch**, **merge**, **pull**, **push** and **stash**:
-
-![](https://d3vv6lp55qjaqc.cloudfront.net/items/3S3H2W1l1F3d1m2x3w1U/pull.png)
 
 Example session:
 
 ```sh
 pull
 branch awesomeness # Create a new branch (or switch to existing one)
-echo "BUMP" >> README
-git commit -a -m "Righteous bump"
+echo "BUMP" >> README.md
+git add README.md
+git commit --no-gpg-sign -m "Righteous bump"
 branch main        # Switch back to main
 merge awesomeness  # Merge awesomeness branch to main
 push               # Push changes
@@ -95,7 +96,7 @@ push               # Push changes
 
 ### `branch`
 
-Switch branches or create new local branch if it doesn’t exist. Intelligently sets up remote branch tracking so you can just type `git pull` and not always `git pull origin newbranch`. If no argument specified, will list all local and remote branches.
+Switch branches or create new local branch if it doesn’t exist. Intelligently sets up remote branch tracking so you can just type `git pull` and not always `git pull origin newbranch`. If no argument is specified, lists local branches. Use `branch -r` to list remote branches.
 
 ```sh
 branch [name]
@@ -117,7 +118,7 @@ branch -
 ### `merge`
 
 * Merge the specified branch into the current branch;
-* rebase first if the branch is local-only.
+* rebase the named branch first if the current branch does not track `origin`.
 
 ```
 merge [name]
@@ -125,11 +126,11 @@ merge [name]
 
 ### `pull`
 
-* Stash any local changes;
+* stash tracked changes using Git's autostash; untracked files stay put;
 * pull from the remote using rebase;
 * update submodules;
-* pop your stash;
-* run `bundle install`, `npm install`, `yarn install`, `pnpm install`, `uv sync` or `composer install` if there are any changes in `Gemfile`, `package.json`, `uv.lock`, etc.
+* let Git restore tracked changes afterward;
+* run `bundle install`, `npm install`, `yarn install`, `pnpm install`, `bun install`, `uv sync` or `composer install` if there are any changes in `Gemfile`, `package.json`, `uv.lock`, etc.
 
 ### `push`
 
@@ -156,7 +157,7 @@ Change git-friendly behavior using environment variables. For example, add this 
 export GIT_FRIENDLY_NO_BUNDLE=true
 ```
 
-Any value except `0` or `false` switches an option on.
+Any nonempty value except `0` or `false` switches an option on.
 
 Available environment variables:
 
@@ -179,6 +180,7 @@ Available environment variables:
 * npm (JavaScript)
 * yarn (JavaScript)
 * pnpm (JavaScript)
+* bun (JavaScript)
 * uv (Python)
 
 Support for more is always welcome.
@@ -188,8 +190,6 @@ Support for more is always welcome.
 We strongly recommend editing your global `~/.gitconfig` and adding features like ANSI color, command aliases (like `git st` instead of `git status`), automatic remote tracking and more. Check out [this sample ~/.gitconfig](https://gist.github.com/668161) to get started.
 
 We also recommend adding the current Git branch to your Terminal prompt (PS1) or you’ll quickly lose your place — here is a [pimp_prompt() bash function](https://gist.github.com/790086) which goes in your `~/.bash_profile` or `~/.bashrc`, then type `source ~/.bashrc` to reload.
-
-![](http://wow.sapegin.me/image/0Z1C1U00281j/pimped-prompt.jpg)
 
 ## Bonus: Shell Completion
 
@@ -226,7 +226,10 @@ Add to your `.zshrc`, after your `compinit` call:
 
 ```zsh
 _git_friendly () {
-  local __git_cmd_idx=0
+  local __git_cmd_idx=0 service="$service"
+  if [[ "$service" == git-checkout && "$words[2]" == -[dD] ]]; then
+    service=git-branch
+  fi
   _git
 }
 compdef _git_friendly branch=git-checkout
