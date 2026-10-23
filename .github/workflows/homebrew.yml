@@ -1,0 +1,54 @@
+name: Homebrew
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: homebrew-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-26, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash -euo pipefail {0}
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: 1
+      HOMEBREW_NO_INSTALL_CLEANUP: 1
+      HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Homebrew
+        uses: Homebrew/actions/setup-homebrew@eb02c69dbabdb66ff183c614f4ce7ab3c077592c # 2026.10.12.1
+        with:
+          stable: true
+
+      - name: Register this checkout as the tap
+        run: |
+          tap="$(brew --repository)/Library/Taps/git-friendly/homebrew-git-friendly"
+          mkdir -p "$(dirname "$tap")"
+          ln -s "$GITHUB_WORKSPACE" "$tap"
+
+      - name: Check formula style
+        run: brew style Formula/git-friendly.rb
+
+      - name: Install from source
+        run: brew install --build-from-source --yes git-friendly/git-friendly/git-friendly
+
+      - name: Audit formula
+        run: brew audit --strict --online git-friendly/git-friendly/git-friendly
+
+      - name: Test installed commands
+        run: brew test --verbose git-friendly/git-friendly/git-friendly
