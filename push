@@ -32,35 +32,55 @@ default_remote="origin"
 remote=$(git config "branch.${branch}.remote" || echo "$default_remote")
 remote_branch=$( (git config "branch.${branch}.merge" || echo "refs/heads/$branch") | cut -d/ -f3-)
 
-# Push & save output
+# Push, letting git write straight to the terminal. Capturing the output would
+# swallow pre-push hooks (lint, typecheck, tests), which can run for minutes
+# with nothing on screen, and hooks that check for a tty would drop their
+# progress display. So read what happened from the refs instead of the output.
+# GIT_FRIENDLY_QUIET_PUSH brings back the old behavior: hold git's output and
+# show it only if the push fails.
 if [ $# -eq 0 ]; then
   args=("$remote" "$remote_branch")
 else
   args=("$@")
 fi
-push=$(git push --set-upstream "${args[@]}" 2>&1)
+
+# Empty, 0 and false all count as off
+quiet=
+case "$GIT_FRIENDLY_QUIET_PUSH" in
+  '' | 0 | false) ;;
+  *) quiet=1 ;;
+esac
+
+# Where the remote branch stood before the push, so we can tell afterwards
+# whether we created it, moved it, or changed nothing.
+before=$(git rev-parse --short "refs/remotes/$remote/$remote_branch" 2>/dev/null)
+
+if [ -n "$quiet" ]; then
+  push_output=$(git push --set-upstream "${args[@]}" 2>&1)
+else
+  git push --set-upstream "${args[@]}"
+fi
 exit_code=$?
 
+# Keep our summary apart from git's own output
+[ -z "$quiet" ] && echo
+
 if [ $exit_code != 0 ]; then
-  echo -e "${color_error}Ouch, push failed!${color_reset}\n\n$push"
+  echo "${color_error}Ouch, push failed!${color_reset}" >&2
+  [ -n "$quiet" ] && printf '\n%s\n' "$push_output" >&2
   exit $exit_code
-elif echo $push | grep "Everything up-to-date" >/dev/null; then
-  echo "✌️  Git says everything is up-to-date!"
-  exit 0
 fi
 
-# Extract commit hash range and display what we pushed
-commit_range=$(echo "$push" | grep -oE '[a-f0-9]{7,}\.\.[a-f0-9]{7,}' | head -1)
+after=$(git rev-parse --short HEAD)
 
-if echo $push | grep "\[new branch\]" >/dev/null; then
+if [ -z "$before" ]; then
   echo "🚀  Pushed a new branch '$branch' remotely"
+elif [ "$before" = "$after" ]; then
+  echo "✌️  Git says everything is up-to-date!"
+  exit 0
 else
-  echo "🚀  Pushed:"
-  if [ ! -z "$commit_range" ]; then
-    echo "$push" | grep -E '[a-f0-9]{7,}\.\.[a-f0-9]{7,}' | head -1 | sed 's/^[ \t]*/   /'
-  else
-    echo "$push" | grep -v '^remote:' | grep -v '^To ' | head -5
-  fi
+  commit_range="$before..$after"
+  [ -n "$quiet" ] && echo "🚀  Pushed $commit_range"
 fi
 
 # Build compare refs: commit hashes for main/master, branch names for feature branches
@@ -85,8 +105,10 @@ if [[ "$remote_url" =~ github\.com ]]; then
 
   repo_name=$(echo $remote_url | sed $regEx)
 
-  # Check for PR URL from GitHub's push output, then from gh CLI
-  github_url=$(echo "$push" | grep -o 'https://github\.com/[^/]*/[^/]*/pull/new/[^[:space:]]*' | head -1)
+  # GitHub prints its own "create a pull request" URL during the push. When
+  # we held that output back, reuse its URL. Otherwise look up an already-open
+  # PR and fall back to the compare URL.
+  github_url=$(echo "$push_output" | grep -o 'https://github\.com/[^/]*/[^/]*/pull/new/[^[:space:]]*' | head -1)
 
   if [ -z "$github_url" ] && [ "$branch" != "main" ] && [ "$branch" != "master" ] && command -v gh >/dev/null 2>&1; then
     pr_number=$(gh pr list --head "$branch" --json number --jq '.[0].number' 2>/dev/null)
