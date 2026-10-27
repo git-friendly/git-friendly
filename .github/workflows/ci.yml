@@ -199,6 +199,27 @@ jobs:
           cd /tmp/test-repo
           push 2>&1 | grep -q "up-to-date"
 
+      - name: Test push - quiet mode
+        run: |
+          cd /tmp/test-repo
+          echo "quiet push" > quiet.txt
+          git add quiet.txt
+          git commit -m "Quiet push"
+          out=$(GIT_FRIENDLY_QUIET_PUSH=1 push 2>&1)
+          echo "$out" | grep -q "🚀  Pushed [0-9a-f]*\.\.[0-9a-f]*"
+          # Git's own "To <remote>" line must stay hidden on success
+          echo "$out" | grep -q "^To " && exit 1
+
+          # A rejected push must still show git's reason
+          git reset --hard HEAD~1
+          echo "diverged" > quiet.txt
+          git add quiet.txt
+          git commit -m "Diverged"
+          if out=$(GIT_FRIENDLY_QUIET_PUSH=1 push 2>&1); then exit 1; fi
+          echo "$out" | grep -q "Ouch, push failed!"
+          echo "$out" | grep -q "rejected"
+          git reset --hard origin/push-branch
+
       - name: Test merge
         run: |
           cd /tmp/test-repo

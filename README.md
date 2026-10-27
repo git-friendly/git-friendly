@@ -137,7 +137,7 @@ merge [name]
 * Push your changes to the remote;
 * copy a compare URL, like [https://github.com/git-friendly/git-friendly/compare/e96033...5daed4](https://github.com/git-friendly/git-friendly/compare/e96033...5daed4), to your clipboard (works on Mac and Linux).
 
-Git's output goes straight to your terminal, so slow `pre-push` hooks show their progress as they run.
+Git's output goes straight to your terminal, so slow `pre-push` hooks show their progress as they run. Set `GIT_FRIENDLY_QUIET_PUSH=true` to hide it unless the push fails.
 
 Any extra arguments will be passed through to `git push`, for example `push -f`.
 
@@ -174,6 +174,7 @@ Available environment variables:
 | `GIT_FRIENDLY_NO_UV` | Disables `uv sync` | `pull` | `false` |
 | `GIT_FRIENDLY_NO_REBASE_ON_PULL` | Disables rebasing local commits on top of the updated remote branch | `pull` | `false` |
 | `GIT_FRIENDLY_NO_COPY_URL_AFTER_PUSH` | Disables copying URL to clipboard | `push` | `false` |
+| `GIT_FRIENDLY_QUIET_PUSH` | Hides Git's output unless the push fails | `push` | `false` |
 
 ## Supported package managers for 'pull'
 
