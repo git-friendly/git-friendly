@@ -1,8 +1,8 @@
 class GitFriendly < Formula
   desc "Streamline your Git workflow"
   homepage "https://github.com/git-friendly/git-friendly"
-  url "https://github.com/git-friendly/git-friendly/archive/refs/tags/v1.2.0.tar.gz"
-  sha256 "214337068f7e2157ef5244dac2493450ff96f57e9e0f2d47528db178fb3d76b1"
+  url "https://github.com/git-friendly/git-friendly/archive/refs/tags/v1.3.0.tar.gz"
+  sha256 "fc9f0c773ca1ee7d4f2b2e4e8b68753d943ed4ce133750fb461ea02469f22040"
   license "MIT"
 
   depends_on "git"
